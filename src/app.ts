@@ -10,6 +10,10 @@ const port = envConfig.port || 3000;
 app.use(bodyParser.json());
 app.use("/movies", MoviesRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Welcome to MyMovieDB!");
+});
+
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });

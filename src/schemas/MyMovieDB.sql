@@ -1,4 +1,4 @@
-CREATE TABLE `movies` (
+CREATE TABLE IF NOT EXISTS `movies` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(50),
   `year` int,
@@ -8,48 +8,48 @@ CREATE TABLE `movies` (
   `created_at` datetime DEFAULT (now())
 );
 
-CREATE TABLE `actors` (
+CREATE TABLE IF NOT EXISTS `actors` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `first_name` varchar(50),
   `last_name` varchar(50)
 );
 
-CREATE TABLE `directors` (
+CREATE TABLE IF NOT EXISTS `directors` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `first_name` varchar(50),
   `last_name` varchar(50)
 );
 
-CREATE TABLE `movie_casts` (
+CREATE TABLE IF NOT EXISTS `movie_casts` (
   `actor_id` int,
   `movie_id` int,
   `role` varchar(50),
   PRIMARY KEY (`actor_id`, `movie_id`)
 );
 
-CREATE TABLE `movie_direction` (
+CREATE TABLE IF NOT EXISTS `movie_direction` (
   `director_id` int,
   `movie_id` int,
   PRIMARY KEY (`director_id`, `movie_id`)
 );
 
-CREATE TABLE `genres` (
+CREATE TABLE IF NOT EXISTS `genres` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `title` ENUM ('ACTION', 'ADVENTURE', 'COMEDY', 'CRIME', 'DRAMA', 'FANTASY', 'HISTORICAL', 'HORROR', 'ROMANCE', 'SAGA', 'SOCIAL', 'THRILLER', 'URBAN', 'MYSTERY', 'POLITICAL', 'MAGICAL_REALISM', 'PHILOSOPHICAL', 'SPECULATIVE', 'WESTERN', 'PARANOID_FICTION', 'HISTORICAL_FICTION', 'ABSURDIST', 'SURREAL', 'WHIMSICAL')
 );
 
-CREATE TABLE `movie_genre` (
+CREATE TABLE IF NOT EXISTS `movie_genre` (
   `movie_id` int,
   `genre_id` int
 );
 
-CREATE TABLE `ratings` (
+CREATE TABLE IF NOT EXISTS `ratings` (
   `movie_id` int,
   `reviewer_id` int,
   `reviewer_stars` int2
 );
 
-CREATE TABLE `reviewers` (
+CREATE TABLE IF NOT EXISTS `reviewers` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(50)
 );

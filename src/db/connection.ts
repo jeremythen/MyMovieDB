@@ -1,22 +1,14 @@
-import mysql from 'mysql';
+import { Sequelize } from 'sequelize';
 
 import envConfig from '../config/envConfig';
 
 const {
-    database: {
-        host,
-        name: database,
-        user,
-        password
-    },
-} = envConfig;;
+  database: { host, password },
+} = envConfig;
 
-const connection = mysql.createPool({
-  connectionLimit: 10,
+const sequelize = new Sequelize('mymoviedb', 'root', password, {
   host,
-  user,
-  password,
-  database,
+  dialect: 'mysql',
 });
 
-export default connection;
+export default sequelize;

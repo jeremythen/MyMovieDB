@@ -12,22 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const connection_1 = __importDefault(require("../db/connection"));
-const GET_ALL_MOVIES_QUERY = "SELECT id, title, year, time, lang, country, created_at FROM movies";
-;
+const Movie_1 = __importDefault(require("../db/models/Movie"));
 class MoviesRepository {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield new Promise((resolve, reject) => {
-                    connection_1.default.query(GET_ALL_MOVIES_QUERY, (err, result) => {
-                        if (err) {
-                            return reject(new Error(err.message));
-                        }
-                        resolve(result);
-                    });
-                });
-                return response;
+                const movies = yield Movie_1.default.findAll();
+                return movies;
             }
             catch (err) {
                 throw err;

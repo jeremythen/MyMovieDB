@@ -3,15 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mysql_1 = __importDefault(require("mysql"));
+const sequelize_1 = require("sequelize");
 const envConfig_1 = __importDefault(require("../config/envConfig"));
-const { database: { host, name: database, user, password }, } = envConfig_1.default;
-;
-const connection = mysql_1.default.createPool({
-    connectionLimit: 10,
+const { database: { host, password }, } = envConfig_1.default;
+const sequelize = new sequelize_1.Sequelize('mymoviedb', 'root', password, {
     host,
-    user,
-    password,
-    database,
+    dialect: 'mysql',
 });
-exports.default = connection;
+exports.default = sequelize;

@@ -26,17 +26,11 @@ class UserService {
 
             const userWithEmail = await userRepository.getUserByEmail(userRegistrationPayload.email);
 
-            console.log("userRegistrationPayload.email", userRegistrationPayload.email)
-            console.log("userWithEmail", userWithEmail)
-
             if (userWithEmail !== null) {
                 return prepareResponse(null, false, 'USER_EMAIL_EXISTS', ['An account with this email already exists']);
             }
 
             const userWithUsername = await userRepository.getUserByUsername(userRegistrationPayload.username);
-
-            console.log("userRegistrationPayload.username", userRegistrationPayload.username)
-            console.log("userWithUsername", userWithUsername)
 
             if (userWithUsername !== null) {
                 return prepareResponse(null, false, 'USER_USERNAME_EXISTS', ['An account with this username already exists']);

@@ -19,14 +19,35 @@ class UserService {
         );
 
         if (!validationResult.valid) {
-            return prepareResponse(validationResult, false, 'INVALID_USER_PAYLOAD');
+            return prepareResponse(null, false, 'INVALID_USER_PAYLOAD', validationResult.validationErrors);
         }
 
         try {
+
+            const userWithEmail = await userRepository.getUserByEmail(userRegistrationPayload.email);
+
+            console.log("userRegistrationPayload.email", userRegistrationPayload.email)
+            console.log("userWithEmail", userWithEmail)
+
+            if (userWithEmail !== null) {
+                return prepareResponse(null, false, 'USER_EMAIL_EXISTS', ['An account with this email already exists']);
+            }
+
+            const userWithUsername = await userRepository.getUserByUsername(userRegistrationPayload.username);
+
+            console.log("userRegistrationPayload.username", userRegistrationPayload.username)
+            console.log("userWithUsername", userWithUsername)
+
+            if (userWithUsername !== null) {
+                return prepareResponse(null, false, 'USER_USERNAME_EXISTS', ['An account with this username already exists']);
+            }
+
             const user = await userRepository.createUser(userRegistrationPayload);
+
             return prepareResponse(user, true);
+
         } catch (e) {
-            return prepareResponse(null, false, 'USER_CREATE_ERROR', 'There was an error creating the user');
+            return prepareResponse(null, false, 'USER_CREATE_ERROR', ['There was an error creating the user', e.message]);
         }
         
     }
@@ -39,13 +60,13 @@ class UserService {
         const { username, password } = userLoginPayload;
 
         if (!validationResult.valid) {
-            return prepareResponse(validationResult, false, "INVALID_CREDENTIALS");
+            return prepareResponse(null, false, "INVALID_CREDENTIALS", validationResult.validationErrors);
         }
 
         const user = await userRepository.getUserByUsername(username);
 
         if (!user) {
-            return prepareResponse(null, false, "USER_NOT_FOUND", `The specified user with username ${username} was not found`);
+            return prepareResponse(null, false, "USER_NOT_FOUND", [`The specified user with username ${username} was not found`]);
         }
 
         try {
@@ -55,7 +76,7 @@ class UserService {
                 return prepareResponse(null, false, "INVALID_CREDENTIALS");
             }
         } catch (error) {
-            return prepareResponse(null, false, "UNKNOWN_ERROR", 'There was an unknown error. Try again later.');
+            return prepareResponse(null, false, "UNKNOWN_ERROR", ['There was an unknown error. Try again later.']);
         }
     }
 
@@ -108,7 +129,7 @@ const validateRegisterUserPayload = (payload: User): ValidationResult => {
         validationResult.validationErrors.push("password is required");
     }
 
-    if (password && password.length < 5) {
+    if (password && password.length < 6) {
         validationResult.validationErrors.push("password minimum length is 6 characters");
     }
 

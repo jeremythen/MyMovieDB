@@ -3,14 +3,14 @@ export const prepareResponse = (
   data: any,
   success: boolean,
   errorCode = "",
-  errorMessage = ""
+  errorMessages: string[] | string = []
 ): Response => {
-  return { data, success, errorCode, errorMessage };
+  return { data, success, errorCode, errorMessages };
 };
 
 export interface Response {
   errorCode: string | null;
-  errorMessage: string | null;
+  errorMessages: string[] | string;
   success: boolean;
   data: any;
 }

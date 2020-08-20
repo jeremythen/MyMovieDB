@@ -27,14 +27,26 @@ class UserService {
             const userRegistrationPayload = userPayload;
             const validationResult = validateRegisterUserPayload(userRegistrationPayload);
             if (!validationResult.valid) {
-                return util_1.prepareResponse(validationResult, false, 'INVALID_USER_PAYLOAD');
+                return util_1.prepareResponse(null, false, 'INVALID_USER_PAYLOAD', validationResult.validationErrors);
             }
             try {
+                const userWithEmail = yield userRepository_1.default.getUserByEmail(userRegistrationPayload.email);
+                console.log("userRegistrationPayload.email", userRegistrationPayload.email);
+                console.log("userWithEmail", userWithEmail);
+                if (userWithEmail !== null) {
+                    return util_1.prepareResponse(null, false, 'USER_EMAIL_EXISTS', ['An account with this email already exists']);
+                }
+                const userWithUsername = yield userRepository_1.default.getUserByUsername(userRegistrationPayload.username);
+                console.log("userRegistrationPayload.username", userRegistrationPayload.username);
+                console.log("userWithUsername", userWithUsername);
+                if (userWithUsername !== null) {
+                    return util_1.prepareResponse(null, false, 'USER_USERNAME_EXISTS', ['An account with this username already exists']);
+                }
                 const user = yield userRepository_1.default.createUser(userRegistrationPayload);
                 return util_1.prepareResponse(user, true);
             }
             catch (e) {
-                return util_1.prepareResponse(null, false, 'USER_CREATE_ERROR', 'There was an error creating the user');
+                return util_1.prepareResponse(null, false, 'USER_CREATE_ERROR', ['There was an error creating the user', e.message]);
             }
         });
     }
@@ -44,11 +56,11 @@ class UserService {
             const validationResult = validateLoginUserPayload(userLoginPayload);
             const { username, password } = userLoginPayload;
             if (!validationResult.valid) {
-                return util_1.prepareResponse(validationResult, false, "INVALID_CREDENTIALS");
+                return util_1.prepareResponse(null, false, "INVALID_CREDENTIALS", validationResult.validationErrors);
             }
             const user = yield userRepository_1.default.getUserByUsername(username);
             if (!user) {
-                return util_1.prepareResponse(null, false, "USER_NOT_FOUND", `The specified user with username ${username} was not found`);
+                return util_1.prepareResponse(null, false, "USER_NOT_FOUND", [`The specified user with username ${username} was not found`]);
             }
             try {
                 if (bcrypt_1.default.compareSync(`${password}`, user.getDataValue("password"))) {
@@ -59,7 +71,7 @@ class UserService {
                 }
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, "UNKNOWN_ERROR", 'There was an unknown error. Try again later.');
+                return util_1.prepareResponse(null, false, "UNKNOWN_ERROR", ['There was an unknown error. Try again later.']);
             }
         });
     }
@@ -97,7 +109,7 @@ const validateRegisterUserPayload = (payload) => {
     if (!password) {
         validationResult.validationErrors.push("password is required");
     }
-    if (password && password.length < 5) {
+    if (password && password.length < 6) {
         validationResult.validationErrors.push("password minimum length is 6 characters");
     }
     return validationResult;

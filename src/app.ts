@@ -14,30 +14,9 @@ app.use(bodyParser.json());
 app.use("/movies", MoviesRoutes);
 app.use(UserRoute);
 app.get("/", async (req, res) => {
-
-  syncDB();
   res.send("Welcome to MyMovieDB!");
 });
 
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });
-
-
-const syncDB = () => {
-  sequelize
-    .authenticate()
-    .then(async () => {
-      sequelize
-        .sync({ force: true, logging: console.log })
-        .then((r) => {
-          //console.log("r", r);
-        })
-        .catch((er) => {
-          //console.log("er", er);
-        });
-    })
-    .catch((e) => {
-      console.log("e", e);
-    });
-}

@@ -1,5 +1,5 @@
 //import Sequelize from 'sequelize';
-import sequelize from '../connection';
+import sequelize from '../../connection';
 import Reviewer from './Reviewer';
 import Genre from "./Genre";
 import Director from './Director';

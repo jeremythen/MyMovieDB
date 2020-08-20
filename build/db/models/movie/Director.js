@@ -3,32 +3,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const connection_1 = __importDefault(require("../connection"));
+const connection_1 = __importDefault(require("../../connection"));
 const sequelize_1 = require("sequelize");
-class Rating extends sequelize_1.Model {
+class Director extends sequelize_1.Model {
 }
-Rating.init({
-    movieId: {
+Director.init({
+    id: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
     },
-    reviewerId: {
-        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+    firstName: {
+        type: sequelize_1.DataTypes.STRING(50),
         allowNull: false,
     },
-    reviewerStars: {
-        type: sequelize_1.DataTypes.TINYINT.UNSIGNED,
+    lastName: {
+        type: sequelize_1.DataTypes.STRING(50),
         allowNull: false,
     },
 }, {
-    tableName: "ratings",
+    tableName: "directors",
     sequelize: connection_1.default,
     timestamps: true,
-    indexes: [
-        {
-            unique: true,
-            fields: ["movieId", "reviewerId"],
-        },
-    ],
 });
-exports.default = Rating;
+exports.default = Director;

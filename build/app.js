@@ -16,30 +16,34 @@ const express_1 = __importDefault(require("express"));
 const movies_1 = __importDefault(require("./routes/movies"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const envConfig_1 = __importDefault(require("./config/envConfig"));
+const connection_1 = __importDefault(require("./db/connection"));
+const auth_1 = __importDefault(require("./routes/auth/auth"));
 const app = express_1.default();
 const port = envConfig_1.default.port || 3000;
 app.use(body_parser_1.default.json());
 app.use("/movies", movies_1.default);
+app.use(auth_1.default);
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    syncDB();
     res.send("Welcome to MyMovieDB!");
 }));
 app.listen(port, () => {
     console.log(`Running on port ${port}`);
 });
-// const syncDB = () => {
-//   sequelize
-//     .authenticate()
-//     .then(async () => {
-//       sequelize
-//         .sync({ force: true })
-//         .then((r) => {
-//           console.log("r", r);
-//         })
-//         .catch((er) => {
-//           console.log("er", er);
-//         });
-//     })
-//     .catch((e) => {
-//       console.log("e", e);
-//     });
-// }
+const syncDB = () => {
+    connection_1.default
+        .authenticate()
+        .then(() => __awaiter(void 0, void 0, void 0, function* () {
+        connection_1.default
+            .sync({ force: true, logging: console.log })
+            .then((r) => {
+            //console.log("r", r);
+        })
+            .catch((er) => {
+            //console.log("er", er);
+        });
+    }))
+        .catch((e) => {
+        console.log("e", e);
+    });
+};

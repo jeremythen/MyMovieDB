@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Sequelize from 'sequelize';
-const connection_1 = __importDefault(require("../connection"));
+const connection_1 = __importDefault(require("../../connection"));
 const Reviewer_1 = __importDefault(require("./Reviewer"));
 const Genre_1 = __importDefault(require("./Genre"));
 const Director_1 = __importDefault(require("./Director"));

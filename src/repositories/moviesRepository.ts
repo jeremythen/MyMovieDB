@@ -1,4 +1,4 @@
-import Movie from '../db/models/Movie';
+import Movie from '../db/models/movie/Movie';
 class MoviesRepository {
     async getMovies() {
         try {

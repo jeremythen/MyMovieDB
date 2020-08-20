@@ -3,6 +3,10 @@ import bcrypt from 'bcrypt';
 import { prepareResponse, Response } from '../util/util';
 import userRepository from '../repositories/userRepository';
 import validator from 'validator';
+import { generateJwtToken } from '../util/jwtTokenUtil';
+import { USER_ERROR } from '../util/enums';
+
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = USER_ERROR;
 
 class UserService {
 
@@ -19,7 +23,7 @@ class UserService {
         );
 
         if (!validationResult.valid) {
-            return prepareResponse(null, false, 'INVALID_USER_PAYLOAD', validationResult.validationErrors);
+            return prepareResponse(null, false, USER_INVALID_PAYLOAD, validationResult.validationErrors);
         }
 
         try {
@@ -27,23 +31,28 @@ class UserService {
             const userWithEmail = await userRepository.getUserByEmail(userRegistrationPayload.email);
 
             if (userWithEmail !== null) {
-                return prepareResponse(null, false, 'USER_EMAIL_EXISTS', ['An account with this email already exists']);
+                return prepareResponse(null, false, USER_EMAIL_EXISTS, ['An account with this email already exists']);
             }
 
             const userWithUsername = await userRepository.getUserByUsername(userRegistrationPayload.username);
 
             if (userWithUsername !== null) {
-                return prepareResponse(null, false, 'USER_USERNAME_EXISTS', ['An account with this username already exists']);
+                return prepareResponse(null, false, USER_USERNAME_EXISTS, ['An account with this username already exists']);
             }
 
             const user = await userRepository.createUser(userRegistrationPayload);
 
-            return prepareResponse(user, true);
+            if (user === null) {
+                return prepareResponse(null, false, USER_CREATE_ERROR, ['User registration was unsuccessful']);
+            }
+
+            const token = generateJwtToken(user);
+            return prepareResponse({ user, token }, true);
 
         } catch (e) {
-            return prepareResponse(null, false, 'USER_CREATE_ERROR', ['There was an error creating the user', e.message]);
+            return prepareResponse(null, false, USER_CREATE_ERROR, ['There was an error creating the user', e.message]);
         }
-        
+
     }
 
     async login(payload: User) {
@@ -54,23 +63,27 @@ class UserService {
         const { username, password } = userLoginPayload;
 
         if (!validationResult.valid) {
-            return prepareResponse(null, false, "INVALID_CREDENTIALS", validationResult.validationErrors);
+            return prepareResponse(null, false, USER_INVALID_CREDENTIALS, validationResult.validationErrors);
         }
 
         const user = await userRepository.getUserByUsername(username);
 
-        if (!user) {
+        if (user === null) {
             return prepareResponse(null, false, "USER_NOT_FOUND", [`The specified user with username ${username} was not found`]);
         }
 
         try {
             if (bcrypt.compareSync(`${password}`, user.getDataValue("password"))) {
-                return prepareResponse(user, true);
+
+                const token = generateJwtToken(user);
+
+                return prepareResponse({ user, token }, true);
+
             } else {
-                return prepareResponse(null, false, "INVALID_CREDENTIALS");
+                return prepareResponse(null, false, USER_INVALID_CREDENTIALS);
             }
         } catch (error) {
-            return prepareResponse(null, false, "UNKNOWN_ERROR", ['There was an unknown error. Try again later.']);
+            return prepareResponse(null, false, USER_UNKNOWN_ERROR, ['There was an unknown error. Try again later.']);
         }
     }
 

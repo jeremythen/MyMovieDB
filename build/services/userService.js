@@ -16,6 +16,9 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const util_1 = require("../util/util");
 const userRepository_1 = __importDefault(require("../repositories/userRepository"));
 const validator_1 = __importDefault(require("validator"));
+const jwtTokenUtil_1 = require("../util/jwtTokenUtil");
+const enums_1 = require("../util/enums");
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = enums_1.USER_ERROR;
 class UserService {
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -27,22 +30,26 @@ class UserService {
             const userRegistrationPayload = userPayload;
             const validationResult = validateRegisterUserPayload(userRegistrationPayload);
             if (!validationResult.valid) {
-                return util_1.prepareResponse(null, false, 'INVALID_USER_PAYLOAD', validationResult.validationErrors);
+                return util_1.prepareResponse(null, false, USER_INVALID_PAYLOAD, validationResult.validationErrors);
             }
             try {
                 const userWithEmail = yield userRepository_1.default.getUserByEmail(userRegistrationPayload.email);
                 if (userWithEmail !== null) {
-                    return util_1.prepareResponse(null, false, 'USER_EMAIL_EXISTS', ['An account with this email already exists']);
+                    return util_1.prepareResponse(null, false, USER_EMAIL_EXISTS, ['An account with this email already exists']);
                 }
                 const userWithUsername = yield userRepository_1.default.getUserByUsername(userRegistrationPayload.username);
                 if (userWithUsername !== null) {
-                    return util_1.prepareResponse(null, false, 'USER_USERNAME_EXISTS', ['An account with this username already exists']);
+                    return util_1.prepareResponse(null, false, USER_USERNAME_EXISTS, ['An account with this username already exists']);
                 }
                 const user = yield userRepository_1.default.createUser(userRegistrationPayload);
-                return util_1.prepareResponse(user, true);
+                if (user === null) {
+                    return util_1.prepareResponse(null, false, USER_CREATE_ERROR, ['User registration was unsuccessful']);
+                }
+                const token = jwtTokenUtil_1.generateJwtToken(user);
+                return util_1.prepareResponse({ user, token }, true);
             }
             catch (e) {
-                return util_1.prepareResponse(null, false, 'USER_CREATE_ERROR', ['There was an error creating the user', e.message]);
+                return util_1.prepareResponse(null, false, USER_CREATE_ERROR, ['There was an error creating the user', e.message]);
             }
         });
     }
@@ -52,22 +59,23 @@ class UserService {
             const validationResult = validateLoginUserPayload(userLoginPayload);
             const { username, password } = userLoginPayload;
             if (!validationResult.valid) {
-                return util_1.prepareResponse(null, false, "INVALID_CREDENTIALS", validationResult.validationErrors);
+                return util_1.prepareResponse(null, false, USER_INVALID_CREDENTIALS, validationResult.validationErrors);
             }
             const user = yield userRepository_1.default.getUserByUsername(username);
-            if (!user) {
+            if (user === null) {
                 return util_1.prepareResponse(null, false, "USER_NOT_FOUND", [`The specified user with username ${username} was not found`]);
             }
             try {
                 if (bcrypt_1.default.compareSync(`${password}`, user.getDataValue("password"))) {
-                    return util_1.prepareResponse(user, true);
+                    const token = jwtTokenUtil_1.generateJwtToken(user);
+                    return util_1.prepareResponse({ user, token }, true);
                 }
                 else {
-                    return util_1.prepareResponse(null, false, "INVALID_CREDENTIALS");
+                    return util_1.prepareResponse(null, false, USER_INVALID_CREDENTIALS);
                 }
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, "UNKNOWN_ERROR", ['There was an unknown error. Try again later.']);
+                return util_1.prepareResponse(null, false, USER_UNKNOWN_ERROR, ['There was an unknown error. Try again later.']);
             }
         });
     }

@@ -31,14 +31,10 @@ class UserService {
             }
             try {
                 const userWithEmail = yield userRepository_1.default.getUserByEmail(userRegistrationPayload.email);
-                console.log("userRegistrationPayload.email", userRegistrationPayload.email);
-                console.log("userWithEmail", userWithEmail);
                 if (userWithEmail !== null) {
                     return util_1.prepareResponse(null, false, 'USER_EMAIL_EXISTS', ['An account with this email already exists']);
                 }
                 const userWithUsername = yield userRepository_1.default.getUserByUsername(userRegistrationPayload.username);
-                console.log("userRegistrationPayload.username", userRegistrationPayload.username);
-                console.log("userWithUsername", userWithUsername);
                 if (userWithUsername !== null) {
                     return util_1.prepareResponse(null, false, 'USER_USERNAME_EXISTS', ['An account with this username already exists']);
                 }

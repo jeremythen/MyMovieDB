@@ -1,13 +1,13 @@
 import User from '../db/models/User';
 import bcrypt from 'bcrypt';
-
+import { UserCreationPayload } from '../db/models/User';
 class UserRepository {
 
     async getUsers(): Promise<User[]> {
         return await User.findAll();
     }
 
-    async createUser(userPayload: User): Promise<User | null> {
+    async createUser(userPayload: UserCreationPayload): Promise<User | null> {
 
         const {
             username,

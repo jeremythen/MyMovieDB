@@ -82,3 +82,17 @@ User.init(
 );
 
 export default User;
+
+export interface RequiredUserCreationPayload {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export class UserCreationPayload implements RequiredUserCreationPayload {
+  username!: string;
+  email!: string;
+  password!: string;
+  firstName = '';
+  lastName = '';
+}

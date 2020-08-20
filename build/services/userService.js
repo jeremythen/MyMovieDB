@@ -35,21 +35,20 @@ class UserService {
     }
     registerUser(userPayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userRegistrationPayload = userPayload;
-            const validationResult = validateRegisterUserPayload(userRegistrationPayload);
+            const validationResult = validateRegisterUserPayload(userPayload);
             if (!validationResult.valid) {
                 return util_1.prepareResponse(null, false, USER_INVALID_PAYLOAD, validationResult.validationErrors);
             }
             try {
-                const userWithEmail = yield userRepository_1.default.getUserByEmail(userRegistrationPayload.email);
+                const userWithEmail = yield userRepository_1.default.getUserByEmail(userPayload.email);
                 if (userWithEmail !== null) {
                     return util_1.prepareResponse(null, false, USER_EMAIL_EXISTS, ['An account with this email already exists']);
                 }
-                const userWithUsername = yield userRepository_1.default.getUserByUsername(userRegistrationPayload.username);
+                const userWithUsername = yield userRepository_1.default.getUserByUsername(userPayload.username);
                 if (userWithUsername !== null) {
                     return util_1.prepareResponse(null, false, USER_USERNAME_EXISTS, ['An account with this username already exists']);
                 }
-                const user = yield userRepository_1.default.createUser(userRegistrationPayload);
+                const user = yield userRepository_1.default.createUser(userPayload);
                 if (user === null) {
                     return util_1.prepareResponse(null, false, USER_CREATE_ERROR, ['User registration was unsuccessful']);
                 }
@@ -63,9 +62,8 @@ class UserService {
     }
     login(payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userLoginPayload = payload;
-            const validationResult = validateLoginUserPayload(userLoginPayload);
-            const { username, password } = userLoginPayload;
+            const validationResult = validateLoginUserPayload(payload);
+            const { username, password } = payload;
             if (!validationResult.valid) {
                 return util_1.prepareResponse(null, false, USER_INVALID_CREDENTIALS, validationResult.validationErrors);
             }

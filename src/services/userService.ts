@@ -1,4 +1,4 @@
-import User from '../db/models/User';
+import User, { UserCreationPayload } from '../db/models/User';
 import bcrypt from 'bcrypt';
 import { prepareResponse, Response } from '../util/util';
 import userRepository from '../repositories/userRepository';
@@ -22,13 +22,9 @@ class UserService {
         return user !== null && user.role === Role.ADMIN;
     }
 
-    async registerUser(userPayload: User): Promise<Response> {
+    async registerUser(userPayload: UserCreationPayload): Promise<Response> {
 
-        const userRegistrationPayload: User = userPayload;
-
-        const validationResult = validateRegisterUserPayload(
-            userRegistrationPayload
-        );
+        const validationResult = validateRegisterUserPayload(userPayload);
 
         if (!validationResult.valid) {
             return prepareResponse(null, false, USER_INVALID_PAYLOAD, validationResult.validationErrors);
@@ -36,19 +32,19 @@ class UserService {
 
         try {
 
-            const userWithEmail = await userRepository.getUserByEmail(userRegistrationPayload.email);
+            const userWithEmail = await userRepository.getUserByEmail(userPayload.email);
 
             if (userWithEmail !== null) {
                 return prepareResponse(null, false, USER_EMAIL_EXISTS, ['An account with this email already exists']);
             }
 
-            const userWithUsername = await userRepository.getUserByUsername(userRegistrationPayload.username);
+            const userWithUsername = await userRepository.getUserByUsername(userPayload.username);
 
             if (userWithUsername !== null) {
                 return prepareResponse(null, false, USER_USERNAME_EXISTS, ['An account with this username already exists']);
             }
 
-            const user = await userRepository.createUser(userRegistrationPayload);
+            const user = await userRepository.createUser(userPayload);
 
             if (user === null) {
                 return prepareResponse(null, false, USER_CREATE_ERROR, ['User registration was unsuccessful']);
@@ -63,12 +59,11 @@ class UserService {
 
     }
 
-    async login(payload: User) {
-        const userLoginPayload: User = payload;
+    async login(payload: UserLoginPayload) {
 
-        const validationResult = validateLoginUserPayload(userLoginPayload);
+        const validationResult = validateLoginUserPayload(payload);
 
-        const { username, password } = userLoginPayload;
+        const { username, password } = payload;
 
         if (!validationResult.valid) {
             return prepareResponse(null, false, USER_INVALID_CREDENTIALS, validationResult.validationErrors);
@@ -101,6 +96,10 @@ const userService = Object.freeze(new UserService());
 
 export default userService;
 
+interface UserLoginPayload {
+    username: string;
+    password: string;
+}
 
 interface ValidationResult {
     valid: boolean;
@@ -113,7 +112,7 @@ interface ValidationResult {
  * This function checks that the required user data to create a new user are present.
  * 
  */
-const validateRegisterUserPayload = (payload: User): ValidationResult => {
+const validateRegisterUserPayload = (payload: UserCreationPayload): ValidationResult => {
     const validationResult: ValidationResult = {
         valid: false,
         validationErrors: [],
@@ -152,7 +151,7 @@ const validateRegisterUserPayload = (payload: User): ValidationResult => {
 
 };
 
-const validateLoginUserPayload = (payload: User): ValidationResult => {
+const validateLoginUserPayload = (payload: UserLoginPayload): ValidationResult => {
 
     const validationResult: ValidationResult = {
         valid: false,

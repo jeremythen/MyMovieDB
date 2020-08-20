@@ -1,5 +1,7 @@
 import express from 'express';
 import moviesService from "../services/moviesService";
+import { authorize } from '../middleware/authMiddleware';
+
 
 const Router = express.Router();
 
@@ -10,5 +12,7 @@ Router.get("/", async (req, res) => {
     res.send(response);
 
 });
+
+
 
 export default Router;

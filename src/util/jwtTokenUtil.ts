@@ -16,13 +16,16 @@ export const generateJwtToken = (user: User): string => {
 
 }
 
-export const verifyToken = (jwtToken: string): string | object | null => {
+export const verifyToken = (jwtToken: string): UserTokenData | null => {
     try {
-        const verification = jwt.verify(jwtToken, secret);
-        console.log("verification", verification)
-        return verification;
+        const userTokenData = <UserTokenData> jwt.verify(jwtToken, secret);
+        return userTokenData;
     } catch (e) {
-        console.log("e", e);
         return null;
     }
+}
+
+export interface UserTokenData {
+    email: string;
+    username: string;
 }

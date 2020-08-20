@@ -16,12 +16,10 @@ exports.generateJwtToken = (user) => {
 };
 exports.verifyToken = (jwtToken) => {
     try {
-        const verification = jsonwebtoken_1.default.verify(jwtToken, secret);
-        console.log("verification", verification);
-        return verification;
+        const userTokenData = jsonwebtoken_1.default.verify(jwtToken, secret);
+        return userTokenData;
     }
     catch (e) {
-        console.log("e", e);
         return null;
     }
 };

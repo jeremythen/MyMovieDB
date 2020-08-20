@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const User_1 = __importDefault(require("../../db/models/User"));
-const userService_1 = __importDefault(require("../../services/userService"));
-const authMiddleware_1 = require("../../middleware/authMiddleware");
+const User_1 = __importDefault(require("../db/models/User"));
+const userService_1 = __importDefault(require("../services/userService"));
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const Router = express_1.default.Router();
 Router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield userService_1.default.registerUser(req.body);

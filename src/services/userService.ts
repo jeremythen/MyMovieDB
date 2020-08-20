@@ -4,14 +4,22 @@ import { prepareResponse, Response } from '../util/util';
 import userRepository from '../repositories/userRepository';
 import validator from 'validator';
 import { generateJwtToken } from '../util/jwtTokenUtil';
-import { USER_ERROR } from '../util/enums';
+import { UserError, Role } from '../util/enums';
 
-const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = USER_ERROR;
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = UserError;
 
 class UserService {
 
     async getUsers(): Promise<User[]> {
         return await userRepository.getUsers();
+    }
+
+    async getUserByEmail(email: string): Promise<User | null> {
+        return await userRepository.getUserByEmail(email);
+    }
+
+    isAdmin(user: User): boolean {
+        return user !== null && user.role === Role.ADMIN;
     }
 
     async registerUser(userPayload: User): Promise<Response> {

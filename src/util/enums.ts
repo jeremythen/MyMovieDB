@@ -1,4 +1,4 @@
-export enum USER_ERROR {
+export enum UserError {
   USER_INVALID_PAYLOAD = 'USER_INVALID_PAYLOAD',
   USER_EMAIL_EXISTS = 'USER_EMAIL_EXISTS',
   USER_USERNAME_EXISTS = 'USER_USERNAME_EXISTS',
@@ -7,3 +7,7 @@ export enum USER_ERROR {
   USER_UNKNOWN_ERROR = 'USER_UNKNOWN_ERROR'
 }
 
+export enum Role {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}

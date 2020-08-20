@@ -18,12 +18,20 @@ const userRepository_1 = __importDefault(require("../repositories/userRepository
 const validator_1 = __importDefault(require("validator"));
 const jwtTokenUtil_1 = require("../util/jwtTokenUtil");
 const enums_1 = require("../util/enums");
-const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = enums_1.USER_ERROR;
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = enums_1.UserError;
 class UserService {
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield userRepository_1.default.getUsers();
         });
+    }
+    getUserByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield userRepository_1.default.getUserByEmail(email);
+        });
+    }
+    isAdmin(user) {
+        return user !== null && user.role === enums_1.Role.ADMIN;
     }
     registerUser(userPayload) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -12,7 +12,7 @@ module.exports = {
       ratings.push({
         movieId: i + 1,
         reviewerId: i + 1,
-        reviewerStar: getRandomRating(),
+        reviewerStars: getRandomRating(),
       });
     }
 

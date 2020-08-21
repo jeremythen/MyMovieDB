@@ -16,8 +16,8 @@ const moviesRepository_1 = __importDefault(require("../repositories/moviesReposi
 const util_1 = require("../util/util");
 const enums_1 = require("../util/enums");
 const reviewerRepository_1 = __importDefault(require("../repositories/reviewerRepository"));
-const ratingRepository_1 = __importDefault(require("../repositories/ratingRepository"));
-const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT } = enums_1.MovieError;
+const reviewRepository_1 = __importDefault(require("../repositories/reviewRepository"));
+const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD } = enums_1.MovieError;
 class MovieService {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,23 +35,33 @@ class MovieService {
             return util_1.prepareResponse({ movie }, true);
         });
     }
-    addMovieReview(movieReviewPayload) {
+    addMovieReview(movieId, movieReviewPayload) {
         return __awaiter(this, void 0, void 0, function* () {
             const validation = validateCreateReviewPayload(movieReviewPayload);
             if (!validation.valid) {
                 return util_1.prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
             }
-            const { movieId, reviewerId } = movieReviewPayload;
+            const { reviewerId, reviewerStars, comment = '' } = movieReviewPayload;
             const movie = yield moviesRepository_1.default.getMovieById(movieId);
             if (movie === null) {
                 return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
             }
             const reviewer = yield reviewerRepository_1.default.getReviewerById(reviewerId);
-            if (movie === null) {
+            if (reviewer === null) {
                 return util_1.prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
             }
-            const rating = yield ratingRepository_1.default.createRating(movieReviewPayload);
-            return util_1.prepareResponse({ rating }, true);
+            const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+            // If a review under that reviewer and movie ids exists, update it.
+            if (review === null) {
+                const newReview = yield reviewRepository_1.default.createReview(movieReviewPayload);
+                return util_1.prepareResponse({ review: newReview }, true);
+            }
+            else {
+                review.reviewerStars = reviewerStars;
+                review.comment = comment;
+                review.save();
+                return util_1.prepareResponse({ review }, true);
+            }
         });
     }
     disableMovie(movieId) {
@@ -85,7 +95,7 @@ class MovieService {
             if (!movieId || movieId < 1) {
                 return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
             }
-            const movies = yield ratingRepository_1.default.getMovieRatings(movieId);
+            const movies = yield reviewRepository_1.default.getMovieReviews(movieId);
             return util_1.prepareResponse({ movies }, true);
         });
     }
@@ -114,6 +124,33 @@ class MovieService {
             }
             const movies = yield moviesRepository_1.default.getMoviesWithLimit(limit);
             return util_1.prepareResponse({ movies }, true);
+        });
+    }
+    getReviewByReviewerIdAndMovieId(reviewerId, movieId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
+            }
+            const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+            return util_1.prepareResponse({ review }, true);
+        });
+    }
+    getReviewById(reviewId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!isValidIdNumber(reviewId)) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewId are required']);
+            }
+            const review = yield reviewRepository_1.default.getReviewById(reviewId);
+            return util_1.prepareResponse({ review }, true);
+        });
+    }
+    getReviewReviews(reviewerId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!isValidIdNumber(reviewerId)) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
+            }
+            const reviews = yield reviewRepository_1.default.getReviewerReviews(reviewerId);
+            return util_1.prepareResponse({ reviews }, true);
         });
     }
 }
@@ -169,12 +206,20 @@ const validateCreateReviewPayload = (payload) => {
     if (!reviewerId) {
         validationResult.validationErrors.push("reviewerId is required");
     }
-    if (reviewerStars < 0 || reviewerStars > 5) {
+    if (!isValidRatingStarsNumber(reviewerStars)) {
         validationResult.validationErrors.push("reviewerStars is required and should be from 1 to 5");
     }
     return validationResult;
 };
 const isValidPaginationNumber = (number) => {
+    number = Number(number);
+    return (!Number.isNaN(number) && number > 0);
+};
+const isValidRatingStarsNumber = (stars) => {
+    stars = Number(stars);
+    return (!Number.isNaN(stars) && stars > 0 && stars < 6);
+};
+const isValidIdNumber = (number) => {
     number = Number(number);
     return (!Number.isNaN(number) && number > 0);
 };

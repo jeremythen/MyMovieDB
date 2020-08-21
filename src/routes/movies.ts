@@ -21,11 +21,6 @@ Router.get("/:id", async (req, res) => {
     handleCommonResponse(response, res);
 });
 
-Router.post("/reviews", async (req, res) => {
-    const response = await moviesService.addMovieReview(req.body);
-    handleCommonResponse(response, res);
-});
-
 Router.get("/reviews/movie/:id", async (req, res) => {
     const id = Number(req.params.id);
     const response = await moviesService.getMovieReviews(id);
@@ -37,7 +32,6 @@ Router.put("/disable/:id", authorize, async (req, res) => {
     const response = await moviesService.disableMovie(id);
     handleCommonResponse(response, res);
 });
-
 
 Router.get("/pagination/offset/:offset", async (req, res) => {
     const offset = Number(req.params.offset);
@@ -57,5 +51,37 @@ Router.get("/pagination/offset/:offset/limit/:limit", async (req, res) => {
     const response = await moviesService.getMoviesWithOffsetAndLimit(offset, limit);
     handleCommonResponse(response, res);
 });
+
+Router.post("/:id/reviews", async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.addMovieReview(id, req.body);
+    handleCommonResponse(response, res);
+});
+
+Router.get("/:id/reviews", async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.getMovieReviews(id);
+    handleCommonResponse(response, res);
+});
+
+Router.get("/:id/reviews/reviewer/:reviewerId", async (req, res) => {
+    const movieId = Number(req.params.id);
+    const reviewerId = Number(req.params.reviewerId);
+    const response = await moviesService.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+    handleCommonResponse(response, res);
+});
+
+Router.get("/reviews/:id", async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.getReviewById(id);
+    handleCommonResponse(response, res);
+});
+
+Router.get("/reviews/reviewer/:reviewerId", async (req, res) => {
+    const reviewerId = Number(req.params.reviewerId);
+    const response = await moviesService.getReviewReviews(reviewerId);
+    handleCommonResponse(response, res);
+});
+
 
 export default Router;

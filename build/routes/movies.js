@@ -30,10 +30,6 @@ Router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const response = yield moviesService_1.default.getMovieById(id);
     util_1.handleCommonResponse(response, res);
 }));
-Router.post("/reviews", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield moviesService_1.default.addMovieReview(req.body);
-    util_1.handleCommonResponse(response, res);
-}));
 Router.get("/reviews/movie/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.getMovieReviews(id);
@@ -58,6 +54,32 @@ Router.get("/pagination/offset/:offset/limit/:limit", (req, res) => __awaiter(vo
     const offset = Number(req.params.offset);
     const limit = Number(req.params.limit);
     const response = yield moviesService_1.default.getMoviesWithOffsetAndLimit(offset, limit);
+    util_1.handleCommonResponse(response, res);
+}));
+Router.post("/:id/reviews", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    const response = yield moviesService_1.default.addMovieReview(id, req.body);
+    util_1.handleCommonResponse(response, res);
+}));
+Router.get("/:id/reviews", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    const response = yield moviesService_1.default.getMovieReviews(id);
+    util_1.handleCommonResponse(response, res);
+}));
+Router.get("/:id/reviews/reviewer/:reviewerId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const movieId = Number(req.params.id);
+    const reviewerId = Number(req.params.reviewerId);
+    const response = yield moviesService_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+    util_1.handleCommonResponse(response, res);
+}));
+Router.get("/reviews/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    const response = yield moviesService_1.default.getReviewById(id);
+    util_1.handleCommonResponse(response, res);
+}));
+Router.get("/reviews/reviewer/:reviewerId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewerId = Number(req.params.reviewerId);
+    const response = yield moviesService_1.default.getReviewReviews(reviewerId);
     util_1.handleCommonResponse(response, res);
 }));
 exports.default = Router;

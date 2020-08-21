@@ -29,4 +29,5 @@ var MovieError;
     MovieError["DIRECTOR_INVALID_PAYLOAD"] = "DIRECTOR_INVALID_PAYLOAD";
     MovieError["DIRECTOR_INVALID_ID"] = "DIRECTOR_INVALID_ID";
     MovieError["DIRECTOR_NOT_FOUND"] = "DIRECTOR_NOT_FOUND";
+    MovieError["MOVIE_INVALID_GET_REVIEW_PAYLOAD"] = "MOVIE_INVALID_GET_REVIEW_PAYLOAD";
 })(MovieError = exports.MovieError || (exports.MovieError = {}));

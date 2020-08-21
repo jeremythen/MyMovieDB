@@ -13,22 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const body_parser_1 = __importDefault(require("body-parser"));
-const envConfig_1 = __importDefault(require("./config/envConfig"));
-const auth_1 = __importDefault(require("./routes/auth"));
-const movies_1 = __importDefault(require("./routes/movies"));
-const directors_1 = __importDefault(require("./routes/directors"));
-const actors_1 = __importDefault(require("./routes/actors"));
-const app = express_1.default();
-const port = envConfig_1.default.port || 3000;
-app.use(body_parser_1.default.json());
-app.use("/movies", movies_1.default);
-app.use("/actors", actors_1.default);
-app.use("/directors", directors_1.default);
-app.use(auth_1.default);
-app.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("Welcome to MyMovieDB!");
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const actorService_1 = __importDefault(require("../services/actorService"));
+const util_1 = require("../util/util");
+const Router = express_1.default.Router();
+Router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield actorService_1.default.getActors();
+    util_1.handleCommonResponse(response, res);
 }));
-app.listen(port, () => {
-    console.log(`Running on port ${port}`);
-});
+Router.post("/", authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield actorService_1.default.createActor(req.body);
+    util_1.handleCommonResponse(response, res);
+}));
+Router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    const response = yield actorService_1.default.getActorById(id);
+    util_1.handleCommonResponse(response, res);
+}));
+exports.default = Router;

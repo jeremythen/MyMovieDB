@@ -1,5 +1,4 @@
 import sequelize from '../../connection';
-import Review from './Review';
 
 import {
   Model,
@@ -13,6 +12,7 @@ import {
   Optional,
 } from "sequelize";
 
+import Review from './Review';
 export interface ReviewerAttributes {
   id: number;
   name: string;

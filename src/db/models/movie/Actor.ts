@@ -1,5 +1,4 @@
 import sequelize from '../../connection';
-import MovieCast from './MovieCast';
 
 import {
   Model,
@@ -12,6 +11,8 @@ import {
   HasManyCreateAssociationMixin,
   Optional,
 } from "sequelize";
+
+import MovieCast from './MovieCast';
 
 export interface ActorAttributes {
   id: number;
@@ -65,11 +66,5 @@ Actor.init(
     timestamps: true,
   }
 );
-
-Actor.hasMany(MovieCast, {
-  sourceKey: 'id',
-  foreignKey: 'actorId',
-  as: 'movies',
-});
 
 export default Actor;

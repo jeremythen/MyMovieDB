@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connection_1 = __importDefault(require("../../connection"));
-const MovieDirection_1 = __importDefault(require("./MovieDirection"));
 const sequelize_1 = require("sequelize");
+const MovieDirection_1 = __importDefault(require("./MovieDirection"));
 class Director extends sequelize_1.Model {
 }
 Director.init({

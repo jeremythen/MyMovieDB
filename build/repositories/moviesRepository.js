@@ -25,21 +25,6 @@ class MoviesRepository {
             return yield Movie_1.default.findOne({ where: { id }, include: [casts, directors, genres, reviews] });
         });
     }
-    createMovie(movieCreationPayload) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { title, year, country, distributor = '', time = 0, language = '', disabled = false, } = movieCreationPayload;
-            const movie = yield Movie_1.default.create({
-                title,
-                year,
-                country,
-                distributor,
-                time,
-                language,
-                disabled,
-            });
-            return movie;
-        });
-    }
     getMoviesWhere(props) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield Movie_1.default.findAll({ where: props, include: [casts, directors, genres, reviews] });
@@ -66,6 +51,21 @@ class MoviesRepository {
     getMoviesWithLimit(limit) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield Movie_1.default.findAll({ limit, include: [casts, directors, genres, reviews] });
+        });
+    }
+    createMovie(movieCreationPayload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { title, year, country, distributor = '', time = 0, language = '', disabled = false, } = movieCreationPayload;
+            const movie = yield Movie_1.default.create({
+                title,
+                year,
+                country,
+                distributor,
+                time,
+                language,
+                disabled,
+            });
+            return movie;
         });
     }
 }

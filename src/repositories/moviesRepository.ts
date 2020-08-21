@@ -12,6 +12,29 @@ class MoviesRepository {
         return await Movie.findOne({ where: { id }, include: [casts, directors, genres, reviews] });
     }
 
+    async getMoviesWhere(props: object): Promise<Movie[]>  {
+        return await Movie.findAll({ where: props, include: [casts, directors, genres, reviews] });
+    }
+
+    async getMovieByIdAndWhere(id: number, props: object): Promise<Movie | null> {
+        return await Movie.findOne({
+            where: { id, ...props },
+            include: [casts, directors, genres, reviews],
+        });
+    }
+
+    async getMoviesWithOffsetAndLimit(offset: number, limit: number) {
+        return await Movie.findAll({ offset, limit, include: [casts, directors, genres, reviews] });
+    }
+
+    async getMoviesWithOffset(offset: number) {
+        return await Movie.findAll({ offset, include: [casts, directors, genres, reviews] });
+    }
+
+    async getMoviesWithLimit(limit: number) {
+        return await Movie.findAll({ limit, include: [casts, directors, genres, reviews] });
+    }
+
     async createMovie(movieCreationPayload: MovieCreationAttributes): Promise<Movie> {
 
         const {
@@ -35,30 +58,7 @@ class MoviesRepository {
         });
 
         return movie;
-        
-    }
 
-    async getMoviesWhere(props: object): Promise<Movie[]>  {
-        return await Movie.findAll({ where: props, include: [casts, directors, genres, reviews] });
-    }
-
-    async getMovieByIdAndWhere(id: number, props: object): Promise<Movie | null> {
-        return await Movie.findOne({
-            where: { id, ...props },
-            include: [casts, directors, genres, reviews],
-        });
-    }
-
-    async getMoviesWithOffsetAndLimit(offset: number, limit: number) {
-        return await Movie.findAll({ offset, limit, include: [casts, directors, genres, reviews] });
-    }
-
-    async getMoviesWithOffset(offset: number) {
-        return await Movie.findAll({ offset, include: [casts, directors, genres, reviews] });
-    }
-
-    async getMoviesWithLimit(limit: number) {
-        return await Movie.findAll({ limit, include: [casts, directors, genres, reviews] });
     }
 
 }

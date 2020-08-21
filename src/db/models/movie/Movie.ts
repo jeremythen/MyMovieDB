@@ -1,10 +1,5 @@
 //import Sequelize from 'sequelize';
 import sequelize from '../../connection';
-import MovieCast from './MovieCast';
-import Review from './Review';
-import MovieDirection from './MovieDirection';
-import MovieGenre from './MovieGenre';
-
 import {
   Model,
   DataTypes,
@@ -16,6 +11,12 @@ import {
   HasManyCreateAssociationMixin,
   Optional,
 } from "sequelize";
+
+import Actor from './Actor';
+import MovieCast from './MovieCast';
+import Review from './Review';
+import MovieDirection from './MovieDirection';
+import MovieGenre from './MovieGenre';
 
 export interface MovieAttributes {
   id: number;
@@ -30,7 +31,7 @@ export interface MovieAttributes {
 
 export interface MovieCreationAttributes extends Optional<MovieAttributes, 'id' | 'language' | 'time' | 'country' | 'distributor' | 'disabled'> {}
 
-class Movie extends Model<MovieAttributes, MovieCreationAttributes> {
+export default class Movie extends Model<MovieAttributes, MovieCreationAttributes> {
   public id!: number;
   public title!: string;
   public year!: number;
@@ -109,11 +110,25 @@ Movie.init(
   }
 );
 
-Movie.hasMany(MovieCast, {
+Movie.belongsToMany(Actor, {
   sourceKey: 'id',
   foreignKey: 'movieId',
+  through: MovieCast.tableName,
   as: 'casts',
 });
+
+Actor.belongsToMany(Movie, {
+  sourceKey: 'id',
+  foreignKey: 'actorId',
+  through: MovieCast.tableName,
+  as: 'movies',
+});
+
+// Movie.hasMany(MovieCast, {
+//   sourceKey: 'id',
+//   foreignKey: 'movieId',
+//   as: 'casts',
+// });
 
 Movie.hasMany(MovieDirection, {
   sourceKey: 'id',
@@ -132,5 +147,3 @@ Movie.hasMany(Review, {
   foreignKey: 'movieId',
   as: 'reviews',
 });
-
-export default Movie;

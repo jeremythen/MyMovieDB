@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connection_1 = __importDefault(require("../../connection"));
-const Review_1 = __importDefault(require("./Review"));
 const sequelize_1 = require("sequelize");
+const Review_1 = __importDefault(require("./Review"));
 class Reviewer extends sequelize_1.Model {
 }
 Reviewer.init({

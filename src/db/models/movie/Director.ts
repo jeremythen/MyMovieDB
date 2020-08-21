@@ -1,5 +1,4 @@
 import sequelize from "../../connection";
-import MovieDirection from './MovieDirection';
 
 import {
   Model,
@@ -12,6 +11,8 @@ import {
   HasManyCreateAssociationMixin,
   Optional,
 } from "sequelize";
+
+import MovieDirection from './MovieDirection';
 
 export interface DirectorAttributes {
   id: number;

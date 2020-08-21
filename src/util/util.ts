@@ -1,3 +1,5 @@
+import { Response } from 'express';
+import HttpStatus from 'http-status-codes';
 
 export const prepareResponse = (
   data: any,
@@ -18,4 +20,11 @@ export interface MyMovieDbResponse {
 export interface ValidationResult {
   valid: boolean;
   validationErrors: string[];
+}
+
+export const handleCommonResponse = (MyMovieDbResponse: MyMovieDbResponse, res: Response) => {
+  if (!MyMovieDbResponse.success) {
+    return res.status(HttpStatus.BAD_REQUEST).send(MyMovieDbResponse);
+  }
+  res.send(MyMovieDbResponse);
 }

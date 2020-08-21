@@ -27,10 +27,11 @@ exports.authorize = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return res.status(http_status_codes_1.default.UNAUTHORIZED).send();
     }
     const email = userData.email;
-    const user = yield userService_1.default.getUserByEmail(email);
-    if (user === null) {
+    const response = yield userService_1.default.getUserByEmail(email);
+    if (!response.success) {
         return res.status(http_status_codes_1.default.UNAUTHORIZED).send();
     }
+    const user = response.data.user;
     const isAdmin = userService_1.default.isAdmin(user);
     if (!isAdmin) {
         return res.status(http_status_codes_1.default.UNAUTHORIZED).send();

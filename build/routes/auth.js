@@ -13,26 +13,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const User_1 = __importDefault(require("../db/models/User"));
 const userService_1 = __importDefault(require("../services/userService"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
+const util_1 = require("../util/util");
 const Router = express_1.default.Router();
 Router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield userService_1.default.registerUser(req.body);
-    if (!response.success) {
-        return res.status(400).send(response);
-    }
-    res.send(response);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield userService_1.default.login(req.body);
-    if (!response.success) {
-        return res.status(400).send(response);
-    }
-    res.send(response);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.get('/users', authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield User_1.default.findAll();
-    res.send(users);
+    const response = yield userService_1.default.getUsers();
+    util_1.handleCommonResponse(response, res);
 }));
 exports.default = Router;

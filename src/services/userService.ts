@@ -11,12 +11,19 @@ const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INV
 
 class UserService {
 
-    async getUsers(): Promise<User[]> {
-        return await userRepository.getUsers();
+    async getUsers(): Promise<MyMovieDbResponse>  {
+        const users = await userRepository.getUsers();
+        return prepareResponse({ users }, true);
     }
 
-    async getUserByEmail(email: string): Promise<User | null> {
-        return await userRepository.getUserByEmail(email);
+    async getUserByEmail(email: string): Promise<MyMovieDbResponse>  {
+        const user = await userRepository.getUserByEmail(email);
+        return prepareResponse({ user }, true);
+    }
+
+    async getUserByUsername(username: string): Promise<MyMovieDbResponse> {
+        const user = await userRepository.getUserByUsername(username);
+        return prepareResponse({ user }, true);
     }
 
     isAdmin(user: UserCreationAttributes): boolean {

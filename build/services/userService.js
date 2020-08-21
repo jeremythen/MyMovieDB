@@ -22,12 +22,20 @@ const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INV
 class UserService {
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield userRepository_1.default.getUsers();
+            const users = yield userRepository_1.default.getUsers();
+            return util_1.prepareResponse({ users }, true);
         });
     }
     getUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield userRepository_1.default.getUserByEmail(email);
+            const user = yield userRepository_1.default.getUserByEmail(email);
+            return util_1.prepareResponse({ user }, true);
+        });
+    }
+    getUserByUsername(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield userRepository_1.default.getUserByUsername(username);
+            return util_1.prepareResponse({ user }, true);
         });
     }
     isAdmin(user) {

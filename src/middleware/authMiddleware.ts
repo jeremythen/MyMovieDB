@@ -21,11 +21,13 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
 
     const email = userData.email;
     
-    const user = await userService.getUserByEmail(email);
+    const response = await userService.getUserByEmail(email);
 
-    if (user === null) {
+    if (!response.success) {
         return res.status(HttpStatus.UNAUTHORIZED).send();
     }
+
+    const user = response.data.user;
 
     const isAdmin = userService.isAdmin(user);
 

@@ -15,55 +15,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const moviesService_1 = __importDefault(require("../services/moviesService"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
-const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const util_1 = require("../util/util");
 const Router = express_1.default.Router();
 Router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield moviesService_1.default.getMovies();
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.post("/", authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield moviesService_1.default.createMovie(req.body);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.getMovieById(id);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.post("/reviews", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield moviesService_1.default.addMovieReview(req.body);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.get("/reviews/movie/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.getMovieReviews(id);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.put("/disable/:id", authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.disableMovie(id);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.get("/pagination/offset/:offset", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const offset = Number(req.params.offset);
     const response = yield moviesService_1.default.getMoviesWithOffset(offset);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.get("/pagination/limit/:limit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const limit = Number(req.params.limit);
     const response = yield moviesService_1.default.getMoviesWithLimit(limit);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
 Router.get("/pagination/offset/:offset/limit/:limit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const offset = Number(req.params.offset);
     const limit = Number(req.params.limit);
     const response = yield moviesService_1.default.getMoviesWithOffsetAndLimit(offset, limit);
-    handleCommonResponse(response, res);
+    util_1.handleCommonResponse(response, res);
 }));
-const handleCommonResponse = (MyMovieDbResponse, res) => {
-    if (!MyMovieDbResponse.success) {
-        return res.status(http_status_codes_1.default.BAD_REQUEST).send(MyMovieDbResponse);
-    }
-    res.send(MyMovieDbResponse);
-};
 exports.default = Router;

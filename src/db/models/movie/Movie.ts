@@ -1,9 +1,9 @@
 //import Sequelize from 'sequelize';
 import sequelize from '../../connection';
-import Reviewer from './Reviewer';
-import Genre from "./Genre";
-import Director from './Director';
-import Actor from "./Actor";
+import MovieCast from './MovieCast';
+import Rating from './Rating';
+import MovieDirection from './MovieDirection';
+import MovieGenre from './MovieGenre';
 
 import {
   Sequelize,
@@ -43,6 +43,43 @@ class Movie extends Model<MovieAttributes, MovieCreationAttributes> {
   public disabled: boolean = false;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public getCasts!: HasManyGetAssociationsMixin<MovieCast>;
+  public addCast!: HasManyAddAssociationMixin<MovieCast, number>;
+  public hasCast!: HasManyHasAssociationMixin<MovieCast, number>;
+  public countCasts!: HasManyCountAssociationsMixin;
+  public createCast!: HasManyCreateAssociationMixin<MovieCast>;
+
+  public getDirectors!: HasManyGetAssociationsMixin<MovieDirection>;
+  public addDirector!: HasManyAddAssociationMixin<MovieDirection, number>;
+  public hasDirector!: HasManyHasAssociationMixin<MovieDirection, number>;
+  public countDirectors!: HasManyCountAssociationsMixin;
+  public createDirector!: HasManyCreateAssociationMixin<MovieDirection>;
+
+  public getGenres!: HasManyGetAssociationsMixin<MovieGenre>;
+  public addGenre!: HasManyAddAssociationMixin<MovieGenre, number>;
+  public hasGenre!: HasManyHasAssociationMixin<MovieGenre, number>;
+  public countGenres!: HasManyCountAssociationsMixin;
+  public createGenre!: HasManyCreateAssociationMixin<MovieGenre>;
+
+  public getRatings!: HasManyGetAssociationsMixin<Rating>;
+  public addRating!: HasManyAddAssociationMixin<Rating, number>;
+  public hasRating!: HasManyHasAssociationMixin<Rating, number>;
+  public countRating!: HasManyCountAssociationsMixin;
+  public createRating!: HasManyCreateAssociationMixin<Rating>;
+
+  public readonly casts?: MovieCast[];
+  public readonly directors?: MovieDirection[];
+  public readonly genres?: MovieGenre[];
+  public readonly ratings?: Rating[];
+
+  public static associations: {
+    casts: Association<Movie, MovieCast>,
+    directors: Association<Movie, MovieDirection>,
+    genres: Association<Movie, MovieGenre>,
+    ratings: Association<Movie, Rating>,
+  }
+
 }
 
 Movie.init(
@@ -74,16 +111,41 @@ Movie.init(
   }
 );
 
-Movie.belongsToMany(Reviewer, { through: 'Rating' });
-Reviewer.belongsToMany(Movie, { through: 'Rating' });
+Movie.hasMany(MovieCast, {
+  sourceKey: 'id',
+  foreignKey: 'movieId',
+  as: 'casts',
+});
 
-Movie.belongsToMany(Genre, { through: 'MovieGenre' });
-Genre.belongsToMany(Movie, { through: 'MovieGenre' });
+Movie.hasMany(MovieDirection, {
+  sourceKey: 'id',
+  foreignKey: 'movieId',
+  as: 'directors',
+});
 
-Movie.belongsToMany(Director, { through: 'MovieDirection' });
-Director.belongsToMany(Movie, { through: 'MovieDirection' });
+Movie.hasMany(MovieGenre, {
+  sourceKey: 'id',
+  foreignKey: 'movieId',
+  as: 'genres',
+});
 
-Movie.belongsToMany(Actor, { through: 'MovieCast' });
-Actor.belongsToMany(Movie, { through: 'MovieCast' });
+Movie.hasMany(Rating, {
+  sourceKey: 'id',
+  foreignKey: 'movieId',
+  as: 'ratings',
+});
+
+
+// Movie.belongsToMany(Reviewer, { through: 'Rating' });
+// Reviewer.belongsToMany(Movie, { through: 'Rating' });
+
+// Movie.belongsToMany(Genre, { through: 'MovieGenre' });
+// Genre.belongsToMany(Movie, { through: 'MovieGenre' });
+
+// Movie.belongsToMany(Director, { through: 'MovieDirection' });
+// Director.belongsToMany(Movie, { through: 'MovieDirection' });
+
+// Movie.belongsToMany(Actor, { through: 'MovieCast' });
+// Actor.belongsToMany(Movie, { through: 'MovieCast' });
 
 export default Movie;

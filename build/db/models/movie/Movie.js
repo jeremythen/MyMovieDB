@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Sequelize from 'sequelize';
 const connection_1 = __importDefault(require("../../connection"));
-const Reviewer_1 = __importDefault(require("./Reviewer"));
-const Genre_1 = __importDefault(require("./Genre"));
-const Director_1 = __importDefault(require("./Director"));
-const Actor_1 = __importDefault(require("./Actor"));
+const MovieCast_1 = __importDefault(require("./MovieCast"));
+const Rating_1 = __importDefault(require("./Rating"));
+const MovieDirection_1 = __importDefault(require("./MovieDirection"));
+const MovieGenre_1 = __importDefault(require("./MovieGenre"));
 const sequelize_1 = require("sequelize");
 class Movie extends sequelize_1.Model {
     constructor() {
@@ -41,12 +41,32 @@ Movie.init({
     sequelize: connection_1.default,
     timestamps: true,
 });
-Movie.belongsToMany(Reviewer_1.default, { through: 'Rating' });
-Reviewer_1.default.belongsToMany(Movie, { through: 'Rating' });
-Movie.belongsToMany(Genre_1.default, { through: 'MovieGenre' });
-Genre_1.default.belongsToMany(Movie, { through: 'MovieGenre' });
-Movie.belongsToMany(Director_1.default, { through: 'MovieDirection' });
-Director_1.default.belongsToMany(Movie, { through: 'MovieDirection' });
-Movie.belongsToMany(Actor_1.default, { through: 'MovieCast' });
-Actor_1.default.belongsToMany(Movie, { through: 'MovieCast' });
+Movie.hasMany(MovieCast_1.default, {
+    sourceKey: 'id',
+    foreignKey: 'movieId',
+    as: 'casts',
+});
+Movie.hasMany(MovieDirection_1.default, {
+    sourceKey: 'id',
+    foreignKey: 'movieId',
+    as: 'directors',
+});
+Movie.hasMany(MovieGenre_1.default, {
+    sourceKey: 'id',
+    foreignKey: 'movieId',
+    as: 'genres',
+});
+Movie.hasMany(Rating_1.default, {
+    sourceKey: 'id',
+    foreignKey: 'movieId',
+    as: 'ratings',
+});
+// Movie.belongsToMany(Reviewer, { through: 'Rating' });
+// Reviewer.belongsToMany(Movie, { through: 'Rating' });
+// Movie.belongsToMany(Genre, { through: 'MovieGenre' });
+// Genre.belongsToMany(Movie, { through: 'MovieGenre' });
+// Movie.belongsToMany(Director, { through: 'MovieDirection' });
+// Director.belongsToMany(Movie, { through: 'MovieDirection' });
+// Movie.belongsToMany(Actor, { through: 'MovieCast' });
+// Actor.belongsToMany(Movie, { through: 'MovieCast' });
 exports.default = Movie;

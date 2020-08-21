@@ -85,10 +85,16 @@ class MovieService {
     }
 
     const movie = await moviesRepository.getMovieByIdAndWhere(id, { disabled: false });
-
+    
     if (movie === null) {
       return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
     }
+
+    console.log('movie', movie);
+    console.log('movie casts', await movie.getCasts());
+    console.log('movie directors', await movie.getDirectors());
+    console.log('movie genre', await movie.getGenres());
+    console.log('movie ratings', await movie.getRatings());
 
     return prepareResponse({ movie }, true);
   }

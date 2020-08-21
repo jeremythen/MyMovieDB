@@ -40,7 +40,7 @@ Router.post("/reviews", async (req, res) => {
 
 });
 
-Router.get("/reviews/:id", async (req, res) => {
+Router.get("/reviews/movie/:id", async (req, res) => {
 
     const id = Number(req.params.id);
 

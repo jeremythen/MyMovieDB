@@ -17,7 +17,7 @@ const util_1 = require("../util/util");
 const enums_1 = require("../util/enums");
 const reviewerRepository_1 = __importDefault(require("../repositories/reviewerRepository"));
 const ratingRepository_1 = __importDefault(require("../repositories/ratingRepository"));
-const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID } = enums_1.MovieError;
+const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT } = enums_1.MovieError;
 class MovieService {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -89,6 +89,33 @@ class MovieService {
             return util_1.prepareResponse({ movies }, true);
         });
     }
+    getMoviesWithOffsetAndLimit(offset, limit) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+            }
+            const movies = yield moviesRepository_1.default.getMoviesWithOffsetAndLimit(offset, limit);
+            return util_1.prepareResponse({ movies }, true);
+        });
+    }
+    getMoviesWithOffset(offset) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!isValidPaginationNumber(offset)) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
+            }
+            const movies = yield moviesRepository_1.default.getMoviesWithOffset(offset);
+            return util_1.prepareResponse({ movies }, true);
+        });
+    }
+    getMoviesWithLimit(limit) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!isValidPaginationNumber(limit)) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
+            }
+            const movies = yield moviesRepository_1.default.getMoviesWithLimit(limit);
+            return util_1.prepareResponse({ movies }, true);
+        });
+    }
 }
 const movieService = Object.freeze(new MovieService());
 exports.default = movieService;
@@ -146,4 +173,8 @@ const validateCreateReviewPayload = (payload) => {
         validationResult.validationErrors.push("reviewerStars is required and should be from 1 to 5");
     }
     return validationResult;
+};
+const isValidPaginationNumber = (number) => {
+    number = Number(number);
+    return (!Number.isNaN(number) && number > 0);
 };

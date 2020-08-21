@@ -49,6 +49,21 @@ class MoviesRepository {
             return yield Movie_1.default.findOne({ where: Object.assign({ id }, props) });
         });
     }
+    getMoviesWithOffsetAndLimit(offset, limit) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield Movie_1.default.findAll({ offset, limit });
+        });
+    }
+    getMoviesWithOffset(offset) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield Movie_1.default.findAll({ offset });
+        });
+    }
+    getMoviesWithLimit(limit) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield Movie_1.default.findAll({ limit });
+        });
+    }
 }
 const moviesRepository = Object.freeze(new MoviesRepository());
 exports.default = moviesRepository;

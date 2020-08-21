@@ -7,7 +7,7 @@ import { RatingCreationAttributes } from '../db/models/movie/Rating';
 import reviewerRepository from '../repositories/reviewerRepository';
 import ratingRepository from '../repositories/ratingRepository';
 
-const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID } = MovieError;
+const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT } = MovieError;
 
 class MovieService {
 
@@ -103,7 +103,38 @@ class MovieService {
     return prepareResponse({ movies }, true);
   }
 
+  async getMoviesWithOffsetAndLimit(offset: number, limit: number) {
+
+    if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
+      return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+    }
+
+    const movies = await moviesRepository.getMoviesWithOffsetAndLimit(offset, limit);
+    return prepareResponse({ movies }, true);
+  }
+
+  async getMoviesWithOffset(offset: number) {
+
+    if (!isValidPaginationNumber(offset)) {
+      return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
+    }
+
+    const movies = await moviesRepository.getMoviesWithOffset(offset);
+    return prepareResponse({ movies }, true);
+  }
+
+  async getMoviesWithLimit(limit: number) {
+
+    if (!isValidPaginationNumber(limit)) {
+      return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
+    }
+
+    const movies = await moviesRepository.getMoviesWithLimit(limit);
+    return prepareResponse({ movies }, true);
+  }
+
 }
+
 
 const movieService = Object.freeze(new MovieService());
 
@@ -181,3 +212,8 @@ const validateCreateReviewPayload = (payload: RatingCreationAttributes): Validat
   return validationResult;
 
 };
+
+const isValidPaginationNumber = (number: number): boolean => {
+  number = Number(number);
+  return (!Number.isNaN(number) && number > 0);
+}

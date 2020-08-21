@@ -22,4 +22,5 @@ var MovieError;
     MovieError["MOVIE_NOT_FOUND"] = "MOVIE_NOT_FOUND";
     MovieError["REVIEWER_NOT_FOUND"] = "REVIEWER_NOT_FOUND";
     MovieError["MOVIE_INVALID_ID"] = "MOVIE_INVALID_ID";
+    MovieError["MOVIE_INVALID_OFFSET_LIMIT"] = "MOVIE_INVALID_OFFSET_LIMIT";
 })(MovieError = exports.MovieError || (exports.MovieError = {}));

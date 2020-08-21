@@ -34,7 +34,7 @@ Router.post("/reviews", (req, res) => __awaiter(void 0, void 0, void 0, function
     const response = yield moviesService_1.default.addMovieReview(req.body);
     handleCommonResponse(response, res);
 }));
-Router.get("/reviews/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Router.get("/reviews/movie/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.getMovieReviews(id);
     handleCommonResponse(response, res);
@@ -42,6 +42,22 @@ Router.get("/reviews/:id", (req, res) => __awaiter(void 0, void 0, void 0, funct
 Router.put("/disable/:id", authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.disableMovie(id);
+    handleCommonResponse(response, res);
+}));
+Router.get("/pagination/offset/:offset", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const offset = Number(req.params.offset);
+    const response = yield moviesService_1.default.getMoviesWithOffset(offset);
+    handleCommonResponse(response, res);
+}));
+Router.get("/pagination/limit/:limit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const limit = Number(req.params.limit);
+    const response = yield moviesService_1.default.getMoviesWithLimit(limit);
+    handleCommonResponse(response, res);
+}));
+Router.get("/pagination/offset/:offset/limit/:limit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const offset = Number(req.params.offset);
+    const limit = Number(req.params.limit);
+    const response = yield moviesService_1.default.getMoviesWithOffsetAndLimit(offset, limit);
     handleCommonResponse(response, res);
 }));
 const handleCommonResponse = (MyMovieDbResponse, res) => {

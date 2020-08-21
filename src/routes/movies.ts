@@ -60,6 +60,36 @@ Router.put("/disable/:id", authorize, async (req, res) => {
 
 });
 
+
+Router.get("/pagination/offset/:offset", async (req, res) => {
+
+    const offset = Number(req.params.offset);
+    const response = await moviesService.getMoviesWithOffset(offset);
+
+    handleCommonResponse(response, res);
+
+});
+
+Router.get("/pagination/limit/:limit", async (req, res) => {
+
+    const limit = Number(req.params.limit);
+    const response = await moviesService.getMoviesWithLimit(limit);
+
+    handleCommonResponse(response, res);
+
+});
+
+Router.get("/pagination/offset/:offset/limit/:limit", async (req, res) => {
+
+    const offset = Number(req.params.offset);
+    const limit = Number(req.params.limit);
+
+    const response = await moviesService.getMoviesWithOffsetAndLimit(offset, limit);
+
+    handleCommonResponse(response, res);
+
+});
+
 const handleCommonResponse = (MyMovieDbResponse: MyMovieDbResponse, res: Response) => {
     if (!MyMovieDbResponse.success) {
         return res.status(HttpStatus.BAD_REQUEST).send(MyMovieDbResponse);

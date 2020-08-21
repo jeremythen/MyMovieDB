@@ -44,6 +44,18 @@ class MoviesRepository {
         return await Movie.findOne({ where: { id, ...props } });
     }
 
+    async getMoviesWithOffsetAndLimit(offset: number, limit: number) {
+        return await Movie.findAll({ offset, limit });
+    }
+
+    async getMoviesWithOffset(offset: number) {
+        return await Movie.findAll({ offset });
+    }
+
+    async getMoviesWithLimit(limit: number) {
+        return await Movie.findAll({ limit });
+    }
+
 }
 
 const moviesRepository = Object.freeze(new MoviesRepository());

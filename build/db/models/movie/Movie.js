@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import Sequelize from 'sequelize';
 const connection_1 = __importDefault(require("../../connection"));
 const MovieCast_1 = __importDefault(require("./MovieCast"));
-const Rating_1 = __importDefault(require("./Rating"));
+const Review_1 = __importDefault(require("./Review"));
 const MovieDirection_1 = __importDefault(require("./MovieDirection"));
 const MovieGenre_1 = __importDefault(require("./MovieGenre"));
 const sequelize_1 = require("sequelize");
@@ -56,17 +56,9 @@ Movie.hasMany(MovieGenre_1.default, {
     foreignKey: 'movieId',
     as: 'genres',
 });
-Movie.hasMany(Rating_1.default, {
+Movie.hasMany(Review_1.default, {
     sourceKey: 'id',
     foreignKey: 'movieId',
-    as: 'ratings',
+    as: 'reviews',
 });
-// Movie.belongsToMany(Reviewer, { through: 'Rating' });
-// Reviewer.belongsToMany(Movie, { through: 'Rating' });
-// Movie.belongsToMany(Genre, { through: 'MovieGenre' });
-// Genre.belongsToMany(Movie, { through: 'MovieGenre' });
-// Movie.belongsToMany(Director, { through: 'MovieDirection' });
-// Director.belongsToMany(Movie, { through: 'MovieDirection' });
-// Movie.belongsToMany(Actor, { through: 'MovieCast' });
-// Actor.belongsToMany(Movie, { through: 'MovieCast' });
 exports.default = Movie;

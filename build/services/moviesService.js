@@ -77,11 +77,6 @@ class MovieService {
             if (movie === null) {
                 return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
             }
-            console.log('movie', movie);
-            console.log('movie casts', yield movie.getCasts());
-            console.log('movie directors', yield movie.getDirectors());
-            console.log('movie genre', yield movie.getGenres());
-            console.log('movie ratings', yield movie.getRatings());
             return util_1.prepareResponse({ movie }, true);
         });
     }

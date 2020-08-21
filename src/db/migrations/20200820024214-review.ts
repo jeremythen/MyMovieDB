@@ -1,11 +1,11 @@
 'use strict';
 
 import { QueryInterface, DataTypes } from 'sequelize';
-import Rating from '../models/movie/Rating';
+import Review from '../models/movie/Review';
 
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
-    await queryInterface.createTable(Rating.tableName, {
+    await queryInterface.createTable(Review.tableName, {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
@@ -35,7 +35,7 @@ module.exports = {
       },
     });
 
-    queryInterface.addIndex(Rating.tableName, ['movieId', 'reviewerId'], {
+    queryInterface.addIndex(Review.tableName, ['movieId', 'reviewerId'], {
       name: 'movieId_reviewerId_Index',
       unique: true
     });
@@ -43,6 +43,6 @@ module.exports = {
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.dropTable(Rating.tableName);
+    await queryInterface.dropTable(Review.tableName);
   }
 };

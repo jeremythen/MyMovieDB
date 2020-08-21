@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const faker_1 = __importDefault(require("faker"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const envConfig_1 = __importDefault(require("../../config/envConfig"));
+const User_1 = __importDefault(require("../models/User"));
 const seeds = envConfig_1.default.seqSeeds;
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,9 +31,9 @@ module.exports = {
                 updatedAt: new Date(),
             });
         }
-        yield queryInterface.bulkInsert('users', users);
+        yield queryInterface.bulkInsert(User_1.default.tableName, users);
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        yield queryInterface.bulkDelete('users', {}, {});
+        yield queryInterface.bulkDelete(User_1.default.tableName, {}, {});
     })
 };

@@ -1,8 +1,15 @@
 import sequelize from '../../connection';
+import MovieCast from './MovieCast';
 
 import {
   Model,
   DataTypes,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
   Optional,
 } from "sequelize";
 
@@ -20,6 +27,19 @@ class Actor extends Model<ActorAttributes, ActorCreationAttributes> {
   public lastName!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public getMovies!: HasManyGetAssociationsMixin<MovieCast>;
+  public addMovie!: HasManyAddAssociationMixin<MovieCast, number>;
+  public hasMovie!: HasManyHasAssociationMixin<MovieCast, number>;
+  public countMovies!: HasManyCountAssociationsMixin;
+  public createMovie!: HasManyCreateAssociationMixin<MovieCast>;
+
+  public readonly movies?: MovieCast[];
+
+  public static associations: {
+    movies: Association<Actor, MovieCast>,
+  }
+
 }
 
 Actor.init(
@@ -45,5 +65,11 @@ Actor.init(
     timestamps: true,
   }
 );
+
+Actor.hasMany(MovieCast, {
+  sourceKey: 'id',
+  foreignKey: 'actorId',
+  as: 'movies',
+});
 
 export default Actor;

@@ -3,6 +3,8 @@
 import { QueryInterface } from "sequelize";
 import faker from "faker";
 import envConfig from '../../config/envConfig';
+import Director from '../models/movie/Director';
+
 const seeds = envConfig.seqSeeds;
 
 module.exports = {
@@ -18,10 +20,10 @@ module.exports = {
       });
     }
 
-    await queryInterface.bulkInsert("directors", directors);
+    await queryInterface.bulkInsert(Director.tableName, directors);
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.bulkDelete("directors", {}, {});
+    await queryInterface.bulkDelete(Director.tableName, {}, {});
   },
 };

@@ -6,7 +6,7 @@ import {
   Optional
 } from "sequelize";
 
-export interface RatingAttributes {
+export interface ReviewAttributes {
   id: number;
   movieId: number;
   reviewerId: number;
@@ -14,9 +14,9 @@ export interface RatingAttributes {
   comment: string;
 }
 
-export interface RatingCreationAttributes extends Optional<RatingAttributes, 'id' | 'comment'> { }
+export interface ReviewCreationAttributes extends Optional<ReviewAttributes, 'id' | 'comment'> { }
 
-class Rating extends Model<RatingAttributes, RatingCreationAttributes> {
+class Review extends Model<ReviewAttributes, ReviewCreationAttributes> {
   public id: number;
   public movieId!: number;
   public reviewerId!: number;
@@ -25,7 +25,7 @@ class Rating extends Model<RatingAttributes, RatingCreationAttributes> {
   public readonly updatedAt!: Date;
 }
 
-Rating.init(
+Review.init(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -51,7 +51,7 @@ Rating.init(
     }
   },
   {
-    tableName: "ratings",
+    tableName: "reviews",
     sequelize,
     timestamps: true,
     indexes: [
@@ -63,4 +63,4 @@ Rating.init(
   }
 );
 
-export default Rating;
+export default Review;

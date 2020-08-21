@@ -40,7 +40,7 @@ MovieGenre.init(
     },
   },
   {
-    tableName: "movie_genre",
+    tableName: "movie_genres",
     sequelize,
     timestamps: true,
     indexes: [

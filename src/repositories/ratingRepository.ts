@@ -1,4 +1,4 @@
-import Rating, { RatingCreationAttributes } from '../db/models/movie/Rating';
+import Rating, { ReviewCreationAttributes } from '../db/models/movie/Review';
 class RatingRepository {
 
     async getRatingByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<Rating | null> {
@@ -13,12 +13,12 @@ class RatingRepository {
         return await Rating.findAll({ where: { movieId } });
     }
 
-    async createRating(crateRatingPayload: RatingCreationAttributes): Promise<Rating> {
+    async createRating(crateRatingPayload: ReviewCreationAttributes): Promise<Rating> {
 
         const { reviewerStars, movieId, reviewerId, comment = '' } = crateRatingPayload;
 
         // Clean copy of specific properties.
-        const reviewerData: RatingCreationAttributes = { reviewerStars, movieId, reviewerId, comment };
+        const reviewerData: ReviewCreationAttributes = { reviewerStars, movieId, reviewerId, comment };
 
         return await Rating.create(reviewerData);
     }

@@ -2,6 +2,8 @@
 
 import { QueryInterface } from "sequelize";
 import envConfig from '../../config/envConfig';
+import MovieDirection from '../models/movie/MovieDirection';
+
 const seeds = envConfig.seqSeeds;
 
 module.exports = {
@@ -17,10 +19,10 @@ module.exports = {
       });
     }
 
-    await queryInterface.bulkInsert("movie_direction", movieDirectors);
+    await queryInterface.bulkInsert(MovieDirection.tableName, movieDirectors);
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.bulkDelete("movie_direction", {}, {});
+    await queryInterface.bulkDelete(MovieDirection.tableName, {}, {});
   },
 };

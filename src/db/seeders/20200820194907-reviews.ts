@@ -2,27 +2,29 @@
 
 import { QueryInterface } from "sequelize";
 import envConfig from '../../config/envConfig';
+import Review from '../models/movie/Review';
+
 const seeds = envConfig.seqSeeds;
 
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     const ratings = [];
 
-    for (let i = 0; i < seeds; i++) {
+    for (let i = 1; i <= seeds; i++) {
       ratings.push({
-        movieId: i + 1,
-        reviewerId: i + 1,
+        movieId: i,
+        reviewerId: i,
         reviewerStars: getRandomRating(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
 
-    await queryInterface.bulkInsert("ratings", ratings);
+    await queryInterface.bulkInsert(Review.tableName, ratings);
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.bulkDelete("ratings", {}, {});
+    await queryInterface.bulkDelete(Review.tableName, {}, {});
   },
 };
 

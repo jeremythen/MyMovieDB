@@ -2,26 +2,28 @@
 
 import { QueryInterface } from "sequelize";
 import envConfig from '../../config/envConfig';
+import MovieGenre from '../models/movie/MovieGenre';
+
 const seeds = envConfig.seqSeeds;
 
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     const movieGenres = [];
 
-    for (let i = 0; i < seeds; i++) {
+    for (let i = 1; i <= seeds; i++) {
       movieGenres.push({
-        movieId: i + 1,
+        movieId: i,
         genreId: getRandomGenreId(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
 
-    await queryInterface.bulkInsert("movie_genre", movieGenres);
+    await queryInterface.bulkInsert(MovieGenre.tableName, movieGenres);
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.bulkDelete("movie_genre", {}, {});
+    await queryInterface.bulkDelete(MovieGenre.tableName, {}, {});
   },
 };
 

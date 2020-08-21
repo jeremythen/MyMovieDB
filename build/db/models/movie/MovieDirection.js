@@ -23,7 +23,7 @@ MovieDirection.init({
         allowNull: false,
     },
 }, {
-    tableName: "movie_direction",
+    tableName: "movie_directors",
     sequelize: connection_1.default,
     timestamps: true,
     indexes: [

@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const dialect = ((_a = process.env.NODE_ENV) === null || _a === void 0 ? void 0 : _a.trim()) === 'test' ? 'sqlite' : process.env.DB_DIALECT;
-console.log('dialect', dialect);
 exports.default = {
     database: {
         user: process.env.DB_USER,

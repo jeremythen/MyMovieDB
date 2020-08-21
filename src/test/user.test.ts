@@ -4,7 +4,6 @@ import userService from '../services/userService';
 describe('Users tests', () => {
 
     it('create user', async () => {
-        console.log('env', process.env.NODE_ENV);
         const newUser = await userService.registerUser({
             firstName: 'Jeremy',
             lastName: 'Then',

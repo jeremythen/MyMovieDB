@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const connection_1 = __importDefault(require("../../connection"));
 const sequelize_1 = require("sequelize");
-class Rating extends sequelize_1.Model {
+class Review extends sequelize_1.Model {
 }
-Rating.init({
+Review.init({
     id: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
@@ -31,7 +31,7 @@ Rating.init({
         allowNull: true,
     }
 }, {
-    tableName: "ratings",
+    tableName: "reviews",
     sequelize: connection_1.default,
     timestamps: true,
     indexes: [
@@ -41,4 +41,4 @@ Rating.init({
         },
     ],
 });
-exports.default = Rating;
+exports.default = Review;

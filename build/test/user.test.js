@@ -16,7 +16,6 @@ const chai_1 = require("chai");
 const userService_1 = __importDefault(require("../services/userService"));
 describe('Users tests', () => {
     it('create user', () => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('env', process.env.NODE_ENV);
         const newUser = yield userService_1.default.registerUser({
             firstName: 'Jeremy',
             lastName: 'Then',

@@ -3,7 +3,7 @@ import { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError } from '../util/enums';
-import { RatingCreationAttributes } from '../db/models/movie/Rating';
+import { ReviewCreationAttributes } from '../db/models/movie/Review';
 import reviewerRepository from '../repositories/reviewerRepository';
 import ratingRepository from '../repositories/ratingRepository';
 
@@ -30,7 +30,7 @@ class MovieService {
 
   }
 
-  async addMovieReview(movieReviewPayload: RatingCreationAttributes): Promise<MyMovieDbResponse> {
+  async addMovieReview(movieReviewPayload: ReviewCreationAttributes): Promise<MyMovieDbResponse> {
 
     const validation = validateCreateReviewPayload(movieReviewPayload);
 
@@ -89,13 +89,7 @@ class MovieService {
     if (movie === null) {
       return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
     }
-
-    console.log('movie', movie);
-    console.log('movie casts', await movie.getCasts());
-    console.log('movie directors', await movie.getDirectors());
-    console.log('movie genre', await movie.getGenres());
-    console.log('movie ratings', await movie.getRatings());
-
+    
     return prepareResponse({ movie }, true);
   }
 
@@ -184,7 +178,7 @@ const validateCreateMoviePayload = (payload: MovieCreationAttributes): Validatio
 
 };
 
-const validateCreateReviewPayload = (payload: RatingCreationAttributes): ValidationResult => {
+const validateCreateReviewPayload = (payload: ReviewCreationAttributes): ValidationResult => {
   const validationResult: ValidationResult = {
     valid: false,
     validationErrors: [],

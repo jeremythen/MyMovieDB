@@ -1,8 +1,15 @@
 import sequelize from "../../connection";
+import MovieDirection from './MovieDirection';
 
 import {
   Model,
   DataTypes,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
   Optional,
 } from "sequelize";
 
@@ -21,6 +28,19 @@ class Director extends Model<DirectorAttributes, DirectorCreationAttributes> {
   public lastName!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public getMovies!: HasManyGetAssociationsMixin<MovieDirection>;
+  public addMovie!: HasManyAddAssociationMixin<MovieDirection, number>;
+  public hasMovie!: HasManyHasAssociationMixin<MovieDirection, number>;
+  public countMovies!: HasManyCountAssociationsMixin;
+  public createMovie!: HasManyCreateAssociationMixin<MovieDirection>;
+
+  public readonly movies?: MovieDirection[];
+
+  public static associations: {
+    movies: Association<Director, MovieDirection>,
+  }
+  
 }
 
 Director.init(
@@ -46,5 +66,11 @@ Director.init(
     timestamps: true,
   }
 );
+
+Director.hasMany(MovieDirection, {
+  sourceKey: 'id',
+  foreignKey: 'directorId',
+  as: 'movies',
+});
 
 export default Director;

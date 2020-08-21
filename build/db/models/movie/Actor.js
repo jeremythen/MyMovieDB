@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connection_1 = __importDefault(require("../../connection"));
+const MovieCast_1 = __importDefault(require("./MovieCast"));
 const sequelize_1 = require("sequelize");
 class Actor extends sequelize_1.Model {
 }
@@ -26,5 +27,10 @@ Actor.init({
     tableName: "actors",
     sequelize: connection_1.default,
     timestamps: true,
+});
+Actor.hasMany(MovieCast_1.default, {
+    sourceKey: 'id',
+    foreignKey: 'actorId',
+    as: 'movies',
 });
 exports.default = Actor;

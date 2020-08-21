@@ -23,7 +23,7 @@ MovieGenre.init({
         allowNull: false,
     },
 }, {
-    tableName: "movie_genre",
+    tableName: "movie_genres",
     sequelize: connection_1.default,
     timestamps: true,
     indexes: [

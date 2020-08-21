@@ -4,6 +4,8 @@ import { QueryInterface } from 'sequelize';
 import faker from 'faker';
 import bcrypt from 'bcrypt';
 import envConfig from '../../config/envConfig';
+import User from '../models/User';
+
 const seeds = envConfig.seqSeeds;
 
 module.exports = {
@@ -23,13 +25,13 @@ module.exports = {
       });
     }
     
-    await queryInterface.bulkInsert('users', users);
+    await queryInterface.bulkInsert(User.tableName, users);
 
   },
 
   down: async (queryInterface: QueryInterface) => {
 
-    await queryInterface.bulkDelete('users', {}, {});
+    await queryInterface.bulkDelete(User.tableName, {}, {});
 
   }
 };

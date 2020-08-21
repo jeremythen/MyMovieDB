@@ -13,16 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Movie_1 = __importDefault(require("../db/models/movie/Movie"));
-const { casts, directors, genres, ratings } = Movie_1.default.associations;
+const { casts, directors, genres, reviews } = Movie_1.default.associations;
 class MoviesRepository {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll({ include: [casts, directors, genres, ratings] });
+            return yield Movie_1.default.findAll({ include: [casts, directors, genres, reviews] });
         });
     }
     getMovieById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findOne({ where: { id }, include: [casts, directors, genres, ratings] });
+            return yield Movie_1.default.findOne({ where: { id }, include: [casts, directors, genres, reviews] });
         });
     }
     createMovie(movieCreationPayload) {
@@ -42,30 +42,30 @@ class MoviesRepository {
     }
     getMoviesWhere(props) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll({ where: props, include: [casts, directors, genres, ratings] });
+            return yield Movie_1.default.findAll({ where: props, include: [casts, directors, genres, reviews] });
         });
     }
     getMovieByIdAndWhere(id, props) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield Movie_1.default.findOne({
                 where: Object.assign({ id }, props),
-                include: [casts, directors, genres, ratings],
+                include: [casts, directors, genres, reviews],
             });
         });
     }
     getMoviesWithOffsetAndLimit(offset, limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll({ offset, limit, include: [casts, directors, genres, ratings] });
+            return yield Movie_1.default.findAll({ offset, limit, include: [casts, directors, genres, reviews] });
         });
     }
     getMoviesWithOffset(offset) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll({ offset, include: [casts, directors, genres, ratings] });
+            return yield Movie_1.default.findAll({ offset, include: [casts, directors, genres, reviews] });
         });
     }
     getMoviesWithLimit(limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll({ limit, include: [casts, directors, genres, ratings] });
+            return yield Movie_1.default.findAll({ limit, include: [casts, directors, genres, reviews] });
         });
     }
 }

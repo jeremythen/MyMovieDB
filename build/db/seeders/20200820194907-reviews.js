@@ -13,23 +13,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const envConfig_1 = __importDefault(require("../../config/envConfig"));
+const Review_1 = __importDefault(require("../models/movie/Review"));
 const seeds = envConfig_1.default.seqSeeds;
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
         const ratings = [];
-        for (let i = 0; i < seeds; i++) {
+        for (let i = 1; i <= seeds; i++) {
             ratings.push({
-                movieId: i + 1,
-                reviewerId: i + 1,
+                movieId: i,
+                reviewerId: i,
                 reviewerStars: getRandomRating(),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             });
         }
-        yield queryInterface.bulkInsert("ratings", ratings);
+        yield queryInterface.bulkInsert(Review_1.default.tableName, ratings);
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        yield queryInterface.bulkDelete("ratings", {}, {});
+        yield queryInterface.bulkDelete(Review_1.default.tableName, {}, {});
     }),
 };
 const getRandomRating = () => {

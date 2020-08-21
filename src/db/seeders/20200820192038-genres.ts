@@ -1,6 +1,7 @@
 "use strict";
 
 import { QueryInterface } from "sequelize";
+import Genre from '../models/movie/Genre';
 
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
@@ -13,12 +14,12 @@ module.exports = {
       }
     });
 
-    await queryInterface.bulkInsert("genres", genresMapped);
+    await queryInterface.bulkInsert(Genre.tableName, genresMapped);
   
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.bulkDelete("genres", {}, {});
+    await queryInterface.bulkDelete(Genre.tableName, {}, {});
   },
 };
 

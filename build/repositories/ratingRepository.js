@@ -12,21 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Rating_1 = __importDefault(require("../db/models/movie/Rating"));
+const Review_1 = __importDefault(require("../db/models/movie/Review"));
 class RatingRepository {
     getRatingByReviewerIdAndMovieId(reviewerId, movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Rating_1.default.findOne({ where: { reviewerId, movieId } });
+            return yield Review_1.default.findOne({ where: { reviewerId, movieId } });
         });
     }
     getReviewerRatings(reviewerId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Rating_1.default.findAll({ where: { reviewerId } });
+            return yield Review_1.default.findAll({ where: { reviewerId } });
         });
     }
     getMovieRatings(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Rating_1.default.findAll({ where: { movieId } });
+            return yield Review_1.default.findAll({ where: { movieId } });
         });
     }
     createRating(crateRatingPayload) {
@@ -34,7 +34,7 @@ class RatingRepository {
             const { reviewerStars, movieId, reviewerId, comment = '' } = crateRatingPayload;
             // Clean copy of specific properties.
             const reviewerData = { reviewerStars, movieId, reviewerId, comment };
-            return yield Rating_1.default.create(reviewerData);
+            return yield Review_1.default.create(reviewerData);
         });
     }
 }

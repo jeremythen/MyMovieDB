@@ -13,22 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const envConfig_1 = __importDefault(require("../../config/envConfig"));
+const MovieGenre_1 = __importDefault(require("../models/movie/MovieGenre"));
 const seeds = envConfig_1.default.seqSeeds;
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
         const movieGenres = [];
-        for (let i = 0; i < seeds; i++) {
+        for (let i = 1; i <= seeds; i++) {
             movieGenres.push({
-                movieId: i + 1,
+                movieId: i,
                 genreId: getRandomGenreId(),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             });
         }
-        yield queryInterface.bulkInsert("movie_genre", movieGenres);
+        yield queryInterface.bulkInsert(MovieGenre_1.default.tableName, movieGenres);
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        yield queryInterface.bulkDelete("movie_genre", {}, {});
+        yield queryInterface.bulkDelete(MovieGenre_1.default.tableName, {}, {});
     }),
 };
 // There are only 24 genres in genres seed

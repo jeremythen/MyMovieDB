@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const Rating_1 = __importDefault(require("../models/movie/Rating"));
+const Review_1 = __importDefault(require("../models/movie/Review"));
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        yield queryInterface.createTable(Rating_1.default.tableName, {
+        yield queryInterface.createTable(Review_1.default.tableName, {
             id: {
                 type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
@@ -45,12 +45,12 @@ module.exports = {
                 defaultValue: sequelize_1.DataTypes.NOW,
             },
         });
-        queryInterface.addIndex(Rating_1.default.tableName, ['movieId', 'reviewerId'], {
+        queryInterface.addIndex(Review_1.default.tableName, ['movieId', 'reviewerId'], {
             name: 'movieId_reviewerId_Index',
             unique: true
         });
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        yield queryInterface.dropTable(Rating_1.default.tableName);
+        yield queryInterface.dropTable(Review_1.default.tableName);
     })
 };

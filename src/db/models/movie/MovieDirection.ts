@@ -40,7 +40,7 @@ MovieDirection.init(
     },
   },
   {
-    tableName: "movie_direction",
+    tableName: "movie_directors",
     sequelize,
     timestamps: true,
     indexes: [

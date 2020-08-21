@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const faker_1 = __importDefault(require("faker"));
 const envConfig_1 = __importDefault(require("../../config/envConfig"));
+const Actor_1 = __importDefault(require("../models/movie/Actor"));
 const seeds = envConfig_1.default.seqSeeds;
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,9 +27,9 @@ module.exports = {
                 updatedAt: new Date(),
             });
         }
-        yield queryInterface.bulkInsert("actors", actors);
+        yield queryInterface.bulkInsert(Actor_1.default.tableName, actors);
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        yield queryInterface.bulkDelete("actors", {}, {});
+        yield queryInterface.bulkDelete(Actor_1.default.tableName, {}, {});
     }),
 };

@@ -1,10 +1,11 @@
 import User, { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
-import { prepareResponse, Response } from '../util/util';
+import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import userRepository from '../repositories/userRepository';
 import validator from 'validator';
 import { generateJwtToken } from '../util/jwtTokenUtil';
 import { UserError, Role } from '../util/enums';
+import { ValidationResult } from '../util/util';
 
 const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = UserError;
 
@@ -18,11 +19,11 @@ class UserService {
         return await userRepository.getUserByEmail(email);
     }
 
-    isAdmin(user: User): boolean {
+    isAdmin(user: UserCreationAttributes): boolean {
         return user !== null && user.role === Role.ADMIN;
     }
 
-    async registerUser(userPayload: UserCreationAttributes): Promise<Response> {
+    async registerUser(userPayload: UserCreationAttributes): Promise<MyMovieDbResponse> {
 
         const validationResult = validateRegisterUserPayload(userPayload);
 
@@ -101,10 +102,7 @@ interface UserLoginPayload {
     password: string;
 }
 
-interface ValidationResult {
-    valid: boolean;
-    validationErrors: string[];
-}
+
 
 /**
  * 

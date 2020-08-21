@@ -20,6 +20,10 @@ Rating.init({
         type: sequelize_1.DataTypes.TINYINT.UNSIGNED,
         allowNull: false,
     },
+    comment: {
+        type: sequelize_1.DataTypes.STRING(255),
+        allowNull: true,
+    }
 }, {
     tableName: "ratings",
     sequelize: connection_1.default,

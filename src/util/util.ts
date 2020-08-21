@@ -4,13 +4,18 @@ export const prepareResponse = (
   success: boolean,
   errorCode = "",
   errorMessages: string[] | string = []
-): Response => {
+): MyMovieDbResponse => {
   return { data, success, errorCode, errorMessages };
 };
 
-export interface Response {
+export interface MyMovieDbResponse {
   errorCode: string | null;
   errorMessages: string[] | string;
   success: boolean;
   data: any;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  validationErrors: string[];
 }

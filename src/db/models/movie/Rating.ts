@@ -3,14 +3,19 @@ import sequelize from '../../connection';
 import {
   Model,
   DataTypes,
+  Optional
 } from "sequelize";
 
 export interface RatingAttributes {
   movieId: number;
   reviewerId: number;
   reviewerStars: number;
+  comment: string;
 }
-class Rating extends Model<RatingAttributes> {
+
+export interface RatingCreationAttributes extends Optional<RatingAttributes, 'comment'> { }
+
+class Rating extends Model<RatingAttributes, RatingCreationAttributes> {
   public movieId!: number;
   public reviewerId!: number;
   public reviewerStars!: number;
@@ -32,6 +37,10 @@ Rating.init(
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
     },
+    comment: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    }
   },
   {
     tableName: "ratings",

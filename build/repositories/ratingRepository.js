@@ -12,43 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Movie_1 = __importDefault(require("../db/models/movie/Movie"));
-class MoviesRepository {
-    getMovies() {
+const Rating_1 = __importDefault(require("../db/models/movie/Rating"));
+class RatingRepository {
+    getRatingByReviewerIdAndMovieId(reviewerId, movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll();
+            return yield Rating_1.default.findOne({ where: { reviewerId, movieId } });
         });
     }
-    getMovieById(id) {
+    getReviewerRatings(reviewerId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findOne({ where: { id } });
+            return yield Rating_1.default.findAll({ where: { reviewerId } });
         });
     }
-    createMovie(movieCreationPayload) {
+    getMovieRatings(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { title, year, country, distributor = '', time = 0, language = '', disabled = false, } = movieCreationPayload;
-            const movie = yield Movie_1.default.create({
-                title,
-                year,
-                country,
-                distributor,
-                time,
-                language,
-                disabled,
-            });
-            return movie;
+            return yield Rating_1.default.findAll({ where: { movieId } });
         });
     }
-    getMoviesWhere(props) {
+    createRating(crateRatingPayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findAll({ where: props });
-        });
-    }
-    getMovieByIdAndWhere(id, props) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield Movie_1.default.findOne({ where: Object.assign({ id }, props) });
+            const { reviewerStars, movieId, reviewerId, comment = '' } = crateRatingPayload;
+            // Clean copy of specific properties.
+            const reviewerData = { reviewerStars, movieId, reviewerId, comment };
+            return yield Rating_1.default.create(reviewerData);
         });
     }
 }
-const moviesRepository = Object.freeze(new MoviesRepository());
-exports.default = moviesRepository;
+const ratingRepository = Object.freeze(new RatingRepository());
+exports.default = ratingRepository;

@@ -36,6 +36,14 @@ class MoviesRepository {
         
     }
 
+    async getMoviesWhere(props: object): Promise<Movie[]>  {
+        return await Movie.findAll({ where: props });
+    }
+
+    async getMovieByIdAndWhere(id: number, props: object): Promise<Movie | null> {
+        return await Movie.findOne({ where: { id, ...props } });
+    }
+
 }
 
 const moviesRepository = Object.freeze(new MoviesRepository());

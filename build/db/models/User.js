@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserCreationPayload = void 0;
 const connection_1 = __importDefault(require("../connection"));
 const sequelize_1 = require("sequelize");
 class User extends sequelize_1.Model {
@@ -59,10 +58,3 @@ User.init({
     ],
 });
 exports.default = User;
-class UserCreationPayload {
-    constructor() {
-        this.firstName = '';
-        this.lastName = '';
-    }
-}
-exports.UserCreationPayload = UserCreationPayload;

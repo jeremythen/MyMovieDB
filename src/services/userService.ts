@@ -1,4 +1,4 @@
-import User, { UserCreationPayload } from '../db/models/User';
+import User, { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
 import { prepareResponse, Response } from '../util/util';
 import userRepository from '../repositories/userRepository';
@@ -22,7 +22,7 @@ class UserService {
         return user !== null && user.role === Role.ADMIN;
     }
 
-    async registerUser(userPayload: UserCreationPayload): Promise<Response> {
+    async registerUser(userPayload: UserCreationAttributes): Promise<Response> {
 
         const validationResult = validateRegisterUserPayload(userPayload);
 
@@ -112,7 +112,7 @@ interface ValidationResult {
  * This function checks that the required user data to create a new user are present.
  * 
  */
-const validateRegisterUserPayload = (payload: UserCreationPayload): ValidationResult => {
+const validateRegisterUserPayload = (payload: UserCreationAttributes): ValidationResult => {
     const validationResult: ValidationResult = {
         valid: false,
         validationErrors: [],

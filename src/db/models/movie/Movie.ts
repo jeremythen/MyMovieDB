@@ -30,7 +30,7 @@ export interface MovieAttributes {
   disabled: boolean;
 }
 
-export interface MovieCreationAttributes extends Optional<MovieAttributes, 'id' | 'year' | 'language' | 'time' | 'country' | 'distributor' | 'disabled'> {}
+export interface MovieCreationAttributes extends Optional<MovieAttributes, 'id' | 'language' | 'time' | 'country' | 'distributor' | 'disabled'> {}
 
 class Movie extends Model<MovieAttributes, MovieCreationAttributes> {
   public id!: number;

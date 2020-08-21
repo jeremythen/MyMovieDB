@@ -16,13 +16,27 @@ const Movie_1 = __importDefault(require("../db/models/movie/Movie"));
 class MoviesRepository {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const movies = yield Movie_1.default.findAll();
-                return movies;
-            }
-            catch (err) {
-                throw err;
-            }
+            return yield Movie_1.default.findAll();
+        });
+    }
+    getMovieById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield Movie_1.default.findOne({ where: { id } });
+        });
+    }
+    createMovie(movieCreationPayload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { title, year, country, distributor = '', time = 0, language = '', disabled = false, } = movieCreationPayload;
+            const movie = yield Movie_1.default.create({
+                title,
+                year,
+                country,
+                distributor,
+                time,
+                language,
+                disabled,
+            });
+            return movie;
         });
     }
 }

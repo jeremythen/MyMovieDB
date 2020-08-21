@@ -8,6 +8,12 @@ const sequelize_1 = require("sequelize");
 class MovieGenre extends sequelize_1.Model {
 }
 MovieGenre.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     movieId: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         allowNull: false,

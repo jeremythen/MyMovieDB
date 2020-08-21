@@ -17,6 +17,12 @@ const Rating_1 = __importDefault(require("../models/movie/Rating"));
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
         yield queryInterface.createTable(Rating_1.default.tableName, {
+            id: {
+                type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             movieId: {
                 type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
@@ -29,6 +35,7 @@ module.exports = {
                 type: sequelize_1.DataTypes.TINYINT.UNSIGNED,
                 allowNull: false,
             },
+            comment: sequelize_1.DataTypes.STRING(255),
             createdAt: {
                 type: sequelize_1.DataTypes.DATE
             },

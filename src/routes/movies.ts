@@ -24,7 +24,7 @@ Router.post("/", authorize, async (req, res) => {
 
 Router.get("/:id", async (req, res) => {
 
-    const id = Number(req.param('id'));
+    const id = Number(req.params.id);
 
     const response = await moviesService.getMovieById(id);
 
@@ -42,7 +42,7 @@ Router.post("/reviews", async (req, res) => {
 
 Router.get("/reviews/:id", async (req, res) => {
 
-    const id = Number(req.param('id'));
+    const id = Number(req.params.id);
 
     const response = await moviesService.getMovieReviews(id);
 
@@ -52,7 +52,7 @@ Router.get("/reviews/:id", async (req, res) => {
 
 Router.put("/disable/:id", authorize, async (req, res) => {
 
-    const id = Number(req.param('id'));
+    const id = Number(req.params.id);
 
     const response = await moviesService.disableMovie(id);
 

@@ -1,4 +1,5 @@
 import sequelize from '../../connection';
+import { Optional } from 'sequelize';
 
 import {
   Model,
@@ -6,10 +7,15 @@ import {
 } from "sequelize";
 
 export interface MovieGenreAttributes {
+  id: number;
   movieId: number;
   genreId: number;
 }
-class MovieGenre extends Model<MovieGenreAttributes> {
+
+export interface MovieGenreCreationAttributes extends Optional<MovieGenreAttributes, 'id'> {}
+
+class MovieGenre extends Model<MovieGenreAttributes, MovieGenreCreationAttributes> {
+  public id: number;
   public genreId!: number;
   public movieId!: number;
   public readonly createdAt!: Date;
@@ -18,6 +24,12 @@ class MovieGenre extends Model<MovieGenreAttributes> {
 
 MovieGenre.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     movieId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

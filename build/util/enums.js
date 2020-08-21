@@ -21,4 +21,5 @@ var MovieError;
     MovieError["MOVIE_INVALID_REVIEW_PAYLOAD"] = "MOVIE_INVALID_REVIEW_PAYLOAD";
     MovieError["MOVIE_NOT_FOUND"] = "MOVIE_NOT_FOUND";
     MovieError["REVIEWER_NOT_FOUND"] = "REVIEWER_NOT_FOUND";
+    MovieError["MOVIE_INVALID_ID"] = "MOVIE_INVALID_ID";
 })(MovieError = exports.MovieError || (exports.MovieError = {}));

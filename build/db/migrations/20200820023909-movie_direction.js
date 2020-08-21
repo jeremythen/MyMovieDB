@@ -17,6 +17,12 @@ const MovieDirection_1 = __importDefault(require("../models/movie/MovieDirection
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
         yield queryInterface.createTable(MovieDirection_1.default.tableName, {
+            id: {
+                type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             directorId: {
                 type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,

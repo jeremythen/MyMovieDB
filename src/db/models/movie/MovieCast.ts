@@ -3,15 +3,19 @@ import sequelize from '../../connection';
 import {
   Model,
   DataTypes,
+  Optional,
 } from "sequelize";
 
 export interface MovieCastAttributes {
+  id: number;
   actorId: number;
   movieId: number;
   role: string;
 }
 
-class MovieCast extends Model<MovieCastAttributes> {
+export interface MovieCastCreationAttributes extends Optional<MovieCastAttributes, 'id'> { }
+class MovieCast extends Model<MovieCastAttributes, MovieCastCreationAttributes> {
+  public id: number;
   public actorId!: number;
   public movieId!: number;
   public role!: string;
@@ -21,6 +25,12 @@ class MovieCast extends Model<MovieCastAttributes> {
 
 MovieCast.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     actorId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

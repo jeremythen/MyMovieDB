@@ -6,14 +6,20 @@ import MovieCast from '../models/movie/MovieCast';
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     await queryInterface.createTable(MovieCast.tableName, {
-        actorId: {
-          type: DataTypes.INTEGER.UNSIGNED,
-          allowNull: false,
-        },
-        movieId: {
-          type: DataTypes.INTEGER.UNSIGNED,
-          allowNull: false,
-        },
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      actorId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      movieId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
       role: DataTypes.STRING(50),
       createdAt: {
         type: DataTypes.DATE

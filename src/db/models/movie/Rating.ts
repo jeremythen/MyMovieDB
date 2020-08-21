@@ -7,15 +7,17 @@ import {
 } from "sequelize";
 
 export interface RatingAttributes {
+  id: number;
   movieId: number;
   reviewerId: number;
   reviewerStars: number;
   comment: string;
 }
 
-export interface RatingCreationAttributes extends Optional<RatingAttributes, 'comment'> { }
+export interface RatingCreationAttributes extends Optional<RatingAttributes, 'id' | 'comment'> { }
 
 class Rating extends Model<RatingAttributes, RatingCreationAttributes> {
+  public id: number;
   public movieId!: number;
   public reviewerId!: number;
   public reviewerStars!: number;
@@ -25,6 +27,12 @@ class Rating extends Model<RatingAttributes, RatingCreationAttributes> {
 
 Rating.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     movieId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

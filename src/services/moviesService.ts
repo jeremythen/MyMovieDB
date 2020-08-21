@@ -3,11 +3,11 @@ import { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError } from '../util/enums';
-import Rating, { RatingCreationAttributes } from '../db/models/movie/Rating';
+import { RatingCreationAttributes } from '../db/models/movie/Rating';
 import reviewerRepository from '../repositories/reviewerRepository';
 import ratingRepository from '../repositories/ratingRepository';
 
-const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND } = MovieError;
+const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID } = MovieError;
 
 class MovieService {
 
@@ -38,7 +38,7 @@ class MovieService {
       return prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
     }
 
-    const { movieId, reviewerId, reviewerStars } = movieReviewPayload;
+    const { movieId, reviewerId } = movieReviewPayload;
 
     const movie = await moviesRepository.getMovieById(movieId);
 
@@ -60,6 +60,10 @@ class MovieService {
 
   async disableMovie(movieId: number): Promise<MyMovieDbResponse> {
 
+    if (!movieId || movieId < 1) {
+      return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+    }
+
     const movie = await moviesRepository.getMovieById(movieId);
 
     if (movie === null) {
@@ -76,6 +80,10 @@ class MovieService {
 
   async getMovieById(id: number): Promise<MyMovieDbResponse> {
 
+    if (!id || id < 1) {
+      return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+    }
+
     const movie = await moviesRepository.getMovieByIdAndWhere(id, { disabled: false });
 
     if (movie === null) {
@@ -86,7 +94,12 @@ class MovieService {
   }
 
   async getMovieReviews(movieId: number) {
-    const movies = ratingRepository.getMovieRatings(movieId);
+
+    if (!movieId || movieId < 1) {
+      return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+    }
+
+    const movies = await ratingRepository.getMovieRatings(movieId);
     return prepareResponse({ movies }, true);
   }
 

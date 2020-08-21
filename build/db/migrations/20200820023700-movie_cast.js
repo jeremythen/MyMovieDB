@@ -17,6 +17,12 @@ const MovieCast_1 = __importDefault(require("../models/movie/MovieCast"));
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
         yield queryInterface.createTable(MovieCast_1.default.tableName, {
+            id: {
+                type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             actorId: {
                 type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,

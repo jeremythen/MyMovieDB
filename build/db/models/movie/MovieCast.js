@@ -8,6 +8,12 @@ const sequelize_1 = require("sequelize");
 class MovieCast extends sequelize_1.Model {
 }
 MovieCast.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     actorId: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         allowNull: false,

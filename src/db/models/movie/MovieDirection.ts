@@ -3,13 +3,19 @@ import sequelize from '../../connection';
 import {
   Model,
   DataTypes,
+  Optional
 } from "sequelize";
 
 export interface MovieDirectionAttributes {
+  id: number;
   directorId: number;
   movieId: number;
 }
-class MovieDirection extends Model<MovieDirectionAttributes> {
+
+export interface MovieDirectionCreationAttributes extends Optional<MovieDirectionAttributes, 'id'> {}
+
+class MovieDirection extends Model<MovieDirectionAttributes, MovieDirectionCreationAttributes> {
+  public id: number;
   public directorId!: number;
   public movieId!: number;
   public readonly createdAt!: Date;
@@ -18,6 +24,12 @@ class MovieDirection extends Model<MovieDirectionAttributes> {
 
 MovieDirection.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     directorId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

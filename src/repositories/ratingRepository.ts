@@ -1,6 +1,4 @@
 import Rating, { RatingCreationAttributes } from '../db/models/movie/Rating';
-import { ValidationResult } from '../util/util';
-
 class RatingRepository {
 
     async getRatingByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<Rating | null> {

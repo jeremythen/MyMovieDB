@@ -8,6 +8,12 @@ const sequelize_1 = require("sequelize");
 class MovieDirection extends sequelize_1.Model {
 }
 MovieDirection.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     directorId: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         allowNull: false,

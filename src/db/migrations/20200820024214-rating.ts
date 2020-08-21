@@ -6,6 +6,12 @@ import Rating from '../models/movie/Rating';
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     await queryInterface.createTable(Rating.tableName, {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       movieId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
@@ -18,6 +24,7 @@ module.exports = {
         type: DataTypes.TINYINT.UNSIGNED,
         allowNull: false,
       },
+      comment: DataTypes.STRING(255),
       createdAt: {
         type: DataTypes.DATE
       },

@@ -6,6 +6,12 @@ import MovieGenre from '../models/movie/MovieGenre';
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     await queryInterface.createTable(MovieGenre.tableName, {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       movieId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,

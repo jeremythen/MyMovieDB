@@ -6,6 +6,12 @@ import MovieDirection from '../models/movie/MovieDirection';
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     await queryInterface.createTable(MovieDirection.tableName, {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       directorId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,

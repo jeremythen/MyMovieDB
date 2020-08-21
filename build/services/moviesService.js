@@ -17,7 +17,7 @@ const util_1 = require("../util/util");
 const enums_1 = require("../util/enums");
 const reviewerRepository_1 = __importDefault(require("../repositories/reviewerRepository"));
 const ratingRepository_1 = __importDefault(require("../repositories/ratingRepository"));
-const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND } = enums_1.MovieError;
+const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID } = enums_1.MovieError;
 class MovieService {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -41,7 +41,7 @@ class MovieService {
             if (!validation.valid) {
                 return util_1.prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
             }
-            const { movieId, reviewerId, reviewerStars } = movieReviewPayload;
+            const { movieId, reviewerId } = movieReviewPayload;
             const movie = yield moviesRepository_1.default.getMovieById(movieId);
             if (movie === null) {
                 return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
@@ -56,6 +56,9 @@ class MovieService {
     }
     disableMovie(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!movieId || movieId < 1) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+            }
             const movie = yield moviesRepository_1.default.getMovieById(movieId);
             if (movie === null) {
                 return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
@@ -67,6 +70,9 @@ class MovieService {
     }
     getMovieById(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!id || id < 1) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+            }
             const movie = yield moviesRepository_1.default.getMovieByIdAndWhere(id, { disabled: false });
             if (movie === null) {
                 return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
@@ -76,7 +82,10 @@ class MovieService {
     }
     getMovieReviews(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const movies = ratingRepository_1.default.getMovieRatings(movieId);
+            if (!movieId || movieId < 1) {
+                return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+            }
+            const movies = yield ratingRepository_1.default.getMovieRatings(movieId);
             return util_1.prepareResponse({ movies }, true);
         });
     }

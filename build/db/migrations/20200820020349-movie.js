@@ -37,10 +37,12 @@ module.exports = {
             distributor: sequelize_1.DataTypes.STRING(50),
             disabled: sequelize_1.DataTypes.BOOLEAN,
             createdAt: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
             updatedAt: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
         });
     }),

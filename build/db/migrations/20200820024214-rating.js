@@ -37,10 +37,12 @@ module.exports = {
             },
             comment: sequelize_1.DataTypes.STRING(255),
             createdAt: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
             updatedAt: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
         });
         queryInterface.addIndex(Rating_1.default.tableName, ['movieId', 'reviewerId'], {

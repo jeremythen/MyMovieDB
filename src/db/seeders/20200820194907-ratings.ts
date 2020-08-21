@@ -13,6 +13,8 @@ module.exports = {
         movieId: i + 1,
         reviewerId: i + 1,
         reviewerStars: getRandomRating(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

@@ -1,7 +1,6 @@
 'use strict';
 
 import { QueryInterface } from 'sequelize';
-import { UserCreationAttributes } from '../models/User';
 import faker from 'faker';
 import bcrypt from 'bcrypt';
 import envConfig from '../../config/envConfig';
@@ -10,7 +9,7 @@ const seeds = envConfig.seqSeeds;
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
 
-    const users: UserCreationAttributes[] = [];
+    const users = [];
     
     for (let i = 0; i < seeds; i++) {
       users.push({
@@ -19,6 +18,8 @@ module.exports = {
         password: bcrypt.hashSync(faker.internet.password(), 10),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
     

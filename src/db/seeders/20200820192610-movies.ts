@@ -18,6 +18,8 @@ module.exports = {
         country: faker.address.country(),
         distributor: 'Universal Pictures',
         disabled: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

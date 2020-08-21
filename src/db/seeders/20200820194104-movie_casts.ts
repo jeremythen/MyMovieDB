@@ -14,6 +14,8 @@ module.exports = {
         actorId: i + 1,
         movieId: i + 1,
         role: faker.name.findName(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

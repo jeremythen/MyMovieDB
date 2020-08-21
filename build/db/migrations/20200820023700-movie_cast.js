@@ -33,10 +33,12 @@ module.exports = {
             },
             role: sequelize_1.DataTypes.STRING(50),
             createdAt: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
             updatedAt: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
             }
         });
         queryInterface.addIndex(MovieCast_1.default.tableName, ['movieId', 'actorId'], {

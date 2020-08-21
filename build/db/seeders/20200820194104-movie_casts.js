@@ -23,6 +23,8 @@ module.exports = {
                 actorId: i + 1,
                 movieId: i + 1,
                 role: faker_1.default.name.findName(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         }
         yield queryInterface.bulkInsert("movie_casts", movieCasts);

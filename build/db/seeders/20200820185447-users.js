@@ -26,6 +26,8 @@ module.exports = {
                 password: bcrypt_1.default.hashSync(faker_1.default.internet.password(), 10),
                 firstName: faker_1.default.name.firstName(),
                 lastName: faker_1.default.name.lastName(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         }
         yield queryInterface.bulkInsert('users', users);

@@ -5,7 +5,13 @@ import { QueryInterface } from "sequelize";
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
 
-    const genresMapped = genres.map(title => ({ title }));
+    const genresMapped = genres.map(title => {
+      return {
+        title,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    });
 
     await queryInterface.bulkInsert("genres", genresMapped);
   

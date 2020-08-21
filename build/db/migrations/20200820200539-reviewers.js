@@ -27,6 +27,14 @@ module.exports = {
                 type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
             },
+            createdAt: {
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
+            },
+            updatedAt: {
+                type: sequelize_1.DataTypes.DATE,
+                defaultValue: sequelize_1.DataTypes.NOW,
+            },
         });
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {

@@ -20,7 +20,9 @@ module.exports = {
         const reviewers = [];
         for (let i = 0; i < seeds; i++) {
             reviewers.push({
-                name: faker_1.default.name.findName()
+                name: faker_1.default.name.findName(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         }
         yield queryInterface.bulkInsert("reviewers", reviewers);

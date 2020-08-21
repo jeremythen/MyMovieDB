@@ -11,7 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = {
     up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
-        const genresMapped = genres.map(title => ({ title }));
+        const genresMapped = genres.map(title => {
+            return {
+                title,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            };
+        });
         yield queryInterface.bulkInsert("genres", genresMapped);
     }),
     down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {

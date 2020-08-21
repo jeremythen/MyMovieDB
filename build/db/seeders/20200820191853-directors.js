@@ -22,6 +22,8 @@ module.exports = {
             directors.push({
                 firstName: faker_1.default.name.firstName(),
                 lastName: faker_1.default.name.lastName(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         }
         yield queryInterface.bulkInsert("directors", directors);

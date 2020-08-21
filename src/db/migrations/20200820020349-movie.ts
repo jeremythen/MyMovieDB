@@ -26,10 +26,12 @@ module.exports = {
       distributor: DataTypes.STRING(50),
       disabled: DataTypes.BOOLEAN,
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     });
     

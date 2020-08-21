@@ -11,7 +11,9 @@ module.exports = {
 
     for (let i = 0; i < seeds; i++) {
       reviewers.push({
-        name: faker.name.findName()
+        name: faker.name.findName(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

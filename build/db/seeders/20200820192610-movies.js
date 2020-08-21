@@ -27,6 +27,8 @@ module.exports = {
                 country: faker_1.default.address.country(),
                 distributor: 'Universal Pictures',
                 disabled: false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         }
         yield queryInterface.bulkInsert("movies", movies);

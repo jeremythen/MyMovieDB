@@ -13,6 +13,8 @@ module.exports = {
       actors.push({
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

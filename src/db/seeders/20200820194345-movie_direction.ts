@@ -11,7 +11,9 @@ module.exports = {
     for (let i = 0; i < seeds; i++) {
       movieDirectors.push({
         directorId: i + 1,
-        movieId: i + 1
+        movieId: i + 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

@@ -21,6 +21,8 @@ module.exports = {
             movieGenres.push({
                 movieId: i + 1,
                 genreId: getRandomGenreId(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         }
         yield queryInterface.bulkInsert("movie_genre", movieGenres);

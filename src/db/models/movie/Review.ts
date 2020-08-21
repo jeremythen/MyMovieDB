@@ -21,7 +21,7 @@ class Review extends Model<ReviewAttributes, ReviewCreationAttributes> {
   public movieId!: number;
   public reviewerId!: number;
   public reviewerStars!: number;
-  public comment!: string;
+  public comment: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }

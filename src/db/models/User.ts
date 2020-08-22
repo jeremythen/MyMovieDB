@@ -1,6 +1,18 @@
 import sequelize from '../connection';
+import Review from './movie/Review';
 
-import { Model, DataTypes, Optional } from "sequelize";
+import {
+  Model,
+  DataTypes,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  Optional,
+} from "sequelize";
+
 
 export interface UserAttributes {
     id: number;
@@ -25,6 +37,19 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   public role: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public getReviews!: HasManyGetAssociationsMixin<Review>;
+  public addReview!: HasManyAddAssociationMixin<Review, number>;
+  public hasReview!: HasManyHasAssociationMixin<Review, number>;
+  public countReview!: HasManyCountAssociationsMixin;
+  public createReview!: HasManyCreateAssociationMixin<Review>;
+
+  public readonly reviews?: Review[];
+
+  public static associations: {
+    reviews: Association<User, Review>,
+  }
+
 }
 
 User.init(
@@ -80,5 +105,11 @@ User.init(
     ],
   }
 );
+
+User.hasMany(Review, {
+  sourceKey: 'id',
+  foreignKey: 'reviewerId',
+  as: 'reviews',
+});
 
 export default User;

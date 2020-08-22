@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const moviesRepository_1 = __importDefault(require("../repositories/moviesRepository"));
 const util_1 = require("../util/util");
 const enums_1 = require("../util/enums");
-const reviewerRepository_1 = __importDefault(require("../repositories/reviewerRepository"));
 const reviewRepository_1 = __importDefault(require("../repositories/reviewRepository"));
+const userRepository_1 = __importDefault(require("../repositories/userRepository"));
 const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = enums_1.MovieError;
 class MovieService {
     getMovies() {
@@ -46,7 +46,7 @@ class MovieService {
             if (movie === null) {
                 return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
             }
-            const reviewer = yield reviewerRepository_1.default.getReviewerById(reviewerId);
+            const reviewer = yield userRepository_1.default.getUserById(reviewerId);
             if (reviewer === null) {
                 return util_1.prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
             }

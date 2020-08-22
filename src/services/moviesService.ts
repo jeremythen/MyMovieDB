@@ -4,8 +4,8 @@ import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError } from '../util/enums';
 import { ReviewCreationAttributes } from '../db/models/movie/Review';
-import reviewerRepository from '../repositories/reviewerRepository';
 import reviewRepository from '../repositories/reviewRepository';
+import userRepository from '../repositories/userRepository';
 
 const { MOVIE_INVALID_PAYLOAD,
   MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = MovieError;
@@ -47,7 +47,7 @@ class MovieService {
       return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
     }
 
-    const reviewer = await reviewerRepository.getReviewerById(reviewerId);
+    const reviewer = await userRepository.getUserById(reviewerId);
 
     if (reviewer === null) {
       return prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);

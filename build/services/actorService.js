@@ -45,6 +45,19 @@ class ActorService {
             return util_1.prepareResponse({ actor }, true);
         });
     }
+    deleteActorById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!util_1.isValidId(id)) {
+                return util_1.prepareResponse(null, false, ACTOR_INVALID_ID, [`Invalid actor id`]);
+            }
+            const actor = yield actorsRepository_1.default.getActorById(id);
+            if (actor === null) {
+                return util_1.prepareResponse(null, false, ACTOR_NOT_FOUND, [`Actor with id ${id} was not found`]);
+            }
+            actor.destroy();
+            return util_1.prepareResponse({ deleted: true }, true);
+        });
+    }
 }
 const actorService = Object.freeze(new ActorService());
 exports.default = actorService;

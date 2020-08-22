@@ -21,7 +21,7 @@ class ActorRepository {
     }
     getActorById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Actor_1.default.findAll({ where: { id } });
+            return yield Actor_1.default.findOne({ where: { id } });
         });
     }
     createActor(crateActorPayload) {

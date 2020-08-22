@@ -21,7 +21,7 @@ class DirectorRepository {
     }
     getDirectorById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Director_1.default.findAll({ where: { id } });
+            return yield Director_1.default.findOne({ where: { id } });
         });
     }
     createDirector(crateDirectorPayload) {

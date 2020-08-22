@@ -30,4 +30,9 @@ Router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const response = yield directorService_1.default.getDirectorById(id);
     util_1.handleCommonResponse(response, res);
 }));
+Router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    const response = yield directorService_1.default.deleteDirectorById(id);
+    util_1.handleCommonResponse(response, res);
+}));
 exports.default = Router;

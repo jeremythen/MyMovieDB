@@ -45,6 +45,19 @@ class DirectorService {
             return util_1.prepareResponse({ director }, true);
         });
     }
+    deleteDirectorById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!util_1.isValidId(id)) {
+                return util_1.prepareResponse(null, false, DIRECTOR_INVALID_ID, [`Invalid actor id`]);
+            }
+            const director = yield directorRepository_1.default.getDirectorById(id);
+            if (director === null) {
+                return util_1.prepareResponse(null, false, DIRECTOR_NOT_FOUND, [`Director with id ${id} was not found`]);
+            }
+            director.destroy();
+            return util_1.prepareResponse({ deleted: true }, true);
+        });
+    }
 }
 const directorService = Object.freeze(new DirectorService());
 exports.default = directorService;

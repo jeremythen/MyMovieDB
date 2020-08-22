@@ -20,7 +20,7 @@ app.use("/users", userRoutes);
 
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-app.get("/", async (req, res, next) => {
+app.get("/", async (req, res) => {
   res.send("Welcome to MyMovieDB!");
 });
 

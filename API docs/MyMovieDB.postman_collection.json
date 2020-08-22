@@ -123,6 +123,73 @@
 					"_postman_isSubFolder": true
 				},
 				{
+					"name": "Pagination",
+					"item": [
+						{
+							"name": "Get Movies With Offset",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/pagination/offset/3",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"pagination",
+										"offset",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Movies With Pagination offset and limit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/pagination/limit/5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"pagination",
+										"limit",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Movies Up To Limit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/pagination/limit/3",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"pagination",
+										"limit",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "Get All Movies",
 					"event": [
 						{
@@ -203,14 +270,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/movies/reviews/100",
+							"raw": "{{baseUrl}}/movies/reviews/1",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"movies",
 								"reviews",
-								"100"
+								"1"
 							]
 						}
 					},
@@ -261,26 +328,6 @@
 								"reviews",
 								"movie",
 								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Movies With Pagination offset and limit",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/movies/pagination/limit/5",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"movies",
-								"pagination",
-								"limit",
-								"5"
 							]
 						}
 					},

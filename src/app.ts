@@ -11,8 +11,6 @@ const app: express.Application = express();
 
 const port = process.env.port || 3000;
 
-console.log('process.env', process.env)
-
 app.use(bodyParser.json());
 
 app.use("/movies", moviesRoutes);

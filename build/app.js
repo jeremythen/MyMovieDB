@@ -41,7 +41,6 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDoc = __importStar(require("./swagger.json"));
 const app = express_1.default();
 const port = process.env.port || 3000;
-console.log('process.env', process.env);
 app.use(body_parser_1.default.json());
 app.use("/movies", movies_1.default);
 app.use("/actors", actors_1.default);

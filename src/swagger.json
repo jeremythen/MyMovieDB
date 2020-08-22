@@ -20,6 +20,12 @@
     {
       "name": "users",
       "description": "User information"
+    },
+    {
+      "name": "actors"
+    },
+    {
+      "name": "directors"
     }
   ],
   "paths": {
@@ -49,7 +55,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                  "$ref": "#/components/schemas/UnkownError"
                 }
               }
             }
@@ -148,13 +154,24 @@
         }
       }
     },
-    "/movies/reviews": {
+    "/movies/{id}/reviews": {
       "get": {
         "tags": ["movies"],
         "summary": "Get a review by it's id",
         "operationId": "getReviewById",
         "description": "Get a review by the specified reviewId",
         "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved movies",
@@ -474,6 +491,346 @@
           }
         }
       }
+    },
+    "/actors": {
+      "get": {
+        "tags": ["actors"],
+        "summary": "Get all actors",
+        "operationId": "getActors",
+        "description": "Get the list of actors.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved actors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActionDirectorData"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnkownError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["actors"],
+        "summary": "Add an actor",
+        "description": "Add an actor. Only the admin can access this endpoint.",
+        "operationId": "addActor",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionDirectorCreationPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added actor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionDirectorData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddActorBadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["actors"],
+        "summary": "Deletes an actor",
+        "description": "Deletes a director with the specified id. Only ADMIN can all this endpoint.",
+        "operationId": "deleteActor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": 5
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteActorBadResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/actors/{id}": {
+      "get": {
+        "tags": ["actors"],
+        "summary": "Get an actor by id",
+        "description": "Get an actor by the specified id.",
+        "operationId": "getActorById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The actor id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved actor specified by that id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Actor"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteActorBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/directors": {
+      "get": {
+        "tags": ["directors"],
+        "summary": "Get all directors",
+        "operationId": "getDirectors",
+        "description": "Get the list of directors.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved directors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActionDirectorData"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnkownError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["directors"],
+        "summary": "Add an director",
+        "description": "Add a director. Only the admin can access this endpoint.",
+        "operationId": "addDirector",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionDirectorCreationPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added director",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionDirectorData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddActorBadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["directors"],
+        "summary": "Deletes an director",
+        "description": "Deletes a director with the specified id. Only ADMIN can all this endpoint.",
+        "operationId": "deleteDirector",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": 5
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteActorBadResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/directors/{id}": {
+      "get": {
+        "tags": ["directors"],
+        "summary": "Get an director by id",
+        "description": "Get an director by the specified id.",
+        "operationId": "getDirectorById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The director id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved director specified by that id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Actor"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteActorBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "security": [
@@ -786,6 +1143,11 @@
             "type": "integer",
             "example": 5,
             "default": 5
+          },
+          "comment": {
+            "type": "string",
+            "description": "The reviewer's or user's comment for this movie review",
+            "example": "I'm voting 5 to this movie because it's awesome"
           }
         }
       },
@@ -889,12 +1251,12 @@
           "errorCode": {
             "description": "An error code of an error that happened while requesting the data",
             "type": "string",
-            "example": "REVIEW_INVALID_ID"
+            "example": "MOVIE_NOT_FOUND"
           },
           "errorMessages": {
             "description": "The detailed message of the error that happened",
             "type": "string",
-            "example": "reviewId are required. Please Provide a valid review id"
+            "example": "Movie with the specified id was not found"
           }
         }
       },
@@ -947,6 +1309,112 @@
             "description": "The detailed message of the error that happened",
             "type": "string",
             "example": "Invalid movie id"
+          }
+        }
+      },
+      "ActionDirectorCreationPayload": {
+        "type": "object",
+        "required": ["firstName", "lastName"],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Jeremy"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Then"
+          }
+        }
+      },
+      "ActionDirectorData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 2
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Jeremy"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Then"
+          }
+        }
+      },
+      "AddActorBadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": null
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": false
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "ACTOR_INVALID_PAYLOAD"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "Actor's first name is required"
+          }
+        }
+      },
+      "DeleteActorBadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": null
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": false
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "ACTOR_NOT_FOUND"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "Actor with id 1 was not found"
+          }
+        }
+      },
+      "UnkownError": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": null
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": false
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "UNKNOWN_ERROR"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "There was an error with your request. Try again later."
           }
         }
       }

@@ -135,7 +135,14 @@ class MovieService {
     return prepareResponse({ movie }, true);
   }
 
-  async getMovieReviews(movieId: number) {
+  /**
+   * 
+   * @param movieId 
+   * @returns a all the reviews that belong to the movie specify that the movieId
+   * with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
+   * 
+   */
+  async getMovieReviews(movieId: number): Promise<MyMovieDbResponse> {
 
     if (!movieId || movieId < 1) {
       return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
@@ -145,7 +152,15 @@ class MovieService {
     return prepareResponse({ movies }, true);
   }
 
-  async getMoviesWithOffsetAndLimit(offset: number, limit: number) {
+  /**
+   * 
+   * @param offset, to retrieve movies after the movie on the position number of this offset
+   * @param limit, return movies up to this limit
+   * 
+   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * 
+   */
+  async getMoviesWithOffsetAndLimit(offset: number, limit: number): Promise<MyMovieDbResponse> {
 
     if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
       return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
@@ -155,6 +170,12 @@ class MovieService {
     return prepareResponse({ movies }, true);
   }
 
+  /**
+   * 
+   * @param offset , to retrieve movies after the movie on the position number of this offset
+   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * 
+   */
   async getMoviesWithOffset(offset: number) {
 
     if (!isValidPaginationNumber(offset)) {
@@ -165,6 +186,12 @@ class MovieService {
     return prepareResponse({ movies }, true);
   }
 
+  /**
+   * 
+   * @param limit, return movies up to this limit
+   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * 
+   */
   async getMoviesWithLimit(limit: number) {
 
     if (!isValidPaginationNumber(limit)) {
@@ -175,6 +202,13 @@ class MovieService {
     return prepareResponse({ movies }, true);
   }
 
+  /**
+   * 
+   * @param reviewerId to who the reviews belong to
+   * @param movieId of the movie that the user sent the review to
+   * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
+   * 
+   */
   async getReviewByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<MyMovieDbResponse>  {
 
     if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
@@ -187,6 +221,12 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param reviewId the reviewId of the review record
+   * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
+   * 
+   */
   async getReviewById(reviewId: number): Promise<MyMovieDbResponse>  {
     if (!isValidIdNumber(reviewId)) {
       return prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
@@ -197,6 +237,12 @@ class MovieService {
     return prepareResponse({ review }, true);
   }
 
+  /**
+   * 
+   * @param reviewerId the id of the User that made the review
+   * @returns a Promise with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
+   * 
+   */
   async getReviewerReviews(reviewerId: number): Promise<MyMovieDbResponse> {
     if (!isValidIdNumber(reviewerId)) {
       return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);

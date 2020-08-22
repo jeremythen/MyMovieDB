@@ -12,11 +12,24 @@ const { MOVIE_INVALID_PAYLOAD,
 
 class MovieService {
 
+  /**
+   * 
+   * Returns the list of movies that are not disabled
+   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * 
+   */
   async getMovies(): Promise<MyMovieDbResponse> {
     const movies = await moviesRepository.getMoviesWhere({ disabled: false });
     return prepareResponse({ movies }, true);
   }
 
+  /**
+   * 
+   * @param movieCreationPayload Creates a movie and returns the newly created movie in a MyMovieDbResponse object
+   * In the movieCreationPayload payload, the attributes title and year are required
+   * @returns a Promise with a MyMovieDbResponse object containing the newly created 'movie' attribute in it's 'data' attribute
+   * 
+   */
   async createMovie(movieCreationPayload: MovieCreationAttributes): Promise<MyMovieDbResponse> {
 
     const validation = validateCreateMoviePayload(movieCreationPayload);
@@ -31,6 +44,13 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param movieId the id of the movie which you would like to add a review to. This parameter is required.
+   * @param movieReviewPayload the payload of the Review. movieId, reviewId and reviewerStars are expected and required parameters in this payload.
+   * @returns a Promise with a MyMovieDbResponse object containing the newly created 'review' attribute in it's 'data' attribute
+   * 
+   */
   async addMovieReview(movieId: number, movieReviewPayload: ReviewCreationAttributes): Promise<MyMovieDbResponse> {
 
     const validation = validateCreateReviewPayload(movieReviewPayload);
@@ -68,6 +88,12 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param movieId id of the movie to be disabled.
+   * @returns a Promise with a MyMovieDbResponse object containing 'disabled' attribute in it's 'data' attribute
+   * 
+   */
   async disableMovie(movieId: number): Promise<MyMovieDbResponse> {
 
     if (!movieId || movieId < 1) {
@@ -88,6 +114,12 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param id is required.
+   * @returns a movie by it's id in a Promise with a MyMovieDbResponse object containing 'movie' attribute in it's 'data' attribute
+   * 
+   */
   async getMovieById(id: number): Promise<MyMovieDbResponse> {
 
     if (!id || id < 1) {

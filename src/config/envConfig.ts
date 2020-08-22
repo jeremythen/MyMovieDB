@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log("process.env.DB_PASSWORD", process.env.DB_PASSWORD)
-
 export default {
   database: {
     user: process.env.DB_USER,

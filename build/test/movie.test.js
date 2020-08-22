@@ -43,4 +43,28 @@ describe('Add movie', () => {
         chai_1.expect(response.success, 'Expecting response to be successful').to.be.true;
         chai_1.expect(response.data.movie, 'Expecting new movie to be present in the response').to.not.be.null;
     }));
+    it('Adding a movie and getting it by id', () => __awaiter(void 0, void 0, void 0, function* () {
+        const moviePayload = {
+            title: "MyNewlyAddedMovie",
+            year: 2018,
+            time: 135,
+            language: "English",
+            country: "RD",
+            distributor: "Universal Pictures"
+        };
+        const response = yield moviesService_1.default.createMovie(moviePayload);
+        chai_1.expect(response === null, 'Expecting response to not be null').to.be.false;
+        chai_1.expect(response.success, 'Expecting response to be successful').to.be.true;
+        chai_1.expect(response.data.movie, 'Expecting new movie to be present in the response').to.not.be.null;
+        const movie = response.data.movie;
+        console.log('movie id', movie);
+        const newMovieId = movie.id;
+        const response2 = yield moviesService_1.default.getMovieById(movie.id);
+        chai_1.expect(response === null, 'Expecting response to not be null').to.be.false;
+        chai_1.expect(response.success, 'Expecting response to be successful').to.be.true;
+        chai_1.expect(response.data.movie, 'Expecting new movie to be present in the response').to.not.be.null;
+        const movie2 = response2.data.movie;
+        console.log('movie ids', newMovieId, movie2.id);
+        chai_1.expect(newMovieId === movie2.id, 'Expecting to find the newly created movie by id').to.be.true;
+    }));
 });

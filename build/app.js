@@ -40,6 +40,12 @@ const actors_1 = __importDefault(require("./routes/actors"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDoc = __importStar(require("./swagger.json"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const log4js_1 = __importDefault(require("log4js"));
+log4js_1.default.configure({
+    appenders: { fileAppender: { type: 'file', filename: './logs/logs.log' } },
+    categories: { default: { appenders: ['fileAppender'], level: 'info' } }
+});
+const logger = log4js_1.default.getLogger();
 dotenv_1.default.config();
 const app = express_1.default();
 const port = process.env.port || 3000;
@@ -48,11 +54,14 @@ app.use("/movies", movies_1.default);
 app.use("/actors", actors_1.default);
 app.use("/directors", directors_1.default);
 app.use("/users", users_1.default);
+/**
+ * Swagger docs for MyMovieDB app can be visualized at this endpoint:
+ */
 app.use("/swagger", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDoc));
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Welcome to MyMovieDB!");
 }));
 app.listen(port, () => {
-    console.log(`Running on port ${port}`);
+    logger.info(`Running on port ${port}`);
 });
 exports.default = app;

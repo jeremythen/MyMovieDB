@@ -1,7 +1,6 @@
 "use strict";
 const dotenv = require("dotenv");
 dotenv.config();
-console.log("process.env.DB_PASSWORD", process.env.DB_PASSWORD);
 module.exports = {
     development: {
         username: process.env.DB_USER,

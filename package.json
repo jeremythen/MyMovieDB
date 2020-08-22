@@ -41,6 +41,7 @@
     "express-session": "^1.17.1",
     "http-status-codes": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.3.0",
     "mysql2": "^2.1.0",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.3.4",

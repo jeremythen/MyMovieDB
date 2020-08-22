@@ -17,6 +17,8 @@ const util_1 = require("../util/util");
 const enums_1 = require("../util/enums");
 const reviewRepository_1 = __importDefault(require("../repositories/reviewRepository"));
 const userRepository_1 = __importDefault(require("../repositories/userRepository"));
+const log4js_1 = __importDefault(require("log4js"));
+const logger = log4js_1.default.getLogger('');
 const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = enums_1.MovieError;
 const { UNKNOWN_ERROR } = enums_1.GeneralError;
 class MovieService {
@@ -28,8 +30,16 @@ class MovieService {
      */
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
-            const movies = yield moviesRepository_1.default.getMoviesWhere({ disabled: false });
-            return util_1.prepareResponse({ movies }, true);
+            logger.info('getMovies()');
+            try {
+                const movies = yield moviesRepository_1.default.getMoviesWhere({ disabled: false });
+                return util_1.prepareResponse({ movies }, true);
+            }
+            catch (error) {
+                const message = 'There was an error getting movies';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
+            }
         });
     }
     /**
@@ -41,6 +51,8 @@ class MovieService {
      */
     createMovie(movieCreationPayload) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info('Creating movie');
+            logger.info('New movie movieCreationPayload', movieCreationPayload);
             try {
                 const validation = validateCreateMoviePayload(movieCreationPayload);
                 if (!validation.valid) {
@@ -50,7 +62,9 @@ class MovieService {
                 return util_1.prepareResponse({ movie }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error creating the movie', error.message]);
+                const message = 'There was an error creating the movie';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -91,7 +105,9 @@ class MovieService {
                 }
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error adding movie review', error.message]);
+                const message = 'There was an error adding movie review';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -103,20 +119,25 @@ class MovieService {
      */
     disableMovie(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info('Disabling movie with id: ', movieId);
             try {
                 if (!movieId || movieId < 1) {
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
                 }
                 const movie = yield moviesRepository_1.default.getMovieById(movieId);
                 if (movie === null) {
-                    return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
+                    const message = `Movie with id ${movieId} was not found`;
+                    logger.warn(message);
+                    return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [message]);
                 }
                 movie.disabled = true;
                 movie.save();
                 return util_1.prepareResponse({ disabled: true }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error disabling movie', error.message]);
+                const message = 'There was an error disabling movie';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -128,18 +149,24 @@ class MovieService {
      */
     getMovieById(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getMovieById: ${id}`);
             try {
                 if (!id || id < 1) {
+                    logger.warn(`${MOVIE_INVALID_ID} ${id}`);
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
                 }
                 const movie = yield moviesRepository_1.default.getMovieByIdAndWhere(id, { disabled: false });
                 if (movie === null) {
+                    logger.warn(`Movie with id ${id} was not found or is not available. ${MOVIE_NOT_FOUND}`);
                     return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
                 }
+                logger.info(`getMovieById ${id}. Retrieved? ${movie !== null}`);
                 return util_1.prepareResponse({ movie }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movie by id', error.message]);
+                const message = `There was an error getting movie by id ${id}:`;
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -152,15 +179,19 @@ class MovieService {
      */
     getMovieReviews(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getMovieReviews movieId: ${movieId}`);
             try {
                 if (!movieId || movieId < 1) {
+                    logger.warn(`${MOVIE_INVALID_ID}: ${movieId}`);
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
                 }
                 const movies = yield reviewRepository_1.default.getMovieReviews(movieId);
                 return util_1.prepareResponse({ movies }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movie reviews', error.message]);
+                const message = 'There was an error getting movie reviews';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -174,15 +205,20 @@ class MovieService {
      */
     getMoviesWithOffsetAndLimit(offset, limit) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getMoviesWithOffsetAndLimit: offset: ${offset}, limit: ${limit}`);
             try {
                 if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
-                    return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+                    const message = 'offset and limit are required and must be valid numbers';
+                    logger.warn(`${MOVIE_INVALID_OFFSET_LIMIT}. ${message}`);
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, []);
                 }
                 const movies = yield moviesRepository_1.default.getMoviesWithOffsetAndLimit(offset, limit);
                 return util_1.prepareResponse({ movies }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination offset and limit', error.message]);
+                const message = 'There was an error getting movies with pagination offset and limit';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -194,6 +230,7 @@ class MovieService {
      */
     getMoviesWithOffset(offset) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getMoviesWithOffset: ${offset}`);
             try {
                 if (!isValidPaginationNumber(offset)) {
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
@@ -202,7 +239,9 @@ class MovieService {
                 return util_1.prepareResponse({ movies }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination offset', error.message]);
+                const message = 'There was an error getting movies with pagination offset';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -214,6 +253,7 @@ class MovieService {
      */
     getMoviesWithLimit(limit) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getMoviesWithLimit: ${limit}`);
             try {
                 if (!isValidPaginationNumber(limit)) {
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
@@ -222,7 +262,9 @@ class MovieService {
                 return util_1.prepareResponse({ movies }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination limit', error.message]);
+                const message = 'There was an error getting movies with pagination limit';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -235,15 +277,19 @@ class MovieService {
      */
     getReviewByReviewerIdAndMovieId(reviewerId, movieId) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getReviewByReviewerIdAndMovieId: reviewerId: ${reviewerId}, movieId: ${movieId}`);
             try {
                 if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
+                    logger.warn(`${MOVIE_INVALID_GET_REVIEW_PAYLOAD}. reviewerId and movieId are required`);
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
                 }
                 const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
                 return util_1.prepareResponse({ review }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies by reviewer id and movie id', error.message]);
+                const message = 'There was an error getting movies by reviewer id and movie id';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -255,15 +301,20 @@ class MovieService {
      */
     getReviewById(reviewId) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getReviewById: ${reviewId}`);
             try {
                 if (!isValidIdNumber(reviewId)) {
+                    logger.warn(`${REVIEW_INVALID_ID}. reviewId are required. Please Provide a valid review id: ${reviewId}`);
                     return util_1.prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
                 }
                 const review = yield reviewRepository_1.default.getReviewById(reviewId);
+                logger.info('review:', review);
                 return util_1.prepareResponse({ review }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting review by id', error.message]);
+                const message = 'There was an error getting review by id';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }
@@ -275,15 +326,19 @@ class MovieService {
      */
     getReviewerReviews(reviewerId) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.info(`getReviewerReviews: ${reviewerId}`);
             try {
                 if (!isValidIdNumber(reviewerId)) {
+                    logger.warn(`${MOVIE_INVALID_GET_REVIEW_PAYLOAD}`);
                     return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
                 }
                 const reviews = yield reviewRepository_1.default.getReviewerReviews(reviewerId);
                 return util_1.prepareResponse({ reviews }, true);
             }
             catch (error) {
-                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting review by id', error.message]);
+                const message = 'There was an error getting review by id';
+                logger.error(message, error);
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
             }
         });
     }

@@ -49,6 +49,7 @@ Review.init(
     comment: {
       type: DataTypes.STRING(255),
       allowNull: true,
+      defaultValue: '',
     }
   },
   {

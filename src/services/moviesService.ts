@@ -257,7 +257,7 @@ const validateCreateReviewPayload = (payload: ReviewCreationAttributes): Validat
 
 const isValidPaginationNumber = (number: number): boolean => {
   number = Number(number);
-  return (!Number.isNaN(number) && number > 0);
+  return (!Number.isNaN(number) && number > -1);
 }
 
 const isValidRatingStarsNumber = (stars: number): boolean => {

@@ -104,7 +104,16 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": ""
+									"raw": "{{baseUrl}}/movies/reviews/reviewer/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"reviews",
+										"reviewer",
+										"1"
+									]
 								}
 							},
 							"response": []
@@ -263,15 +272,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/movies/pagination/offset/5/limit/5",
+							"raw": "{{baseUrl}}/movies/pagination/limit/5",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"movies",
 								"pagination",
-								"offset",
-								"5",
 								"limit",
 								"5"
 							]
@@ -337,7 +344,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Jeremy\",\r\n    \"lastName\": \"Then\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Jeremy2\",\r\n    \"lastName\": \"Then2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -652,13 +659,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/1",
+							"raw": "{{baseUrl}}/users/jthen",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								"1"
+								"jthen"
 							]
 						}
 					},
@@ -726,13 +733,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/Elta_Johnson49/role",
+							"raw": "{{baseUrl}}/users/Renee_Deckow/role",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								"Elta_Johnson49",
+								"Renee_Deckow",
 								"role"
 							]
 						}

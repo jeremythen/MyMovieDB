@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isValidRole = exports.handleCommonResponse = exports.prepareResponse = void 0;
+exports.isValidId = exports.isValidRole = exports.handleCommonResponse = exports.prepareResponse = void 0;
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const enums_1 = require("./enums");
 exports.prepareResponse = (data, success, errorCode = "", errorMessages = []) => {
@@ -17,4 +17,8 @@ exports.handleCommonResponse = (MyMovieDbResponse, res) => {
 };
 exports.isValidRole = (role) => {
     return role === enums_1.Role.USER || role === enums_1.Role.ADMIN;
+};
+exports.isValidId = (id) => {
+    id = Number(id);
+    return !Number.isNaN(id) && id > 0;
 };

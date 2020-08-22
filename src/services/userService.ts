@@ -1,13 +1,13 @@
-import User, { UserCreationAttributes } from '../db/models/User';
+import { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
-import { prepareResponse, MyMovieDbResponse, isValidRole } from '../util/util';
+import { prepareResponse, MyMovieDbResponse, isValidRole, isValidId } from '../util/util';
 import userRepository from '../repositories/userRepository';
 import validator from 'validator';
 import { generateJwtToken } from '../util/jwtTokenUtil';
 import { UserError, Role } from '../util/enums';
 import { ValidationResult } from '../util/util';
 
-const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS, USER_NOT_FOUND, USER_INVALID_ROLE } = UserError;
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS, USER_NOT_FOUND, USER_INVALID_ROLE, USER_INVALID_ID } = UserError;
 
 class UserService {
 
@@ -23,6 +23,22 @@ class UserService {
 
     async getUserByUsername(username: string): Promise<MyMovieDbResponse> {
         const user = await userRepository.getUserByUsername(username);
+        if (user === null) {
+            return prepareResponse(null, false, USER_NOT_FOUND, `User with username '${username} was not found`);
+        }
+        return prepareResponse({ user }, true);
+    }
+
+    async getUserById(id: number): Promise<MyMovieDbResponse> {
+
+        if (!isValidId(id)) {
+            return prepareResponse(null, false, USER_INVALID_ID, `User id is invalid`);
+        }
+
+        const user = await userRepository.getUserById(id);
+        if (user === null) {
+            return prepareResponse(null, false, USER_NOT_FOUND, `User with username '${id} was not found`);
+        }
         return prepareResponse({ user }, true);
     }
 

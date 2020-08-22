@@ -3,10 +3,12 @@ import { Sequelize } from 'sequelize';
 import envConfig from '../config/envConfig';
 
 const {
-  database: { host, password, },
+  database: { password, databaseName },
 } = envConfig;
 
-const sequelize = new Sequelize('mymoviedb', 'root', password, {
+
+
+const sequelize = new Sequelize(databaseName, 'root', password, {
   host: '127.0.0.1',
   dialect: 'mysql',
   port: 3306

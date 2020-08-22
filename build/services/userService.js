@@ -18,7 +18,7 @@ const userRepository_1 = __importDefault(require("../repositories/userRepository
 const validator_1 = __importDefault(require("validator"));
 const jwtTokenUtil_1 = require("../util/jwtTokenUtil");
 const enums_1 = require("../util/enums");
-const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS, USER_NOT_FOUND, USER_INVALID_ROLE } = enums_1.UserError;
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS, USER_NOT_FOUND, USER_INVALID_ROLE, USER_INVALID_ID } = enums_1.UserError;
 class UserService {
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,6 +35,21 @@ class UserService {
     getUserByUsername(username) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield userRepository_1.default.getUserByUsername(username);
+            if (user === null) {
+                return util_1.prepareResponse(null, false, USER_NOT_FOUND, `User with username '${username} was not found`);
+            }
+            return util_1.prepareResponse({ user }, true);
+        });
+    }
+    getUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!util_1.isValidId(id)) {
+                return util_1.prepareResponse(null, false, USER_INVALID_ID, `User id is invalid`);
+            }
+            const user = yield userRepository_1.default.getUserById(id);
+            if (user === null) {
+                return util_1.prepareResponse(null, false, USER_NOT_FOUND, `User with username '${id} was not found`);
+            }
             return util_1.prepareResponse({ user }, true);
         });
     }

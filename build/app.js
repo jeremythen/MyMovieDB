@@ -54,3 +54,4 @@ app.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
 app.listen(port, () => {
     console.log(`Running on port ${port}`);
 });
+exports.default = app;

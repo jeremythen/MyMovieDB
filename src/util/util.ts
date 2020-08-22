@@ -33,3 +33,8 @@ export const handleCommonResponse = (MyMovieDbResponse: MyMovieDbResponse, res: 
 export const isValidRole = (role: string) => {
   return role === Role.USER || role === Role.ADMIN;
 }
+
+export const isValidId = (id: number) => {
+  id = Number(id);
+  return !Number.isNaN(id) && id > 0;
+}

@@ -11,6 +11,7 @@ var UserError;
     UserError["USER_UNKNOWN_ERROR"] = "USER_UNKNOWN_ERROR";
     UserError["USER_NOT_FOUND"] = "USER_NOT_FOUND";
     UserError["USER_INVALID_ROLE"] = "USER_INVALID_ROLE";
+    UserError["USER_INVALID_ID"] = "USER_INVALID_ID";
 })(UserError = exports.UserError || (exports.UserError = {}));
 var Role;
 (function (Role) {

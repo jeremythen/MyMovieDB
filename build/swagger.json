@@ -1,547 +1,955 @@
 {
+    "openapi": "3.0.0",
     "info": {
-        "_postman_id": "f9cff475-6d44-45b0-a6bb-402fa2b27b2c",
-        "name": "MyMovieDB",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+        "description": "This is the MyMovieDB API definition",
+        "version": "1.0.0",
+        "title": "MyMovieDB",
+        "contact": {
+            "email": "jeremythen16@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
     },
-    "item": [
+    "tags": [
         {
-            "name": "Movies",
-            "item": [
-                {
-                    "name": "Reviews",
-                    "item": [
-                        {
-                            "name": "Get Reviews",
-                            "request": {
-                                "method": "GET",
-                                "header": [],
-                                "url": {
-                                    "raw": "{{baseUrl}}/movies/1/reviews",
-                                    "host": ["{{baseUrl}}"],
-                                    "path": ["movies", "1", "reviews"]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Add Review",
-                            "request": {
-                                "method": "POST",
-                                "header": [],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\r\n    \"movieId\": 1,\r\n    \"reviewerId\": 1,\r\n    \"reviewerStars\": 5,\r\n    \"comment\": \"Test review cmment for movie 2\"\r\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{baseUrl}}/movies/1/reviews",
-                                    "host": ["{{baseUrl}}"],
-                                    "path": ["movies", "1", "reviews"]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Get Review By Movie Id and Reviewer Id",
-                            "request": {
-                                "method": "GET",
-                                "header": [],
-                                "url": {
-                                    "raw": "{{baseUrl}}/movies/1/reviews/reviewer/1",
-                                    "host": ["{{baseUrl}}"],
-                                    "path": ["movies", "1", "reviews", "reviewer", "1"]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Get Reviews By Id",
-                            "request": {
-                                "method": "GET",
-                                "header": [],
-                                "url": {
-                                    "raw": "{{baseUrl}}/movies/reviews/1",
-                                    "host": ["{{baseUrl}}"],
-                                    "path": ["movies", "reviews", "1"]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Get Reviewers reviews",
-                            "request": {
-                                "method": "GET",
-                                "header": [],
-                                "url": {
-                                    "raw": ""
-                                }
-                            },
-                            "response": []
-                        }
-                    ],
-                    "protocolProfileBehavior": {},
-                    "_postman_isSubFolder": true
-                },
-                {
-                    "name": "Get All Movies",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/movies",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["movies"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Movie By Id",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/movies/1",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["movies", "1"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Movies Reviewes",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/movies/reviews/100",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["movies", "reviews", "100"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Disable Movie",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "PUT",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/movies/1/disable/",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["movies", "1", "disable", ""]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Movie Review By Id",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/movies/reviews/movie/2",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["movies", "reviews", "movie", "2"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Movies With Pagination offset and limit",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/movies/pagination/offset/5/limit/5",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["movies", "pagination", "offset", "5", "limit", "5"]
-                        }
-                    },
-                    "response": []
-                }
-            ],
-            "protocolProfileBehavior": {}
+            "name": "movies",
+            "description": "Manage Movies"
         },
         {
-            "name": "Actors",
-            "item": [
-                {
-                    "name": "Get Actors",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/actors",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["actors"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Actor By Id",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/actors/1",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["actors", "1"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Create Actor",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"firstName\": \"Jeremy\",\r\n    \"lastName\": \"Then\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/actors",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["actors"]
-                        }
-                    },
-                    "response": []
-                }
-            ],
-            "protocolProfileBehavior": {}
-        },
-        {
-            "name": "Directors",
-            "item": [
-                {
-                    "name": "Get Directors",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/directors",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["directors"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Director By Id",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/directors/1",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["directors", "1"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Create Director",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"firstName\": \"Jeremy\",\r\n    \"lastName\": \"Then\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/directors",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["directors"]
-                        }
-                    },
-                    "response": []
-                }
-            ],
-            "event": [
-                {
-                    "listen": "prerequest",
-                    "script": {
-                        "id": "e2cc2acb-c376-4283-b14f-840ddfaad98e",
-                        "type": "text/javascript",
-                        "exec": [""]
-                    }
-                },
-                {
-                    "listen": "test",
-                    "script": {
-                        "id": "66050938-2692-4219-be63-4fb302ee768a",
-                        "type": "text/javascript",
-                        "exec": [""]
-                    }
-                }
-            ],
-            "protocolProfileBehavior": {}
-        },
-        {
-            "name": "Users",
-            "item": [
-                {
-                    "name": "Get Users",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/users",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["users"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "login",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "id": "954e2785-0d1d-44e7-8749-8c618927a9a8",
-                                "exec": [
-                                    "\r",
-                                    "var jsonData = pm.response.json();\r",
-                                    "\r",
-                                    "var token = jsonData.data.token;\r",
-                                    "\r",
-                                    "console.log('token', token);\r",
-                                    "\r",
-                                    "pm.environment.set(\"token\", token);"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"username\": \"jthen\",\r\n    \"password\": \"123456\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/login",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["login"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Register",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "id": "6b0b0ba5-6cce-41f1-963c-997300e70f04",
-                                "exec": [
-                                    "\r",
-                                    "var jsonData = pm.response.json();\r",
-                                    "\r",
-                                    "var token = jsonData.data.token;\r",
-                                    "\r",
-                                    "console.log('token', token);\r",
-                                    "\r",
-                                    "pm.environment.set(\"token\", token);"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"username\": \"jthen\",\r\n    \"email\": \"jeremy@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"firstName\": \"Jeremy\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/register",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["register"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get User By Username",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/users/1",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["users", "1"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Delete User",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "DELETE",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/users/Elta_Johnson49",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["users", "Elta_Johnson49"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update User Role",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "PUT",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"username\": \"Elta_Johnson49\",\r\n    \"role\": \"ADMIN\"\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/users/Elta_Johnson49/role",
-                            "host": ["{{baseUrl}}"],
-                            "path": ["users", "Elta_Johnson49", "role"]
-                        }
-                    },
-                    "response": []
-                }
-            ],
-            "protocolProfileBehavior": {}
+            "name": "users",
+            "description": "User information"
         }
     ],
-    "protocolProfileBehavior": {}
+    "paths": {
+        "/movies": {
+            "get": {
+                "tags": ["movies"],
+                "summary": "Get all movies",
+                "operationId": "getMovies",
+                "description": "Get all the movies. Anybody, logged in or not can call this endpoint.",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved movies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Movie"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["movies"],
+                "summary": "Creates a movie",
+                "description": "Create a movie. Only the admin can access this endpoint.",
+                "operationId": "createMovie",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MovieCreationPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created movie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NewMovieCreated"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/{id}": {
+            "get": {
+                "tags": ["movies"],
+                "summary": "Get a movie by id",
+                "description": "Get a movie by the specified id.",
+                "operationId": "getMovieById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The movie id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved movie specified by that id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Movie"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/reviews": {
+            "get": {
+                "tags": ["movies"],
+                "summary": "Get a review by it's id",
+                "operationId": "getReviewById",
+                "description": "Get a review by the specified reviewId",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved movies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Review"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Etc",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RevieBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/{id}/disable": {
+            "put": {
+                "tags": ["movies"],
+                "summary": "Diactivates the movie",
+                "operationId": "diactivateMovie",
+                "description": "Diactivates the movie specified by the id. After this, the movie will not be visible. Only an admin can access this endpoint",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The movie id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated movie",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DisableMovieResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DisableMovieBadResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "tags": ["users"],
+                "security": [],
+                "summary": "Register a user",
+                "description": "Register a user. Any not logged in user can call this endpoint.",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Register"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "bad input parameter"
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": ["users"],
+                "security": [],
+                "summary": "User login",
+                "description": "A logged out user calling this endpoint to login will receive a different JWT token each time. This endpoint will return a jwt token that the frontend will send for each other request as a logged in user.",
+                "operationId": "loggingUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "token": "jwttoken"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get users",
+                "description": "Get all users. Only ADMIN can all this endpoint.",
+                "operationId": "getUsers",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Users"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "/users/{userName}": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get a user",
+                "description": "Get a user specified by userName. Only ADMIN can all this endpoint.",
+                "operationId": "getUserById",
+                "parameters": [
+                    {
+                        "name": "userName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "jeremythen"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["users"],
+                "summary": "Deletes a user",
+                "description": "Deletes a user with the specified userName. Only ADMIN can all this endpoint.",
+                "operationId": "deleteUserById",
+                "parameters": [
+                    {
+                        "name": "userName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "jeremythen"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "400": {
+                        "description": "bad input parameter"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "/users/{userName}/role/": {
+            "put": {
+                "tags": ["users"],
+                "summary": "Add a role",
+                "description": "Add a role to the specified userName. Only ADMIN can all this endpoint.",
+                "operationId": "addUserRole",
+                "parameters": [
+                    {
+                        "name": "userName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "jeremythen"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userName": {
+                                        "type": "string",
+                                        "example": "jeremythen"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": ["USER", "ADMIN"],
+                                        "example": "ADMIN"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "bad input parameter"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "components": {
+        "responses": {
+            "UnauthorizedError": {
+                "description": "Access token is missing or invalid"
+            },
+            "MyMovieDbBadRequest": {
+                "description": "Etc",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "Users": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "jeremy"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "jeremy@gmail.com"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "enum": ["USER", "ADMIN"],
+                            "example": "ADMIN"
+                        }
+                    }
+                }
+            },
+            "Register": {
+                "type": "object",
+                "required": ["name", "username", "email", "password"],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "jeremy"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "jeremy@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "yourpass"
+                    }
+                }
+            },
+            "Login": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "jeremy"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "yourpass"
+                    }
+                }
+            },
+            "Movie": {
+                "type": "object",
+                "required": ["id", "title", "year", "time", "language", "distributor"],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Avengers End Game",
+                        "default": "Avengers End Game"
+                    },
+                    "year": {
+                        "description": "The year of th emovie",
+                        "type": "integer",
+                        "example": 1,
+                        "default": 1
+                    },
+                    "time": {
+                        "description": "The duration of the movie in minutes",
+                        "type": "string",
+                        "example": 120
+                    },
+                    "language": {
+                        "description": "The language the movie is originally in",
+                        "type": "string",
+                        "example": "English"
+                    },
+                    "distributor": {
+                        "description": "The distributor of the movie",
+                        "type": "string",
+                        "example": "Universal Pictures"
+                    },
+                    "casts": {
+                        "description": "The list of actors staring in this movie",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Cast"
+                        }
+                    },
+                    "directores": {
+                        "description": "The directores of this movie",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Director"
+                        }
+                    },
+                    "genres": {
+                        "description": "The genres of this movie",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Genre"
+                        }
+                    }
+                }
+            },
+            "MyMovieDbResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": {
+                            "$ref": "#/components/schemas/Movie"
+                        },
+                        "default": {
+                            "$ref": "#/components/schemas/Movie"
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "MOVIE_INVALID_PAYLOAD"
+                    },
+                    "errorMessages": {
+                        "description": "The detailed message of the error that happened",
+                        "type": "string",
+                        "example": "No movie review payload was provided"
+                    }
+                }
+            },
+            "MyMovieDbBadResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": null
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "MOVIE_INVALID_PAYLOAD"
+                    },
+                    "errorMessages": {
+                        "description": "The detailed message of the error that happened",
+                        "type": "string",
+                        "example": "No movie review payload was provided"
+                    }
+                }
+            },
+            "Cast": {
+                "type": "object",
+                "required": ["actorId", "movieId", "role"],
+                "properties": {
+                    "id": {
+                        "description": "The cast's id",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "actorId": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "movieId": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "role": {
+                        "description": "The role of this actor in the movie",
+                        "type": "string",
+                        "example": "Tony Stark"
+                    }
+                }
+            },
+            "Actor": {
+                "type": "object",
+                "required": ["firstName", "lastName"],
+                "properties": {
+                    "id": {
+                        "description": "The actor's id",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    }
+                }
+            },
+            "Director": {
+                "type": "object",
+                "required": ["firstName", "lastName"],
+                "properties": {
+                    "id": {
+                        "description": "The director's id",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    }
+                }
+            },
+            "Genre": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "title": {
+                        "description": "The unique title of the genre.",
+                        "type": "string",
+                        "enum": ["ACTION", "ADVENTURE", "COMEDY", "CRIME"],
+                        "example": "ACTION"
+                    }
+                }
+            },
+            "Review": {
+                "type": "object",
+                "required": ["movieId", "reviewerId", "reviewerStars"],
+                "properties": {
+                    "id": {
+                        "description": "The review's id",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "movieId": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "reviewerId": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "reviewerStars": {
+                        "description": "The stars that the reviewer is giving to this movie",
+                        "type": "integer",
+                        "example": 5,
+                        "default": 5
+                    }
+                }
+            },
+            "Reviewer": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                    "id": {
+                        "description": "The actor's id",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jeremy Then"
+                    }
+                }
+            },
+            "MovieCreationPayload": {
+                "type": "object",
+                "required": ["title", "year", "time"],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Avengers End Game",
+                        "default": "Avengers End Game"
+                    },
+                    "year": {
+                        "description": "The year of th emovie",
+                        "type": "integer",
+                        "example": 1,
+                        "default": 1
+                    },
+                    "time": {
+                        "description": "The duration of the movie in minutes",
+                        "type": "string",
+                        "example": 120
+                    },
+                    "language": {
+                        "description": "The language the movie is originally in",
+                        "type": "string",
+                        "example": "English"
+                    },
+                    "distributor": {
+                        "description": "The distributor of the movie",
+                        "type": "string",
+                        "example": "Universal Pictures"
+                    }
+                }
+            },
+            "NewMovieCreated": {
+                "type": "object",
+                "required": ["title", "year", "time"],
+                "properties": {
+                    "id": {
+                        "description": "The id of the newly created movie",
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Avengers End Game",
+                        "default": "Avengers End Game"
+                    },
+                    "year": {
+                        "description": "The year of th emovie",
+                        "type": "integer",
+                        "example": 1,
+                        "default": 1
+                    },
+                    "time": {
+                        "description": "The duration of the movie in minutes",
+                        "type": "string",
+                        "example": 120
+                    },
+                    "language": {
+                        "description": "The language the movie is originally in",
+                        "type": "string",
+                        "example": "English"
+                    },
+                    "distributor": {
+                        "description": "The distributor of the movie",
+                        "type": "string",
+                        "example": "Universal Pictures"
+                    }
+                }
+            },
+            "RevieBadResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": null
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "REVIEW_INVALID_ID"
+                    },
+                    "errorMessages": {
+                        "description": "The detailed message of the error that happened",
+                        "type": "string",
+                        "example": "reviewId are required. Please Provide a valid review id"
+                    }
+                }
+            },
+            "DisableMovieResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": {
+                            "disabled": true
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": null
+                    },
+                    "errorMessages": {
+                        "description": "The detailed message of the error that happened",
+                        "type": "string",
+                        "example": null
+                    }
+                }
+            },
+            "DisableMovieBadResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": null
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "MOVIE_NOT_FOUND"
+                    },
+                    "errorMessages": {
+                        "description": "The detailed message of the error that happened",
+                        "type": "string",
+                        "example": "Invalid movie id"
+                    }
+                }
+            }
+        }
+    }
 }

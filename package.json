@@ -4,11 +4,11 @@
   "description": "Digital platform to store movies and manage reviews and ratings",
   "main": "app.js",
   "scripts": {
-    "test": "set NODE_ENV=test && tsc && mocha -r ts-node/register src/test/*",
+    "test": "mocha -r ts-node/register src/test/*",
     "tsc": "npx tsc",
-    "start": "npx ts-node-dev --respawn --transpile-only ./src/app.ts",
+    "start": "ts-node-dev --respawn --transpile-only ./src/app.ts",
     "prod": "npx tsc && node ./build/app.js",
-    "docker-build": "set NODE_ENV=docker && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm run prod"
+    "docker-build": "env NODE_ENV=docker && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm run prod"
   },
   "repository": {
     "type": "git",

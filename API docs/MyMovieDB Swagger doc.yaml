@@ -61,13 +61,13 @@ paths:
         200:
           description: Successfully created movie
           content:
-            appliation/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/NewMovieCreated'
         400:
           description: bad input parameter
           content:
-            appliation/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/MyMovieDbBadResponse'
   /movies/{id}:

@@ -1,0 +1,1029 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is the MyMovieDB API definition",
+    "version": "1.0.0",
+    "title": "MyMovieDB",
+    "contact": {
+      "email": "jeremythen16@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "movies",
+      "description": "Manage Movies"
+    },
+    {
+      "name": "users",
+      "description": "User information"
+    }
+  ],
+  "paths": {
+    "/movies": {
+      "get": {
+        "tags": [
+          "movies"
+        ],
+        "summary": "Get all movies",
+        "operationId": "getMovies",
+        "description": "Get all the movies. Anybody, logged in or not can call this endpoint.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Movie"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "movies"
+        ],
+        "summary": "Creates a movie",
+        "description": "Create a movie. Only the admin can access this endpoint.",
+        "operationId": "createMovie",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovieCreationPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created movie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewMovieCreated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "get": {
+        "tags": [
+          "movies"
+        ],
+        "summary": "Get a movie by id",
+        "description": "Get a movie by the specified id.",
+        "operationId": "getMovieById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movie specified by that id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Movie"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/reviews": {
+      "get": {
+        "tags": [
+          "movies"
+        ],
+        "summary": "Get a review by it's id",
+        "operationId": "getReviewById",
+        "description": "Get a review by the specified reviewId",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Review"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Etc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevieBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}/disable": {
+      "put": {
+        "tags": [
+          "movies"
+        ],
+        "summary": "Diactivates the movie",
+        "operationId": "diactivateMovie",
+        "description": "Diactivates the movie specified by the id. After this, the movie will not be visible. Only an admin can access this endpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The movie id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated movie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisableMovieResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisableMovieBadResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "security": [],
+        "summary": "Register a user",
+        "description": "Register a user. Any not logged in user can call this endpoint.",
+        "operationId": "registerUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Register"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "security": [],
+        "summary": "User login",
+        "description": "A logged out user calling this endpoint to login will receive a different JWT token each time. This endpoint will return a jwt token that the frontend will send for each other request as a logged in user.",
+        "operationId": "loggingUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "jwttoken"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get users",
+        "description": "Get all users. Only ADMIN can all this endpoint.",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Users"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/users/{userName}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get a user",
+        "description": "Get a user specified by userName. Only ADMIN can all this endpoint.",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "jeremythen"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Users"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Deletes a user",
+        "description": "Deletes a user with the specified userName. Only ADMIN can all this endpoint.",
+        "operationId": "deleteUserById",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "jeremythen"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/users/{userName}/role/": {
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Add a role",
+        "description": "Add a role to the specified userName. Only ADMIN can all this endpoint.",
+        "operationId": "addUserRole",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "jeremythen"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string",
+                    "example": "jeremythen"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "USER",
+                      "ADMIN"
+                    ],
+                    "example": "ADMIN"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid"
+      },
+      "MyMovieDbBadRequest": {
+        "description": "Etc",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "$ref": "#/components/schemas/MyMovieDbBadResponse"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Users": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Jeremy"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Then"
+          },
+          "username": {
+            "type": "string",
+            "example": "jeremy"
+          },
+          "email": {
+            "type": "string",
+            "example": "jeremy@gmail.com"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "enum": [
+                "USER",
+                "ADMIN"
+              ],
+              "example": "ADMIN"
+            }
+          }
+        }
+      },
+      "Register": {
+        "type": "object",
+        "required": [
+          "name",
+          "username",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Jeremy"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Then"
+          },
+          "username": {
+            "type": "string",
+            "example": "jeremy"
+          },
+          "email": {
+            "type": "string",
+            "example": "jeremy@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "yourpass"
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "jeremy"
+          },
+          "password": {
+            "type": "string",
+            "example": "yourpass"
+          }
+        }
+      },
+      "Movie": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "year",
+          "time",
+          "language",
+          "distributor"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "example": "Avengers End Game",
+            "default": "Avengers End Game"
+          },
+          "year": {
+            "description": "The year of th emovie",
+            "type": "integer",
+            "example": 1,
+            "default": 1
+          },
+          "time": {
+            "description": "The duration of the movie in minutes",
+            "type": "string",
+            "example": 120
+          },
+          "language": {
+            "description": "The language the movie is originally in",
+            "type": "string",
+            "example": "English"
+          },
+          "distributor": {
+            "description": "The distributor of the movie",
+            "type": "string",
+            "example": "Universal Pictures"
+          },
+          "casts": {
+            "description": "The list of actors staring in this movie",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cast"
+            }
+          },
+          "directores": {
+            "description": "The directores of this movie",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Director"
+            }
+          },
+          "genres": {
+            "description": "The genres of this movie",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Genre"
+            }
+          }
+        }
+      },
+      "MyMovieDbResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": {
+              "$ref": "#/components/schemas/Movie"
+            },
+            "default": {
+              "$ref": "#/components/schemas/Movie"
+            }
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": true
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "MOVIE_INVALID_PAYLOAD"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "No movie review payload was provided"
+          }
+        }
+      },
+      "MyMovieDbBadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": null
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": false
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "MOVIE_INVALID_PAYLOAD"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "No movie review payload was provided"
+          }
+        }
+      },
+      "Cast": {
+        "type": "object",
+        "required": [
+          "actorId",
+          "movieId",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "description": "The cast's id",
+            "type": "integer",
+            "example": 1
+          },
+          "actorId": {
+            "type": "integer",
+            "example": 2
+          },
+          "movieId": {
+            "type": "integer",
+            "example": 3
+          },
+          "role": {
+            "description": "The role of this actor in the movie",
+            "type": "string",
+            "example": "Tony Stark"
+          }
+        }
+      },
+      "Actor": {
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "properties": {
+          "id": {
+            "description": "The actor's id",
+            "type": "integer",
+            "example": 1
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Jeremy"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Then"
+          }
+        }
+      },
+      "Director": {
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "properties": {
+          "id": {
+            "description": "The director's id",
+            "type": "integer",
+            "example": 1
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Jeremy"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Then"
+          }
+        }
+      },
+      "Genre": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 2
+          },
+          "title": {
+            "description": "The unique title of the genre.",
+            "type": "string",
+            "enum": [
+              "ACTION",
+              "ADVENTURE",
+              "COMEDY",
+              "CRIME"
+            ],
+            "example": "ACTION"
+          }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "required": [
+          "movieId",
+          "reviewerId",
+          "reviewerStars"
+        ],
+        "properties": {
+          "id": {
+            "description": "The review's id",
+            "type": "integer",
+            "example": 1
+          },
+          "movieId": {
+            "type": "integer",
+            "example": 5
+          },
+          "reviewerId": {
+            "type": "integer",
+            "example": 2
+          },
+          "reviewerStars": {
+            "description": "The stars that the reviewer is giving to this movie",
+            "type": "integer",
+            "example": 5,
+            "default": 5
+          }
+        }
+      },
+      "Reviewer": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "description": "The actor's id",
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Jeremy Then"
+          }
+        }
+      },
+      "MovieCreationPayload": {
+        "type": "object",
+        "required": [
+          "title",
+          "year",
+          "time"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Avengers End Game",
+            "default": "Avengers End Game"
+          },
+          "year": {
+            "description": "The year of th emovie",
+            "type": "integer",
+            "example": 1,
+            "default": 1
+          },
+          "time": {
+            "description": "The duration of the movie in minutes",
+            "type": "string",
+            "example": 120
+          },
+          "language": {
+            "description": "The language the movie is originally in",
+            "type": "string",
+            "example": "English"
+          },
+          "distributor": {
+            "description": "The distributor of the movie",
+            "type": "string",
+            "example": "Universal Pictures"
+          }
+        }
+      },
+      "NewMovieCreated": {
+        "type": "object",
+        "required": [
+          "title",
+          "year",
+          "time"
+        ],
+        "properties": {
+          "id": {
+            "description": "The id of the newly created movie",
+            "type": "integer",
+            "example": 6
+          },
+          "title": {
+            "type": "string",
+            "example": "Avengers End Game",
+            "default": "Avengers End Game"
+          },
+          "year": {
+            "description": "The year of th emovie",
+            "type": "integer",
+            "example": 1,
+            "default": 1
+          },
+          "time": {
+            "description": "The duration of the movie in minutes",
+            "type": "string",
+            "example": 120
+          },
+          "language": {
+            "description": "The language the movie is originally in",
+            "type": "string",
+            "example": "English"
+          },
+          "distributor": {
+            "description": "The distributor of the movie",
+            "type": "string",
+            "example": "Universal Pictures"
+          }
+        }
+      },
+      "RevieBadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": null
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": false
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "REVIEW_INVALID_ID"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "reviewId are required. Please Provide a valid review id"
+          }
+        }
+      },
+      "DisableMovieResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": {
+              "disabled": true
+            }
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": true
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": null
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": null
+          }
+        }
+      },
+      "DisableMovieBadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested. null if any issue requesting it",
+            "type": "string",
+            "example": null
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": false
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": "MOVIE_NOT_FOUND"
+          },
+          "errorMessages": {
+            "description": "The detailed message of the error that happened",
+            "type": "string",
+            "example": "Invalid movie id"
+          }
+        }
+      }
+    }
+  }
+}

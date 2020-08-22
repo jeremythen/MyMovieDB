@@ -26,6 +26,7 @@ app.use("/movies", movies_1.default);
 app.use("/actors", actors_1.default);
 app.use("/directors", directors_1.default);
 app.use("/users", users_1.default);
+//app.use("/swagger", swaggerUi.serve)
 app.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Welcome to MyMovieDB!");
 }));

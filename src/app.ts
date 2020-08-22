@@ -5,6 +5,8 @@ import userRoutes from './routes/users';
 import moviesRoutes from './routes/movies';
 import directorsRoutes from './routes/directors';
 import actorsRoutes from './routes/actors';
+//import swaggerUi from 'swagger-ui-express';
+import * as swaggerDoc from './swagger.json'
 
 const app: express.Application = express();
 
@@ -16,6 +18,8 @@ app.use("/movies", moviesRoutes);
 app.use("/actors", actorsRoutes);
 app.use("/directors", directorsRoutes);
 app.use("/users", userRoutes);
+
+//app.use("/swagger", swaggerUi.serve)
 
 app.get("/", async (req, res, next) => {
   res.send("Welcome to MyMovieDB!");

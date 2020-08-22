@@ -5,9 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "set NODE_ENV=test && tsc && mocha -r ts-node/register src/test/*",
-    "tsc": "tsc",
-    "start": "ts-node-dev --respawn --transpile-only ./src/app.ts",
-    "prod": "tsc && node ./build/app.js"
+    "tsc": "npx tsc",
+    "start": "npx ts-node-dev --respawn --transpile-only ./src/app.ts",
+    "prod": "npx tsc && node ./build/app.js",
+    "docker-build": "set NODE_ENV=docker && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm run prod"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "sequelize": "^6.3.4",
     "sequelize-cli": "^6.2.0",
     "sequelize-typescript": "^1.1.0",
+    "swagger-ui-express": "^4.1.4",
     "tslib": "^2.0.1",
     "typescript": "^3.9.7",
     "validator": "^13.1.1"

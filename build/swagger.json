@@ -1,0 +1,547 @@
+{
+    "info": {
+        "_postman_id": "f9cff475-6d44-45b0-a6bb-402fa2b27b2c",
+        "name": "MyMovieDB",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Movies",
+            "item": [
+                {
+                    "name": "Reviews",
+                    "item": [
+                        {
+                            "name": "Get Reviews",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/movies/1/reviews",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["movies", "1", "reviews"]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Add Review",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"movieId\": 1,\r\n    \"reviewerId\": 1,\r\n    \"reviewerStars\": 5,\r\n    \"comment\": \"Test review cmment for movie 2\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/movies/1/reviews",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["movies", "1", "reviews"]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Review By Movie Id and Reviewer Id",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/movies/1/reviews/reviewer/1",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["movies", "1", "reviews", "reviewer", "1"]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Reviews By Id",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/movies/reviews/1",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["movies", "reviews", "1"]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Reviewers reviews",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": ""
+                                }
+                            },
+                            "response": []
+                        }
+                    ],
+                    "protocolProfileBehavior": {},
+                    "_postman_isSubFolder": true
+                },
+                {
+                    "name": "Get All Movies",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/movies",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["movies"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Movie By Id",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/movies/1",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["movies", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Movies Reviewes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/movies/reviews/100",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["movies", "reviews", "100"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Disable Movie",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/movies/1/disable/",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["movies", "1", "disable", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Movie Review By Id",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/movies/reviews/movie/2",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["movies", "reviews", "movie", "2"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Movies With Pagination offset and limit",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/movies/pagination/offset/5/limit/5",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["movies", "pagination", "offset", "5", "limit", "5"]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Actors",
+            "item": [
+                {
+                    "name": "Get Actors",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/actors",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["actors"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Actor By Id",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/actors/1",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["actors", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Actor",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"firstName\": \"Jeremy\",\r\n    \"lastName\": \"Then\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/actors",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["actors"]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Directors",
+            "item": [
+                {
+                    "name": "Get Directors",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/directors",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["directors"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Director By Id",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/directors/1",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["directors", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Director",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"firstName\": \"Jeremy\",\r\n    \"lastName\": \"Then\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/directors",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["directors"]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "id": "e2cc2acb-c376-4283-b14f-840ddfaad98e",
+                        "type": "text/javascript",
+                        "exec": [""]
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "id": "66050938-2692-4219-be63-4fb302ee768a",
+                        "type": "text/javascript",
+                        "exec": [""]
+                    }
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get Users",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "954e2785-0d1d-44e7-8749-8c618927a9a8",
+                                "exec": [
+                                    "\r",
+                                    "var jsonData = pm.response.json();\r",
+                                    "\r",
+                                    "var token = jsonData.data.token;\r",
+                                    "\r",
+                                    "console.log('token', token);\r",
+                                    "\r",
+                                    "pm.environment.set(\"token\", token);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"username\": \"jthen\",\r\n    \"password\": \"123456\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/login",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["login"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "6b0b0ba5-6cce-41f1-963c-997300e70f04",
+                                "exec": [
+                                    "\r",
+                                    "var jsonData = pm.response.json();\r",
+                                    "\r",
+                                    "var token = jsonData.data.token;\r",
+                                    "\r",
+                                    "console.log('token', token);\r",
+                                    "\r",
+                                    "pm.environment.set(\"token\", token);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"username\": \"jthen\",\r\n    \"email\": \"jeremy@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"firstName\": \"Jeremy\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/register",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["register"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User By Username",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/1",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/Elta_Johnson49",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "Elta_Johnson49"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update User Role",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"username\": \"Elta_Johnson49\",\r\n    \"role\": \"ADMIN\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/Elta_Johnson49/role",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "Elta_Johnson49", "role"]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        }
+    ],
+    "protocolProfileBehavior": {}
+}

@@ -1,15 +1,13 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const dialect = process.env.NODE_ENV?.trim() === 'test' ? 'sqlite' : process.env.DB_DIALECT;
-
 export default {
   database: {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    databaseName: process.env.DB_DATABASE,
-    host: process.env.DB_HOST,
-    dialect,
+    databaseName: 'mymoviedb',
+    host: '127.0.0.1',
+    dialect: 'mysql'
   },
   port: process.env.PORT,
   seqSeeds: process.env.SEQ_SEEDS || 20,

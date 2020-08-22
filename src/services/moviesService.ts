@@ -8,7 +8,7 @@ import reviewerRepository from '../repositories/reviewerRepository';
 import reviewRepository from '../repositories/reviewRepository';
 
 const { MOVIE_INVALID_PAYLOAD,
-  MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD } = MovieError;
+  MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = MovieError;
 
 class MovieService {
 
@@ -157,7 +157,7 @@ class MovieService {
 
   async getReviewById(reviewId: number): Promise<MyMovieDbResponse>  {
     if (!isValidIdNumber(reviewId)) {
-      return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewId are required']);
+      return prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
     }
 
     const review = await reviewRepository.getReviewById(reviewId);
@@ -165,7 +165,7 @@ class MovieService {
     return prepareResponse({ review }, true);
   }
 
-  async getReviewReviews(reviewerId: number): Promise<MyMovieDbResponse> {
+  async getReviewerReviews(reviewerId: number): Promise<MyMovieDbResponse> {
     if (!isValidIdNumber(reviewerId)) {
       return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
     }

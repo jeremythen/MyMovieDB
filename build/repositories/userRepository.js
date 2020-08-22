@@ -48,6 +48,11 @@ class UserRepository {
             return yield User_1.default.findOne({ where: { email } });
         });
     }
+    deleteUser(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield user.destroy();
+        });
+    }
 }
 const moviesRepository = Object.freeze(new UserRepository());
 exports.default = moviesRepository;

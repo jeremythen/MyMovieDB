@@ -27,7 +27,7 @@ Router.get("/reviews/movie/:id", async (req, res) => {
     handleCommonResponse(response, res);
 });
 
-Router.put("/disable/:id", authorize, async (req, res) => {
+Router.put("/:id/disable", authorize, async (req, res) => {
     const id = Number(req.params.id);
     const response = await moviesService.disableMovie(id);
     handleCommonResponse(response, res);
@@ -79,7 +79,7 @@ Router.get("/reviews/:id", async (req, res) => {
 
 Router.get("/reviews/reviewer/:reviewerId", async (req, res) => {
     const reviewerId = Number(req.params.reviewerId);
-    const response = await moviesService.getReviewReviews(reviewerId);
+    const response = await moviesService.getReviewerReviews(reviewerId);
     handleCommonResponse(response, res);
 });
 

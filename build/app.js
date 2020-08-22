@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const envConfig_1 = __importDefault(require("./config/envConfig"));
-const auth_1 = __importDefault(require("./routes/auth"));
+const users_1 = __importDefault(require("./routes/users"));
 const movies_1 = __importDefault(require("./routes/movies"));
 const directors_1 = __importDefault(require("./routes/directors"));
 const actors_1 = __importDefault(require("./routes/actors"));
@@ -25,7 +25,7 @@ app.use(body_parser_1.default.json());
 app.use("/movies", movies_1.default);
 app.use("/actors", actors_1.default);
 app.use("/directors", directors_1.default);
-app.use(auth_1.default);
+app.use("/users", users_1.default);
 app.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Welcome to MyMovieDB!");
 }));

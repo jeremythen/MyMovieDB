@@ -35,7 +35,7 @@ Router.get("/reviews/movie/:id", (req, res) => __awaiter(void 0, void 0, void 0,
     const response = yield moviesService_1.default.getMovieReviews(id);
     util_1.handleCommonResponse(response, res);
 }));
-Router.put("/disable/:id", authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Router.put("/:id/disable", authMiddleware_1.authorize, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     const response = yield moviesService_1.default.disableMovie(id);
     util_1.handleCommonResponse(response, res);
@@ -79,7 +79,7 @@ Router.get("/reviews/:id", (req, res) => __awaiter(void 0, void 0, void 0, funct
 }));
 Router.get("/reviews/reviewer/:reviewerId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reviewerId = Number(req.params.reviewerId);
-    const response = yield moviesService_1.default.getReviewReviews(reviewerId);
+    const response = yield moviesService_1.default.getReviewerReviews(reviewerId);
     util_1.handleCommonResponse(response, res);
 }));
 exports.default = Router;

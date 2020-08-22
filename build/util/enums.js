@@ -9,6 +9,8 @@ var UserError;
     UserError["USER_CREATE_ERROR"] = "USER_CREATE_ERROR";
     UserError["USER_INVALID_CREDENTIALS"] = "USER_INVALID_CREDENTIALS";
     UserError["USER_UNKNOWN_ERROR"] = "USER_UNKNOWN_ERROR";
+    UserError["USER_NOT_FOUND"] = "USER_NOT_FOUND";
+    UserError["USER_INVALID_ROLE"] = "USER_INVALID_ROLE";
 })(UserError = exports.UserError || (exports.UserError = {}));
 var Role;
 (function (Role) {
@@ -30,4 +32,5 @@ var MovieError;
     MovieError["DIRECTOR_INVALID_ID"] = "DIRECTOR_INVALID_ID";
     MovieError["DIRECTOR_NOT_FOUND"] = "DIRECTOR_NOT_FOUND";
     MovieError["MOVIE_INVALID_GET_REVIEW_PAYLOAD"] = "MOVIE_INVALID_GET_REVIEW_PAYLOAD";
+    MovieError["REVIEW_INVALID_ID"] = "REVIEW_INVALID_ID";
 })(MovieError = exports.MovieError || (exports.MovieError = {}));

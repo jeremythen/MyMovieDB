@@ -1,13 +1,13 @@
 import User, { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
-import { prepareResponse, MyMovieDbResponse } from '../util/util';
+import { prepareResponse, MyMovieDbResponse, isValidRole } from '../util/util';
 import userRepository from '../repositories/userRepository';
 import validator from 'validator';
 import { generateJwtToken } from '../util/jwtTokenUtil';
 import { UserError, Role } from '../util/enums';
 import { ValidationResult } from '../util/util';
 
-const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = UserError;
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS, USER_NOT_FOUND, USER_INVALID_ROLE } = UserError;
 
 class UserService {
 
@@ -91,11 +91,42 @@ class UserService {
                 return prepareResponse({ user, token }, true);
 
             } else {
-                return prepareResponse(null, false, USER_INVALID_CREDENTIALS);
+                return prepareResponse(null, false, USER_INVALID_CREDENTIALS, 'Invalid user credential');
             }
         } catch (error) {
             return prepareResponse(null, false, USER_UNKNOWN_ERROR, ['There was an unknown error. Try again later.']);
         }
+    }
+
+    async deleteUserByUsername(username: string) {
+        const user = await userRepository.getUserByUsername(username);
+
+        if (user === null) {
+            return prepareResponse(null, false, USER_NOT_FOUND, [`User with username ${username} was not found`]);
+        }
+
+        await userRepository.deleteUser(user);
+
+        return prepareResponse({ deleted: true }, true);
+    }
+
+    async updateUserRole(username: string, role: string) {
+
+        if (!isValidRole(role)) {
+            return prepareResponse(null, false, USER_INVALID_ROLE, [`Role ${role} is not a valid role`]);
+        }
+
+        const user = await userRepository.getUserByUsername(username);
+
+        if (user === null) {
+            return prepareResponse(null, false, USER_NOT_FOUND, [`User with username ${username} was not found`]);
+        }
+
+        user.role = role;
+        user.save();
+
+        return prepareResponse({ user }, true);
+
     }
 
 }

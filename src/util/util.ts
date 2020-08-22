@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import HttpStatus from 'http-status-codes';
+import { Role } from './enums';
 
 export const prepareResponse = (
   data: any,
@@ -27,4 +28,8 @@ export const handleCommonResponse = (MyMovieDbResponse: MyMovieDbResponse, res: 
     return res.status(HttpStatus.BAD_REQUEST).send(MyMovieDbResponse);
   }
   res.send(MyMovieDbResponse);
+}
+
+export const isValidRole = (role: string) => {
+  return role === Role.USER || role === Role.ADMIN;
 }

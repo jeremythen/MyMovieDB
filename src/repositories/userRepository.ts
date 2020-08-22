@@ -39,6 +39,11 @@ class UserRepository {
     async getUserByEmail(email: string): Promise<User | null> {
         return await User.findOne({ where: { email } });
     }
+
+    async deleteUser(user: User) {
+        return await user.destroy();
+    }
+
 }
 
 const moviesRepository = Object.freeze(new UserRepository());

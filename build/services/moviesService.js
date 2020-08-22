@@ -17,7 +17,7 @@ const util_1 = require("../util/util");
 const enums_1 = require("../util/enums");
 const reviewerRepository_1 = __importDefault(require("../repositories/reviewerRepository"));
 const reviewRepository_1 = __importDefault(require("../repositories/reviewRepository"));
-const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD } = enums_1.MovieError;
+const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = enums_1.MovieError;
 class MovieService {
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -138,13 +138,13 @@ class MovieService {
     getReviewById(reviewId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!isValidIdNumber(reviewId)) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewId are required']);
+                return util_1.prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
             }
             const review = yield reviewRepository_1.default.getReviewById(reviewId);
             return util_1.prepareResponse({ review }, true);
         });
     }
-    getReviewReviews(reviewerId) {
+    getReviewerReviews(reviewerId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!isValidIdNumber(reviewerId)) {
                 return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);

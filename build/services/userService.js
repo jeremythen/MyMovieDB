@@ -18,7 +18,7 @@ const userRepository_1 = __importDefault(require("../repositories/userRepository
 const validator_1 = __importDefault(require("validator"));
 const jwtTokenUtil_1 = require("../util/jwtTokenUtil");
 const enums_1 = require("../util/enums");
-const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS } = enums_1.UserError;
+const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INVALID_PAYLOAD, USER_UNKNOWN_ERROR, USER_USERNAME_EXISTS, USER_NOT_FOUND, USER_INVALID_ROLE } = enums_1.UserError;
 class UserService {
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -85,12 +85,36 @@ class UserService {
                     return util_1.prepareResponse({ user, token }, true);
                 }
                 else {
-                    return util_1.prepareResponse(null, false, USER_INVALID_CREDENTIALS);
+                    return util_1.prepareResponse(null, false, USER_INVALID_CREDENTIALS, 'Invalid user credential');
                 }
             }
             catch (error) {
                 return util_1.prepareResponse(null, false, USER_UNKNOWN_ERROR, ['There was an unknown error. Try again later.']);
             }
+        });
+    }
+    deleteUserByUsername(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield userRepository_1.default.getUserByUsername(username);
+            if (user === null) {
+                return util_1.prepareResponse(null, false, USER_NOT_FOUND, [`User with username ${username} was not found`]);
+            }
+            yield userRepository_1.default.deleteUser(user);
+            return util_1.prepareResponse({ deleted: true }, true);
+        });
+    }
+    updateUserRole(username, role) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!util_1.isValidRole(role)) {
+                return util_1.prepareResponse(null, false, USER_INVALID_ROLE, [`Role ${role} is not a valid role`]);
+            }
+            const user = yield userRepository_1.default.getUserByUsername(username);
+            if (user === null) {
+                return util_1.prepareResponse(null, false, USER_NOT_FOUND, [`User with username ${username} was not found`]);
+            }
+            user.role = role;
+            user.save();
+            return util_1.prepareResponse({ user }, true);
         });
     }
 }

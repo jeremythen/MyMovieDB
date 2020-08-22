@@ -253,6 +253,154 @@
         }
       }
     },
+    "/movies/pagination/offset/{offset}": {
+      "get": {
+        "tags": ["movies"],
+        "summary": "Get all movies after offset count movie record",
+        "operationId": "getPaginatedMoviesOffset",
+        "description": "Get all the movies that are after the movie with the offset position",
+        "security": [],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "path",
+            "required": true,
+            "description": "The offset from where to get movies",
+            "example": 5,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Movie"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnkownError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/pagination/limit/{limit}": {
+      "get": {
+        "tags": ["movies"],
+        "summary": "Get movies up to limit count",
+        "operationId": "getPaginatedMoviesLimit",
+        "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned",
+        "security": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "description": "The count limit to return",
+            "example": 2,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Movie"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnkownError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/pagination/offset/{offset}/limit/{limit}": {
+      "get": {
+        "tags": ["movies"],
+        "summary": "Get movies after th especified offset and up to limit count",
+        "operationId": "getPaginatedMoviesOffsetAndLimit",
+        "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned, aafter the movie with the offset position",
+        "security": [],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "path",
+            "required": true,
+            "description": "The offset from where to get movies",
+            "example": 5,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "description": "The count limit to return",
+            "example": 3,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Movie"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnkownError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/register": {
       "post": {
         "tags": ["users"],

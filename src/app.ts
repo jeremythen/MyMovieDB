@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import envConfig from './config/envConfig';
 import userRoutes from './routes/users';
 import moviesRoutes from './routes/movies';
 import directorsRoutes from './routes/directors';
@@ -10,7 +9,9 @@ import * as swaggerDoc from './swagger.json'
 
 const app: express.Application = express();
 
-const port = envConfig.port || 3000;
+const port = process.env.port || 3000;
+
+console.log('process.env', process.env)
 
 app.use(bodyParser.json());
 

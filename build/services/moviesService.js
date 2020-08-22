@@ -19,12 +19,25 @@ const reviewRepository_1 = __importDefault(require("../repositories/reviewReposi
 const userRepository_1 = __importDefault(require("../repositories/userRepository"));
 const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = enums_1.MovieError;
 class MovieService {
+    /**
+     *
+     * Returns the list of movies that are not disabled
+     * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+     *
+     */
     getMovies() {
         return __awaiter(this, void 0, void 0, function* () {
             const movies = yield moviesRepository_1.default.getMoviesWhere({ disabled: false });
             return util_1.prepareResponse({ movies }, true);
         });
     }
+    /**
+     *
+     * @param movieCreationPayload Creates a movie and returns the newly created movie in a MyMovieDbResponse object
+     * In the movieCreationPayload payload, the attributes title and year are required
+     * @returns a Promise with a MyMovieDbResponse object containing the newly created 'movie' attribute in it's 'data' attribute
+     *
+     */
     createMovie(movieCreationPayload) {
         return __awaiter(this, void 0, void 0, function* () {
             const validation = validateCreateMoviePayload(movieCreationPayload);
@@ -35,6 +48,13 @@ class MovieService {
             return util_1.prepareResponse({ movie }, true);
         });
     }
+    /**
+     *
+     * @param movieId the id of the movie which you would like to add a review to. This parameter is required.
+     * @param movieReviewPayload the payload of the Review. movieId, reviewId and reviewerStars are expected and required parameters in this payload.
+     * @returns a Promise with a MyMovieDbResponse object containing the newly created 'review' attribute in it's 'data' attribute
+     *
+     */
     addMovieReview(movieId, movieReviewPayload) {
         return __awaiter(this, void 0, void 0, function* () {
             const validation = validateCreateReviewPayload(movieReviewPayload);
@@ -64,6 +84,12 @@ class MovieService {
             }
         });
     }
+    /**
+     *
+     * @param movieId id of the movie to be disabled.
+     * @returns a Promise with a MyMovieDbResponse object containing 'disabled' attribute in it's 'data' attribute
+     *
+     */
     disableMovie(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!movieId || movieId < 1) {
@@ -78,6 +104,12 @@ class MovieService {
             return util_1.prepareResponse({ disabled: true }, true);
         });
     }
+    /**
+     *
+     * @param id is required.
+     * @returns a movie by it's id in a Promise with a MyMovieDbResponse object containing 'movie' attribute in it's 'data' attribute
+     *
+     */
     getMovieById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!id || id < 1) {
@@ -213,7 +245,7 @@ const validateCreateReviewPayload = (payload) => {
 };
 const isValidPaginationNumber = (number) => {
     number = Number(number);
-    return (!Number.isNaN(number) && number > 0);
+    return (!Number.isNaN(number) && number > -1);
 };
 const isValidRatingStarsNumber = (stars) => {
     stars = Number(stars);

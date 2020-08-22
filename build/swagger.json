@@ -20,6 +20,12 @@
         {
             "name": "users",
             "description": "User information"
+        },
+        {
+            "name": "actors"
+        },
+        {
+            "name": "directors"
         }
     ],
     "paths": {
@@ -36,10 +42,8 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Movie"
-                                    }
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/GetMoviesResponse"
                                 }
                             }
                         }
@@ -49,7 +53,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                                    "$ref": "#/components/schemas/UnkownError"
                                 }
                             }
                         }
@@ -89,7 +93,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/NewMovieCreated"
+                                    "$ref": "#/components/schemas/AddMovieResponse"
                                 }
                             }
                         }
@@ -130,7 +134,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Movie"
+                                    "$ref": "#/components/schemas/GetMovieByIdResponse"
                                 }
                             }
                         }
@@ -148,22 +152,33 @@
                 }
             }
         },
-        "/movies/reviews": {
+        "/movies/{id}/reviews": {
             "get": {
                 "tags": ["movies"],
                 "summary": "Get a review by it's id",
                 "operationId": "getReviewById",
                 "description": "Get a review by the specified reviewId",
                 "security": [],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The movie id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Successfully retrieved movies",
+                        "description": "Successfully retrieved movie's reviews",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Review"
+                                        "$ref": "#/components/schemas/GetMovieReviewsResponse"
                                     }
                                 }
                             }
@@ -175,6 +190,65 @@
                             "appliation/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/RevieBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["movies"],
+                "summary": "Add a review to a movie",
+                "description": "Add a review to a movie specified by it's id. Any logged in user can access this endpoint. A user can only add a review to one specific movie. If the user tries to add a review to the same movie, the previous review will be overriden by the new review.",
+                "operationId": "addMovieReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The movie id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddReviewPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created movie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddReviewResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyMovieDbBadResponse"
                                 }
                             }
                         }
@@ -236,6 +310,154 @@
                 }
             }
         },
+        "/movies/pagination/offset/{offset}": {
+            "get": {
+                "tags": ["movies"],
+                "summary": "Get all movies after offset count movie record",
+                "operationId": "getPaginatedMoviesOffset",
+                "description": "Get all the movies that are after the movie with the offset position",
+                "security": [],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "path",
+                        "required": true,
+                        "description": "The offset from where to get movies",
+                        "example": 5,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved movies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetMoviesResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/pagination/limit/{limit}": {
+            "get": {
+                "tags": ["movies"],
+                "summary": "Get movies up to limit count",
+                "operationId": "getPaginatedMoviesLimit",
+                "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned",
+                "security": [],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "required": true,
+                        "description": "The count limit to return",
+                        "example": 2,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved movies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetMoviesResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/pagination/offset/{offset}/limit/{limit}": {
+            "get": {
+                "tags": ["movies"],
+                "summary": "Get movies after th especified offset and up to limit count",
+                "operationId": "getPaginatedMoviesOffsetAndLimit",
+                "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned, aafter the movie with the offset position",
+                "security": [],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "path",
+                        "required": true,
+                        "description": "The offset from where to get movies",
+                        "example": 5,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "required": true,
+                        "description": "The count limit to return",
+                        "example": 3,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved movies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetMoviesResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": ["users"],
@@ -254,10 +476,25 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Ok"
+                        "description": "Successfully registered user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisterLoginResponse"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "bad input parameter"
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -280,17 +517,25 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Ok",
+                        "description": "Successfully registered user",
                         "content": {
                             "application/json": {
-                                "example": {
-                                    "token": "jwttoken"
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisterLoginResponse"
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "bad input parameter"
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -321,7 +566,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Users"
+                                        "$ref": "#/components/schemas/GetUsersResponse"
                                     }
                                 }
                             }
@@ -474,6 +719,346 @@
                     }
                 }
             }
+        },
+        "/actors": {
+            "get": {
+                "tags": ["actors"],
+                "summary": "Get all actors",
+                "operationId": "getActors",
+                "description": "Get the list of actors.",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved actors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActionDirectorData"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["actors"],
+                "summary": "Add an actor",
+                "description": "Add an actor. Only the admin can access this endpoint.",
+                "operationId": "addActor",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ActionDirectorCreationPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully added actor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ActionDirectorData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddActorBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["actors"],
+                "summary": "Deletes an actor",
+                "description": "Deletes a director with the specified id. Only ADMIN can all this endpoint.",
+                "operationId": "deleteActor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteActorBadResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "/actors/{id}": {
+            "get": {
+                "tags": ["actors"],
+                "summary": "Get an actor by id",
+                "description": "Get an actor by the specified id.",
+                "operationId": "getActorById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The actor id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved actor specified by that id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Actor"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteActorBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/directors": {
+            "get": {
+                "tags": ["directors"],
+                "summary": "Get all directors",
+                "operationId": "getDirectors",
+                "description": "Get the list of directors.",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved directors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActionDirectorData"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnkownError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["directors"],
+                "summary": "Add an director",
+                "description": "Add a director. Only the admin can access this endpoint.",
+                "operationId": "addDirector",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ActionDirectorCreationPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully added director",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ActionDirectorData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddActorBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["directors"],
+                "summary": "Deletes an director",
+                "description": "Deletes a director with the specified id. Only ADMIN can all this endpoint.",
+                "operationId": "deleteDirector",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer authorization token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwttoken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteActorBadResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "/directors/{id}": {
+            "get": {
+                "tags": ["directors"],
+                "summary": "Get an director by id",
+                "description": "Get an director by the specified id.",
+                "operationId": "getDirectorById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The director id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved director specified by that id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Actor"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad input parameter",
+                        "content": {
+                            "appliation/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteActorBadResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "security": [
@@ -557,6 +1142,36 @@
                     "password": {
                         "type": "string",
                         "example": "yourpass"
+                    }
+                }
+            },
+            "RegisterUserResponsePayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "jeremy"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "jeremy@gmail.com"
+                    },
+                    "role": {
+                        "type": "string",
+                        "default": "USER",
+                        "example": "USER"
                     }
                 }
             },
@@ -656,8 +1271,10 @@
                     },
                     "errorMessages": {
                         "description": "The detailed message of the error that happened",
-                        "type": "string",
-                        "example": "No movie review payload was provided"
+                        "type": "array",
+                        "items": {
+                            "example": "No movie review payload was provided"
+                        }
                     }
                 }
             },
@@ -681,8 +1298,10 @@
                     },
                     "errorMessages": {
                         "description": "The detailed message of the error that happened",
-                        "type": "string",
-                        "example": "No movie review payload was provided"
+                        "type": "array",
+                        "items": {
+                            "example": "No movie review payload was provided"
+                        }
                     }
                 }
             },
@@ -769,7 +1388,7 @@
                 "required": ["movieId", "reviewerId", "reviewerStars"],
                 "properties": {
                     "id": {
-                        "description": "The review's id",
+                        "description": "The registered user's id",
                         "type": "integer",
                         "example": 1
                     },
@@ -782,10 +1401,40 @@
                         "example": 2
                     },
                     "reviewerStars": {
-                        "description": "The stars that the reviewer is giving to this movie",
+                        "description": "The stars that the reviewer user is giving to this movie",
                         "type": "integer",
                         "example": 5,
                         "default": 5
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "The reviewer's or user's comment for this movie review",
+                        "example": "I'm voting 5 to this movie because it's awesome"
+                    }
+                }
+            },
+            "AddReviewPayload": {
+                "type": "object",
+                "required": ["movieId", "reviewerId", "reviewerStars"],
+                "properties": {
+                    "movieId": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "reviewerId": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "reviewerStars": {
+                        "description": "The stars that the reviewer user is giving to this movie",
+                        "type": "integer",
+                        "example": 5,
+                        "default": 5
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "The reviewer's or user's comment for this movie review",
+                        "example": "I'm voting 5 to this movie because it's awesome"
                     }
                 }
             },
@@ -889,12 +1538,14 @@
                     "errorCode": {
                         "description": "An error code of an error that happened while requesting the data",
                         "type": "string",
-                        "example": "REVIEW_INVALID_ID"
+                        "example": "MOVIE_NOT_FOUND"
                     },
                     "errorMessages": {
                         "description": "The detailed message of the error that happened",
-                        "type": "string",
-                        "example": "reviewId are required. Please Provide a valid review id"
+                        "type": "array",
+                        "items": {
+                            "example": "Movie with the specified id was not found"
+                        }
                     }
                 }
             },
@@ -920,8 +1571,10 @@
                     },
                     "errorMessages": {
                         "description": "The detailed message of the error that happened",
-                        "type": "string",
-                        "example": null
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
                     }
                 }
             },
@@ -945,8 +1598,359 @@
                     },
                     "errorMessages": {
                         "description": "The detailed message of the error that happened",
+                        "type": "array",
+                        "items": {
+                            "example": "Invalid movie id"
+                        }
+                    }
+                }
+            },
+            "ActionDirectorCreationPayload": {
+                "type": "object",
+                "required": ["firstName", "lastName"],
+                "properties": {
+                    "firstName": {
                         "type": "string",
-                        "example": "Invalid movie id"
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    }
+                }
+            },
+            "ActionDirectorData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "Jeremy"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Then"
+                    }
+                }
+            },
+            "AddActorBadResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": null
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "ACTOR_INVALID_PAYLOAD"
+                    },
+                    "errorMessages": {
+                        "description": "The detailed message of the error that happened",
+                        "type": "array",
+                        "items": {
+                            "example": "Actor's first name is required"
+                        }
+                    }
+                }
+            },
+            "DeleteActorBadResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": null
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "ACTOR_NOT_FOUND"
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": "Actor with id 1 was not found"
+                        }
+                    }
+                }
+            },
+            "UnkownError": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "string",
+                        "example": null
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": "UNKNOWN_ERROR"
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": "There was an error with your request. Try again later."
+                        }
+                    }
+                }
+            },
+            "AddReviewResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "object",
+                        "properties": {
+                            "review": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/Review"
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
+                    }
+                }
+            },
+            "GetMoviesResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "object",
+                        "properties": {
+                            "movies": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Movie"
+                                }
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
+                    }
+                }
+            },
+            "AddMovieResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "object",
+                        "properties": {
+                            "movie": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/NewMovieCreated"
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
+                    }
+                }
+            },
+            "GetMovieByIdResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested. null if any issue requesting it",
+                        "type": "object",
+                        "properties": {
+                            "movie": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/Movie"
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
+                    }
+                }
+            },
+            "GetMovieReviewsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested",
+                        "type": "object",
+                        "properties": {
+                            "review": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Review"
+                                }
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
+                    }
+                }
+            },
+            "UserRegisterLoginResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested",
+                        "type": "object",
+                        "properties": {
+                            "user": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/RegisterUserResponsePayload"
+                                }
+                            },
+                            "token": {
+                                "description": "The JWT token that can be used by the user to make calls to the api or to be 'logged in'",
+                                "type": "string",
+                                "example": "jwttoten"
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
+                    }
+                }
+            },
+            "GetUsersResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "The data that was requested",
+                        "type": "object",
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/RegisterUserResponsePayload"
+                                }
+                            }
+                        }
+                    },
+                    "success": {
+                        "description": "The requested operation was successful",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "errorCode": {
+                        "description": "An error code of an error that happened while requesting the data",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "errorMessages": {
+                        "description": "Detailed messages of the errors that happened",
+                        "type": "array",
+                        "items": {
+                            "example": ""
+                        }
                     }
                 }
             }

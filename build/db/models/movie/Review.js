@@ -29,6 +29,7 @@ Review.init({
     comment: {
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: true,
+        defaultValue: '',
     }
 }, {
     tableName: "reviews",

@@ -33,7 +33,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const envConfig_1 = __importDefault(require("./config/envConfig"));
 const users_1 = __importDefault(require("./routes/users"));
 const movies_1 = __importDefault(require("./routes/movies"));
 const directors_1 = __importDefault(require("./routes/directors"));
@@ -41,7 +40,8 @@ const actors_1 = __importDefault(require("./routes/actors"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDoc = __importStar(require("./swagger.json"));
 const app = express_1.default();
-const port = envConfig_1.default.port || 3000;
+const port = process.env.port || 3000;
+console.log('process.env', process.env);
 app.use(body_parser_1.default.json());
 app.use("/movies", movies_1.default);
 app.use("/actors", actors_1.default);

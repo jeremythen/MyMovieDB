@@ -115,6 +115,46 @@
 				},
 				{
 					"name": "Get All Movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5256ed8e-eaee-4275-8a27-fa46688f5aae",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"const success = jsonData.success;\r",
+									"\r",
+									"pm.test(\"Expect response to be successful\", function () {\r",
+									"    pm.expect(success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"const responseData = jsonData.data;\r",
+									"\r",
+									"pm.test(\"Expect data to not be null\", function () {\r",
+									"    pm.expect(responseData === null).to.be.false;\r",
+									"});\r",
+									"\r",
+									"const movies = responseData.movies;\r",
+									"\r",
+									"pm.test(\"Returned an array of movies.\", function () {\r",
+									"    pm.expect(Array.isArray(movies)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Movies present\", function () {\r",
+									"    pm.expect(movies.length).to.be.above(0);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -315,6 +355,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Actor By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actors/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actors",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -388,6 +446,24 @@
 							],
 							"path": [
 								"directors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Director By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/directors/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"directors",
+								"1"
 							]
 						}
 					},
@@ -492,11 +568,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/login",
+							"raw": "{{baseUrl}}/users/login",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"users",
 								"login"
 							]
 						}
@@ -547,11 +624,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/register",
+							"raw": "{{baseUrl}}/users/register",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"users",
 								"register"
 							]
 						}

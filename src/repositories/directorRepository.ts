@@ -6,8 +6,8 @@ class DirectorRepository {
         return await Director.findAll();
     }
 
-    async getDirectorById(id: number): Promise<Director[]> {
-        return await Director.findAll({ where: { id } });
+    async getDirectorById(id: number): Promise<Director | null> {
+        return await Director.findOne({ where: { id } });
     }
 
     async createDirector(crateDirectorPayload: DirectorCreationAttributes): Promise<Director> {

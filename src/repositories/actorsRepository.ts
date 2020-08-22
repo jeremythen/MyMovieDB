@@ -6,8 +6,8 @@ class ActorRepository {
         return await Actor.findAll();
     }
 
-    async getActorById(id: number): Promise<Actor[]> {
-        return await Actor.findAll({ where: { id } });
+    async getActorById(id: number): Promise<Actor | null> {
+        return await Actor.findOne({ where: { id } });
     }
 
     async createActor(crateActorPayload: ActorCreationAttributes): Promise<Actor> {

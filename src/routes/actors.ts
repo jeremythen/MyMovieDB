@@ -21,4 +21,10 @@ Router.get("/:id", async (req, res) => {
     handleCommonResponse(response, res);
 });
 
+Router.delete("/:id", async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await actorService.deleteActorById(id);
+    handleCommonResponse(response, res);
+});
+
 export default Router;

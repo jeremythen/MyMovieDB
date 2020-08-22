@@ -1,7 +1,7 @@
 import directorsRepository from '../repositories/directorRepository';
 import { DirectorCreationAttributes } from '../db/models/movie/Director';
 import { ValidationResult } from '../util/util';
-import { prepareResponse, MyMovieDbResponse } from '../util/util';
+import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';
 import { MovieError } from '../util/enums';
 
 const { DIRECTOR_INVALID_PAYLOAD, DIRECTOR_INVALID_ID, DIRECTOR_NOT_FOUND } = MovieError;
@@ -40,6 +40,24 @@ class DirectorService {
         }
 
         return prepareResponse({ director }, true);
+    }
+
+    async deleteDirectorById(id: number) {
+
+        if (!isValidId(id)) {
+            return prepareResponse(null, false, DIRECTOR_INVALID_ID, [`Invalid actor id`]);
+        }
+
+        const director = await directorsRepository.getDirectorById(id);
+
+        if (director === null) {
+            return prepareResponse(null, false, DIRECTOR_NOT_FOUND, [`Director with id ${id} was not found`]);
+        }
+
+        director.destroy();
+
+        return prepareResponse({ deleted: true }, true);
+
     }
 
 }

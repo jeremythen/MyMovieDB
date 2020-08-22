@@ -16,7 +16,7 @@ process.env.NODE_ENV = 'test';
 const chai_1 = require("chai");
 const moviesService_1 = __importDefault(require("../services/moviesService"));
 const connection_1 = __importDefault(require("../db/connection"));
-beforeEach(function () {
+before(function () {
     connection_1.default.models.Movie.destroy({ where: {}, truncate: true });
 });
 describe('Movies tests', () => {
@@ -26,5 +26,21 @@ describe('Movies tests', () => {
         chai_1.expect(response === null).to.be.false;
         chai_1.expect(response.success).to.be.true;
         chai_1.expect(Array.isArray(response.data.movies)).to.be.true;
+    }));
+});
+describe('Add movie', () => {
+    it('Adding a movie', () => __awaiter(void 0, void 0, void 0, function* () {
+        const moviePayload = {
+            title: "My new movie",
+            year: 2018,
+            time: 135,
+            language: "English",
+            country: "RD",
+            distributor: "Universal Pictures"
+        };
+        const response = yield moviesService_1.default.createMovie(moviePayload);
+        chai_1.expect(response === null, 'Expecting response to not be null').to.be.false;
+        chai_1.expect(response.success, 'Expecting response to be successful').to.be.true;
+        chai_1.expect(response.data.movie, 'Expecting new movie to be present in the response').to.not.be.null;
     }));
 });

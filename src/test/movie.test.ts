@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import moviesService from '../services/moviesService';
 import sequelize from '../db/connection';
 
-beforeEach(function () {
+before(function () {
     sequelize.models.Movie.destroy({ where: {}, truncate: true });
 });
 
@@ -21,3 +21,25 @@ describe('Movies tests', () => {
     });
 });
 
+describe('Add movie', () => {
+    it('Adding a movie', async () => {
+
+        const moviePayload = {
+            title: "My new movie",
+            year: 2018,
+            time: 135,
+            language: "English",
+            country: "RD",
+            distributor: "Universal Pictures"
+        };
+
+        const response = await moviesService.createMovie(moviePayload);
+
+        expect(response === null, 'Expecting response to not be null').to.be.false;
+
+        expect(response.success, 'Expecting response to be successful').to.be.true;
+
+        expect(response.data.movie, 'Expecting new movie to be present in the response').to.not.be.null;
+
+    });
+});

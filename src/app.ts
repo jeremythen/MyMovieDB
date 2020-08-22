@@ -6,6 +6,8 @@ import directorsRoutes from './routes/directors';
 import actorsRoutes from './routes/actors';
 import swaggerUi from 'swagger-ui-express';
 import * as swaggerDoc from './swagger.json'
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app: express.Application = express();
 

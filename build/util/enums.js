@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MovieError = exports.Role = exports.UserError = void 0;
+exports.GeneralError = exports.MovieError = exports.Role = exports.UserError = void 0;
 var UserError;
 (function (UserError) {
     UserError["USER_INVALID_PAYLOAD"] = "USER_INVALID_PAYLOAD";
@@ -35,3 +35,7 @@ var MovieError;
     MovieError["MOVIE_INVALID_GET_REVIEW_PAYLOAD"] = "MOVIE_INVALID_GET_REVIEW_PAYLOAD";
     MovieError["REVIEW_INVALID_ID"] = "REVIEW_INVALID_ID";
 })(MovieError = exports.MovieError || (exports.MovieError = {}));
+var GeneralError;
+(function (GeneralError) {
+    GeneralError["UNKNOWN_ERROR"] = "UNKNOWN_ERROR";
+})(GeneralError = exports.GeneralError || (exports.GeneralError = {}));

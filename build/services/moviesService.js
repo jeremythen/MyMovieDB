@@ -18,6 +18,7 @@ const enums_1 = require("../util/enums");
 const reviewRepository_1 = __importDefault(require("../repositories/reviewRepository"));
 const userRepository_1 = __importDefault(require("../repositories/userRepository"));
 const { MOVIE_INVALID_PAYLOAD, MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = enums_1.MovieError;
+const { UNKNOWN_ERROR } = enums_1.GeneralError;
 class MovieService {
     /**
      *
@@ -40,12 +41,17 @@ class MovieService {
      */
     createMovie(movieCreationPayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const validation = validateCreateMoviePayload(movieCreationPayload);
-            if (!validation.valid) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_PAYLOAD, validation.validationErrors);
+            try {
+                const validation = validateCreateMoviePayload(movieCreationPayload);
+                if (!validation.valid) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_PAYLOAD, validation.validationErrors);
+                }
+                const movie = yield moviesRepository_1.default.createMovie(movieCreationPayload);
+                return util_1.prepareResponse({ movie }, true);
             }
-            const movie = yield moviesRepository_1.default.createMovie(movieCreationPayload);
-            return util_1.prepareResponse({ movie }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error creating the movie', error.message]);
+            }
         });
     }
     /**
@@ -57,30 +63,35 @@ class MovieService {
      */
     addMovieReview(movieId, movieReviewPayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const validation = validateCreateReviewPayload(movieReviewPayload);
-            if (!validation.valid) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
+            try {
+                const validation = validateCreateReviewPayload(movieReviewPayload);
+                if (!validation.valid) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
+                }
+                const { reviewerId, reviewerStars, comment = '' } = movieReviewPayload;
+                const movie = yield moviesRepository_1.default.getMovieById(movieId);
+                if (movie === null) {
+                    return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
+                }
+                const reviewer = yield userRepository_1.default.getUserById(reviewerId);
+                if (reviewer === null) {
+                    return util_1.prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
+                }
+                const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+                // If a review under that reviewer and movie ids exists, update it.
+                if (review === null) {
+                    const newReview = yield reviewRepository_1.default.createReview(movieReviewPayload);
+                    return util_1.prepareResponse({ review: newReview }, true);
+                }
+                else {
+                    review.reviewerStars = reviewerStars;
+                    review.comment = comment;
+                    review.save();
+                    return util_1.prepareResponse({ review }, true);
+                }
             }
-            const { reviewerId, reviewerStars, comment = '' } = movieReviewPayload;
-            const movie = yield moviesRepository_1.default.getMovieById(movieId);
-            if (movie === null) {
-                return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
-            }
-            const reviewer = yield userRepository_1.default.getUserById(reviewerId);
-            if (reviewer === null) {
-                return util_1.prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
-            }
-            const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
-            // If a review under that reviewer and movie ids exists, update it.
-            if (review === null) {
-                const newReview = yield reviewRepository_1.default.createReview(movieReviewPayload);
-                return util_1.prepareResponse({ review: newReview }, true);
-            }
-            else {
-                review.reviewerStars = reviewerStars;
-                review.comment = comment;
-                review.save();
-                return util_1.prepareResponse({ review }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error adding movie review', error.message]);
             }
         });
     }
@@ -92,16 +103,21 @@ class MovieService {
      */
     disableMovie(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!movieId || movieId < 1) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+            try {
+                if (!movieId || movieId < 1) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+                }
+                const movie = yield moviesRepository_1.default.getMovieById(movieId);
+                if (movie === null) {
+                    return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
+                }
+                movie.disabled = true;
+                movie.save();
+                return util_1.prepareResponse({ disabled: true }, true);
             }
-            const movie = yield moviesRepository_1.default.getMovieById(movieId);
-            if (movie === null) {
-                return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error disabling movie', error.message]);
             }
-            movie.disabled = true;
-            movie.save();
-            return util_1.prepareResponse({ disabled: true }, true);
         });
     }
     /**
@@ -112,77 +128,163 @@ class MovieService {
      */
     getMovieById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!id || id < 1) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+            try {
+                if (!id || id < 1) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+                }
+                const movie = yield moviesRepository_1.default.getMovieByIdAndWhere(id, { disabled: false });
+                if (movie === null) {
+                    return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
+                }
+                return util_1.prepareResponse({ movie }, true);
             }
-            const movie = yield moviesRepository_1.default.getMovieByIdAndWhere(id, { disabled: false });
-            if (movie === null) {
-                return util_1.prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movie by id', error.message]);
             }
-            return util_1.prepareResponse({ movie }, true);
         });
     }
+    /**
+     *
+     * @param movieId
+     * @returns a all the reviews that belong to the movie specify that the movieId
+     * with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
+     *
+     */
     getMovieReviews(movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!movieId || movieId < 1) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+            try {
+                if (!movieId || movieId < 1) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+                }
+                const movies = yield reviewRepository_1.default.getMovieReviews(movieId);
+                return util_1.prepareResponse({ movies }, true);
             }
-            const movies = yield reviewRepository_1.default.getMovieReviews(movieId);
-            return util_1.prepareResponse({ movies }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movie reviews', error.message]);
+            }
         });
     }
+    /**
+     *
+     * @param offset, to retrieve movies after the movie on the position number of this offset
+     * @param limit, return movies up to this limit
+     *
+     * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+     *
+     */
     getMoviesWithOffsetAndLimit(offset, limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+            try {
+                if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+                }
+                const movies = yield moviesRepository_1.default.getMoviesWithOffsetAndLimit(offset, limit);
+                return util_1.prepareResponse({ movies }, true);
             }
-            const movies = yield moviesRepository_1.default.getMoviesWithOffsetAndLimit(offset, limit);
-            return util_1.prepareResponse({ movies }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination offset and limit', error.message]);
+            }
         });
     }
+    /**
+     *
+     * @param offset , to retrieve movies after the movie on the position number of this offset
+     * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+     *
+     */
     getMoviesWithOffset(offset) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isValidPaginationNumber(offset)) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
+            try {
+                if (!isValidPaginationNumber(offset)) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
+                }
+                const movies = yield moviesRepository_1.default.getMoviesWithOffset(offset);
+                return util_1.prepareResponse({ movies }, true);
             }
-            const movies = yield moviesRepository_1.default.getMoviesWithOffset(offset);
-            return util_1.prepareResponse({ movies }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination offset', error.message]);
+            }
         });
     }
+    /**
+     *
+     * @param limit, return movies up to this limit
+     * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+     *
+     */
     getMoviesWithLimit(limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isValidPaginationNumber(limit)) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
+            try {
+                if (!isValidPaginationNumber(limit)) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
+                }
+                const movies = yield moviesRepository_1.default.getMoviesWithLimit(limit);
+                return util_1.prepareResponse({ movies }, true);
             }
-            const movies = yield moviesRepository_1.default.getMoviesWithLimit(limit);
-            return util_1.prepareResponse({ movies }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination limit', error.message]);
+            }
         });
     }
+    /**
+     *
+     * @param reviewerId to who the reviews belong to
+     * @param movieId of the movie that the user sent the review to
+     * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
+     *
+     */
     getReviewByReviewerIdAndMovieId(reviewerId, movieId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
+            try {
+                if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
+                }
+                const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+                return util_1.prepareResponse({ review }, true);
             }
-            const review = yield reviewRepository_1.default.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
-            return util_1.prepareResponse({ review }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies by reviewer id and movie id', error.message]);
+            }
         });
     }
+    /**
+     *
+     * @param reviewId the reviewId of the review record
+     * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
+     *
+     */
     getReviewById(reviewId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isValidIdNumber(reviewId)) {
-                return util_1.prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
+            try {
+                if (!isValidIdNumber(reviewId)) {
+                    return util_1.prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
+                }
+                const review = yield reviewRepository_1.default.getReviewById(reviewId);
+                return util_1.prepareResponse({ review }, true);
             }
-            const review = yield reviewRepository_1.default.getReviewById(reviewId);
-            return util_1.prepareResponse({ review }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting review by id', error.message]);
+            }
         });
     }
+    /**
+     *
+     * @param reviewerId the id of the User that made the review
+     * @returns a Promise with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
+     *
+     */
     getReviewerReviews(reviewerId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isValidIdNumber(reviewerId)) {
-                return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
+            try {
+                if (!isValidIdNumber(reviewerId)) {
+                    return util_1.prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
+                }
+                const reviews = yield reviewRepository_1.default.getReviewerReviews(reviewerId);
+                return util_1.prepareResponse({ reviews }, true);
             }
-            const reviews = yield reviewRepository_1.default.getReviewerReviews(reviewerId);
-            return util_1.prepareResponse({ reviews }, true);
+            catch (error) {
+                return util_1.prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting review by id', error.message]);
+            }
         });
     }
 }

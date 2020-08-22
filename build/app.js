@@ -39,6 +39,8 @@ const directors_1 = __importDefault(require("./routes/directors"));
 const actors_1 = __importDefault(require("./routes/actors"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDoc = __importStar(require("./swagger.json"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const app = express_1.default();
 const port = process.env.port || 3000;
 app.use(body_parser_1.default.json());
@@ -47,7 +49,7 @@ app.use("/actors", actors_1.default);
 app.use("/directors", directors_1.default);
 app.use("/users", users_1.default);
 app.use("/swagger", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDoc));
-app.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Welcome to MyMovieDB!");
 }));
 app.listen(port, () => {

@@ -2,13 +2,14 @@ import moviesRepository from '../repositories/moviesRepository';
 import { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
-import { MovieError } from '../util/enums';
+import { MovieError, GeneralError } from '../util/enums';
 import { ReviewCreationAttributes } from '../db/models/movie/Review';
 import reviewRepository from '../repositories/reviewRepository';
 import userRepository from '../repositories/userRepository';
 
 const { MOVIE_INVALID_PAYLOAD,
   MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = MovieError;
+const { UNKNOWN_ERROR } = GeneralError;
 
 class MovieService {
 
@@ -32,16 +33,20 @@ class MovieService {
    */
   async createMovie(movieCreationPayload: MovieCreationAttributes): Promise<MyMovieDbResponse> {
 
-    const validation = validateCreateMoviePayload(movieCreationPayload);
+    try {
+      const validation = validateCreateMoviePayload(movieCreationPayload);
 
-    if (!validation.valid) {
-      return prepareResponse(null, false, MOVIE_INVALID_PAYLOAD, validation.validationErrors);
+      if (!validation.valid) {
+        return prepareResponse(null, false, MOVIE_INVALID_PAYLOAD, validation.validationErrors);
+      }
+
+      const movie = await moviesRepository.createMovie(movieCreationPayload);
+
+      return prepareResponse({ movie }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error creating the movie', error.message]);
     }
-
-    const movie = await moviesRepository.createMovie(movieCreationPayload);
-
-    return prepareResponse({ movie }, true);
-
+    
   }
 
   /**
@@ -53,39 +58,44 @@ class MovieService {
    */
   async addMovieReview(movieId: number, movieReviewPayload: ReviewCreationAttributes): Promise<MyMovieDbResponse> {
 
-    const validation = validateCreateReviewPayload(movieReviewPayload);
+    try {
+      const validation = validateCreateReviewPayload(movieReviewPayload);
 
-    if (!validation.valid) {
-      return prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
+      if (!validation.valid) {
+        return prepareResponse(null, false, MOVIE_INVALID_REVIEW_PAYLOAD, validation.validationErrors);
+      }
+
+      const { reviewerId, reviewerStars, comment = '' } = movieReviewPayload;
+
+      const movie = await moviesRepository.getMovieById(movieId);
+
+      if (movie === null) {
+        return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
+      }
+
+      const reviewer = await userRepository.getUserById(reviewerId);
+
+      if (reviewer === null) {
+        return prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
+      }
+
+      const review = await reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+
+      // If a review under that reviewer and movie ids exists, update it.
+      if (review === null) {
+        const newReview = await reviewRepository.createReview(movieReviewPayload);
+        return prepareResponse({ review: newReview }, true);
+      } else {
+        review.reviewerStars = reviewerStars;
+        review.comment = comment;
+        review.save();
+        return prepareResponse({ review }, true);
+      }
+
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error adding movie review', error.message]);
     }
-
-    const { reviewerId, reviewerStars, comment = '' } = movieReviewPayload;
-
-    const movie = await moviesRepository.getMovieById(movieId);
-
-    if (movie === null) {
-      return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
-    }
-
-    const reviewer = await userRepository.getUserById(reviewerId);
-
-    if (reviewer === null) {
-      return prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
-    }
-
-    const review = await reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
-
-    // If a review under that reviewer and movie ids exists, update it.
-    if (review === null) {
-      const newReview = await reviewRepository.createReview(movieReviewPayload);
-      return prepareResponse({ review: newReview }, true);
-    } else {
-      review.reviewerStars = reviewerStars;
-      review.comment = comment;
-      review.save();
-      return prepareResponse({ review }, true);
-    }
-
+    
   }
 
   /**
@@ -96,21 +106,25 @@ class MovieService {
    */
   async disableMovie(movieId: number): Promise<MyMovieDbResponse> {
 
-    if (!movieId || movieId < 1) {
-      return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+    try {
+      if (!movieId || movieId < 1) {
+        return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+      }
+
+      const movie = await moviesRepository.getMovieById(movieId);
+
+      if (movie === null) {
+        return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
+      }
+
+      movie.disabled = true;
+
+      movie.save();
+
+      return prepareResponse({ disabled: true }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error disabling movie', error.message]);
     }
-
-    const movie = await moviesRepository.getMovieById(movieId);
-
-    if (movie === null) {
-      return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
-    }
-
-    movie.disabled = true;
-
-    movie.save();
-
-    return prepareResponse({ disabled: true }, true);
 
   }
 
@@ -122,17 +136,23 @@ class MovieService {
    */
   async getMovieById(id: number): Promise<MyMovieDbResponse> {
 
-    if (!id || id < 1) {
-      return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+    try {
+      if (!id || id < 1) {
+        return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+      }
+
+      const movie = await moviesRepository.getMovieByIdAndWhere(id, { disabled: false });
+
+      if (movie === null) {
+        return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
+      }
+
+      return prepareResponse({ movie }, true);
+
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movie by id', error.message]);
     }
-
-    const movie = await moviesRepository.getMovieByIdAndWhere(id, { disabled: false });
-
-    if (movie === null) {
-      return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${id} was not found or is not available`]);
-    }
-
-    return prepareResponse({ movie }, true);
+    
   }
 
   /**
@@ -144,12 +164,17 @@ class MovieService {
    */
   async getMovieReviews(movieId: number): Promise<MyMovieDbResponse> {
 
-    if (!movieId || movieId < 1) {
-      return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+    try {
+      if (!movieId || movieId < 1) {
+        return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
+      }
+
+      const movies = await reviewRepository.getMovieReviews(movieId);
+      return prepareResponse({ movies }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movie reviews', error.message]);
     }
 
-    const movies = await reviewRepository.getMovieReviews(movieId);
-    return prepareResponse({ movies }, true);
   }
 
   /**
@@ -162,12 +187,17 @@ class MovieService {
    */
   async getMoviesWithOffsetAndLimit(offset: number, limit: number): Promise<MyMovieDbResponse> {
 
-    if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
-      return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+    try {
+      if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
+        return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset and limit are required and must be valid numbers']);
+      }
+
+      const movies = await moviesRepository.getMoviesWithOffsetAndLimit(offset, limit);
+      return prepareResponse({ movies }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination offset and limit', error.message]);
     }
 
-    const movies = await moviesRepository.getMoviesWithOffsetAndLimit(offset, limit);
-    return prepareResponse({ movies }, true);
   }
 
   /**
@@ -178,12 +208,17 @@ class MovieService {
    */
   async getMoviesWithOffset(offset: number) {
 
-    if (!isValidPaginationNumber(offset)) {
-      return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
+    try {
+      if (!isValidPaginationNumber(offset)) {
+        return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
+      }
+
+      const movies = await moviesRepository.getMoviesWithOffset(offset);
+      return prepareResponse({ movies }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination offset', error.message]);
     }
 
-    const movies = await moviesRepository.getMoviesWithOffset(offset);
-    return prepareResponse({ movies }, true);
   }
 
   /**
@@ -194,12 +229,17 @@ class MovieService {
    */
   async getMoviesWithLimit(limit: number) {
 
-    if (!isValidPaginationNumber(limit)) {
-      return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
-    }
+    try {
+      if (!isValidPaginationNumber(limit)) {
+        return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
+      }
 
-    const movies = await moviesRepository.getMoviesWithLimit(limit);
-    return prepareResponse({ movies }, true);
+      const movies = await moviesRepository.getMoviesWithLimit(limit);
+      return prepareResponse({ movies }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies with pagination limit', error.message]);
+    }
+    
   }
 
   /**
@@ -211,13 +251,17 @@ class MovieService {
    */
   async getReviewByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<MyMovieDbResponse>  {
 
-    if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
-      return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
+    try {
+      if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
+        return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
+      }
+
+      const review = await reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+
+      return prepareResponse({ review }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting movies by reviewer id and movie id', error.message]);
     }
-
-    const review = await reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
-
-    return prepareResponse({ review }, true);
 
   }
 
@@ -228,13 +272,19 @@ class MovieService {
    * 
    */
   async getReviewById(reviewId: number): Promise<MyMovieDbResponse>  {
-    if (!isValidIdNumber(reviewId)) {
-      return prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
+
+    try {
+      if (!isValidIdNumber(reviewId)) {
+        return prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
+      }
+
+      const review = await reviewRepository.getReviewById(reviewId);
+
+      return prepareResponse({ review }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting review by id', error.message]);
     }
-
-    const review = await reviewRepository.getReviewById(reviewId);
-
-    return prepareResponse({ review }, true);
+    
   }
 
   /**
@@ -244,13 +294,19 @@ class MovieService {
    * 
    */
   async getReviewerReviews(reviewerId: number): Promise<MyMovieDbResponse> {
-    if (!isValidIdNumber(reviewerId)) {
-      return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
+
+    try {
+      if (!isValidIdNumber(reviewerId)) {
+        return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
+      }
+
+      const reviews = await reviewRepository.getReviewerReviews(reviewerId);
+
+      return prepareResponse({ reviews }, true);
+    } catch (error) {
+      return prepareResponse(null, false, UNKNOWN_ERROR, ['There was an error getting review by id', error.message]);
     }
-
-    const reviews = await reviewRepository.getReviewerReviews(reviewerId);
-
-    return prepareResponse({ reviews }, true);
+    
   }
 
 }

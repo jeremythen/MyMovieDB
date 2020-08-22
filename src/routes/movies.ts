@@ -1,6 +1,6 @@
 import express from 'express';
 import moviesService from "../services/moviesService";
-import { authorize } from '../middleware/authMiddleware';
+import { authorize, loggedInUser } from '../middleware/authMiddleware';
 import { handleCommonResponse } from '../util/util';
 
 const Router = express.Router();
@@ -52,7 +52,7 @@ Router.get("/pagination/offset/:offset/limit/:limit", async (req, res) => {
     handleCommonResponse(response, res);
 });
 
-Router.post("/:id/reviews", async (req, res) => {
+Router.post("/:id/reviews", loggedInUser, async (req, res) => {
     const id = Number(req.params.id);
     const response = await moviesService.addMovieReview(id, req.body);
     handleCommonResponse(response, res);

@@ -6,9 +6,11 @@ const {
   database: { password, dbHost, databaseName },
 } = envConfig;
 
+const DB_HOST = process.env.NODE_ENV === 'docker' ? 'mysqldb' : dbHost; // In case it's running from docker, using the db container name.
+
 const sequelize = new Sequelize(databaseName, 'root', password, {
-  host: dbHost,
-  dialect: 'mysql'
+  dialect: "mysql",
+  host: DB_HOST
 });
 
 export default sequelize;

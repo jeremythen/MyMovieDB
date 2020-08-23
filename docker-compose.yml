@@ -5,20 +5,25 @@ services:
   db:
     image: mysql
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysqldb
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
     volumes:
       - ./mysql-dump:/docker-entrypoint-initdb.d
     environment:
       MYSQL_DATABASE: mymoviedb
-      MYSQL_USER: 'root'
-      MYSQL_PASSWORD: ''
-      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Jt21542154531
+      MYSQL_ROOT_PASSWORD: Jt21542154531
     ports:
-      - '3307:3307'
+      - '3306:3306'
     expose:
-      - '3307'
+      - '3306'
   web:
     image: mymoviedb
     entrypoint: ["/bin/bash", "./entrypoint.sh"]
+    container_name: mymoviedb
     build: .
     ports:
      - "3000:3000"

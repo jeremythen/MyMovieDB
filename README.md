@@ -47,3 +47,21 @@ Based on the package.json file, this will create the test database in case it do
 There is a postman collection and environment files in API docs folder. Import them to postman to test the API from there
 
 ![alt text](mymoviedb-postman.jpg "MyMovieDB Swagger preview")
+
+
+## Docker
+
+> docker build -t mymoviedb .
+> docker-compose up
+
+Then docker will run the following commands:
+
+> npm install
+> export NODE_ENV=docker
+> npx tsc
+> npx sequelize-cli db:migrate:undo:all
+> npx sequelize-cli db:migrate
+> npx sequelize-cli db:seed:all
+> npm start
+
+You may change the docker mysql exposed port to avoid collision with any other instance already running.

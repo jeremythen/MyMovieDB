@@ -22,6 +22,12 @@ Fill the database with data:
 > npx sequelize-cli db:seed:all
 
 
+## Swagger visualization
+
+When the app is running, visit the endpoint /swagger to see the app api docs.
+
+![alt text](mymoviedb-swagger-doc.jpg "Logo Title Text 1")
+
 ## Testing
 
 Make sure the NODE_ENV is set to test

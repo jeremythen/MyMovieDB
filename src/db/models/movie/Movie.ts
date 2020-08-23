@@ -110,25 +110,11 @@ Movie.init(
   }
 );
 
-Movie.belongsToMany(Actor, {
+Movie.hasMany(MovieCast, {
   sourceKey: 'id',
   foreignKey: 'movieId',
-  through: MovieCast.tableName,
   as: 'casts',
 });
-
-Actor.belongsToMany(Movie, {
-  sourceKey: 'id',
-  foreignKey: 'actorId',
-  through: MovieCast.tableName,
-  as: 'movies',
-});
-
-// Movie.hasMany(MovieCast, {
-//   sourceKey: 'id',
-//   foreignKey: 'movieId',
-//   as: 'casts',
-// });
 
 Movie.hasMany(MovieDirection, {
   sourceKey: 'id',

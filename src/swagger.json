@@ -42,7 +42,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "$ref": "#/components/schemas/GetMoviesResponse"
                 }
               }
@@ -155,8 +154,8 @@
     "/movies/{id}/reviews": {
       "get": {
         "tags": ["movies"],
-        "summary": "Get a review by it's id",
-        "operationId": "getReviewById",
+        "summary": "Get the reviews for this movie",
+        "operationId": "getReviewsByMovieId",
         "description": "Get a review by the specified reviewId",
         "security": [],
         "parameters": [
@@ -239,6 +238,214 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AddReviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}/casts": {
+      "get": {
+        "tags": ["movies"],
+        "summary": "Get a list of the casts in this movie",
+        "operationId": "getMovieCasts",
+        "description": "Get a list of the casts in this movie",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movie's casts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AddCastResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Etc",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevieBadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["movies"],
+        "summary": "Add a cast to a movie by the movie id",
+        "description": "Add an cast to a movie by the movie id",
+        "operationId": "addMovieCast",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCastPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created movie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddCastResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyMovieDbBadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}/directors": {
+      "get": {
+        "tags": ["movies"],
+        "summary": "Get a list of the directors in this movie",
+        "operationId": "getMovieDirectors",
+        "description": "Get a list of the directors in this movie",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movie's directors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AddDirectorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Etc",
+            "content": {
+              "appliation/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevieBadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["movies"],
+        "summary": "Add a director to a movie by the movie id",
+        "description": "Add an director to a movie by the movie id",
+        "operationId": "addMovieDictor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer authorization token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer jwttoken"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDirectorPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created movie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddDirectorResponse"
                 }
               }
             }
@@ -480,7 +687,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "$ref": "#/components/schemas/UserRegisterLoginResponse"
                 }
               }
@@ -521,7 +727,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "$ref": "#/components/schemas/UserRegisterLoginResponse"
                 }
               }
@@ -1717,7 +1922,6 @@
             "type": "object",
             "properties": {
               "review": {
-                "type": "object",
                 "$ref": "#/components/schemas/Review"
               }
             }
@@ -1815,7 +2019,6 @@
             "type": "object",
             "properties": {
               "movie": {
-                "type": "object",
                 "$ref": "#/components/schemas/Movie"
               }
             }
@@ -1923,6 +2126,125 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/RegisterUserResponsePayload"
+                }
+              }
+            }
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": true
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": ""
+          },
+          "errorMessages": {
+            "description": "Detailed messages of the errors that happened",
+            "type": "array",
+            "items": {
+              "example": ""
+            }
+          }
+        }
+      },
+      "AddCastPayload": {
+        "type": "object",
+        "properties": {
+          "actorId": {
+            "type": "integer",
+            "example": 5
+          },
+          "role": {
+            "type": "string",
+            "example": "Hulk"
+          }
+        }
+      },
+      "AddCastResponsePayload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The id of this association movie_actor record",
+            "example": 1
+          },
+          "actorId": {
+            "type": "integer",
+            "example": 5
+          },
+          "role": {
+            "type": "string",
+            "example": "Hulk"
+          }
+        }
+      },
+      "AddDirectorPayload": {
+        "type": "object",
+        "properties": {
+          "directorId": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "AddDirectorResponsePayload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The id of this association movie_directior record",
+            "example": 1
+          },
+          "directorId": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "AddCastResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested",
+            "type": "object",
+            "properties": {
+              "cast": {
+                "$ref": "#/components/schemas/AddCastResponsePayload"
+              }
+            }
+          },
+          "success": {
+            "description": "The requested operation was successful",
+            "type": "boolean",
+            "example": true
+          },
+          "errorCode": {
+            "description": "An error code of an error that happened while requesting the data",
+            "type": "string",
+            "example": ""
+          },
+          "errorMessages": {
+            "description": "Detailed messages of the errors that happened",
+            "type": "array",
+            "items": {
+              "example": ""
+            }
+          }
+        }
+      },
+      "AddDirectorResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "The data that was requested",
+            "type": "object",
+            "properties": {
+              "directors": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AddDirectorResponsePayload"
                 }
               }
             }

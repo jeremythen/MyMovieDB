@@ -42,4 +42,8 @@ Run:
 
 Based on the package.json file, this will create the test database in case it doesn't exist, remove any migrations, then add the migrations and fill it with seeds (about 20 records for each model.). The number of seeds can be changed in the .env file.
 
+## Postman visualization and testing
 
+There is a postman collection and environment files in API docs folder. Import them to postman to test the API from there
+
+![alt text](mymoviedb-postman.jpg "MyMovieDB Swagger preview")

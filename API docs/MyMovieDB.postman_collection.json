@@ -33,11 +33,21 @@
 						{
 							"name": "Add Review",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"movieId\": 1,\r\n    \"reviewerId\": 1,\r\n    \"reviewerStars\": 5,\r\n    \"comment\": \"Test review cmment for movie 2\"\r\n}",
+									"raw": "{\r\n    \"movieId\": 1,\r\n    \"reviewerStars\": 5,\r\n    \"comment\": \"Test review cmment for movie 2331516651\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -190,6 +200,134 @@
 					"_postman_isSubFolder": true
 				},
 				{
+					"name": "Casts",
+					"item": [
+						{
+							"name": "Get movie casts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/casts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"casts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie cast",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"actorId\": 5,\r\n    \"role\": \"Hulk\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/casts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"casts"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Directors",
+					"item": [
+						{
+							"name": "Get movie directors",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/directors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"directors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie director",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"directorId\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/directors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"directors"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "Get All Movies",
 					"event": [
 						{
@@ -252,13 +390,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/movies/1",
+							"raw": "{{baseUrl}}/movies/-61",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"movies",
-								"1"
+								"-61"
 							]
 						}
 					},
@@ -328,6 +466,547 @@
 								"reviews",
 								"movie",
 								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Movie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"My new movie\",\r\n    \"year\": 2018,\r\n    \"time\": 135,\r\n    \"language\": \"English\",\r\n    \"country\": \"RD\",\r\n    \"distributor\": \"Universal Pictures\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/movies",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Movies Copy",
+			"item": [
+				{
+					"name": "Reviews",
+					"item": [
+						{
+							"name": "Get Reviews",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/reviews",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Review",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"movieId\": 1,\r\n    \"reviewerStars\": 5,\r\n    \"comment\": \"Test review cmment for movie 2331516651\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/reviews",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Review By Movie Id and Reviewer Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/reviews/reviewer/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"reviews",
+										"reviewer",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reviews By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/reviews/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"reviews",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reviewers reviews",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/reviews/reviewer/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"reviews",
+										"reviewer",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Pagination",
+					"item": [
+						{
+							"name": "Get Movies With Offset",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/pagination/offset/3",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"pagination",
+										"offset",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Movies With Pagination offset and limit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/pagination/limit/5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"pagination",
+										"limit",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Movies Up To Limit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/pagination/limit/3",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"pagination",
+										"limit",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Casts",
+					"item": [
+						{
+							"name": "Get movie casts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/casts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"casts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie cast",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"actorId\": 5,\r\n    \"role\": \"Hulk\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/casts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"casts"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Directors",
+					"item": [
+						{
+							"name": "Get movie directors",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/directors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"directors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie director",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"directorId\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/movies/1/directors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"movies",
+										"1",
+										"directors"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Get All Movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1e938dfa-a956-47b2-9262-d99b670f28bd",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"const success = jsonData.success;\r",
+									"\r",
+									"pm.test(\"Expect response to be successful\", function () {\r",
+									"    pm.expect(success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"const responseData = jsonData.data;\r",
+									"\r",
+									"pm.test(\"Expect data to not be null\", function () {\r",
+									"    pm.expect(responseData === null).to.be.false;\r",
+									"});\r",
+									"\r",
+									"const movies = responseData.movies;\r",
+									"\r",
+									"pm.test(\"Returned an array of movies.\", function () {\r",
+									"    pm.expect(Array.isArray(movies)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Movies present\", function () {\r",
+									"    pm.expect(movies.length).to.be.above(0);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/movies",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/movies/-61",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"-61"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movies Reviewes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/movies/reviews/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"reviews",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Movie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/movies/1/disable/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"1",
+								"disable",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie Review By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/movies/reviews/movie/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"reviews",
+								"movie",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Movie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"My new movie\",\r\n    \"year\": 2018,\r\n    \"time\": 135,\r\n    \"language\": \"English\",\r\n    \"country\": \"RD\",\r\n    \"distributor\": \"Universal Pictures\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/movies",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies"
 							]
 						}
 					},

@@ -1,5 +1,5 @@
 import moviesRepository from '../repositories/moviesRepository';
-import { MovieCreationAttributes } from '../db/models/movie/Movie';
+import Movie, { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError, GeneralError } from '../util/enums';
@@ -7,11 +7,19 @@ import { ReviewCreationAttributes } from '../db/models/movie/Review';
 import reviewRepository from '../repositories/reviewRepository';
 import userRepository from '../repositories/userRepository';
 import log4js from 'log4js';
+import MovieCast, { MovieCastAttributes } from '../db/models/movie/MovieCast';
+import actorRepository from '../repositories/actorsRepository';
+import actorService from './actorService';
+import Actor from '../db/models/movie/Actor';
+import MovieDirection, { MovieDirectionCreationAttributes } from '../db/models/movie/MovieDirection';
+import directorService from './directorService';
 
 const logger = log4js.getLogger('', );
 
 const { MOVIE_INVALID_PAYLOAD,
-  MOVIE_INVALID_REVIEW_PAYLOAD, MOVIE_NOT_FOUND, REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID } = MovieError;
+  MOVIE_INVALID_REVIEW_PAYLOAD,
+  MOVIE_NOT_FOUND,
+  REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID, MOVIE_CAST_EXISTS, MOVIE_DIRECTOR_EXISTS } = MovieError;
 const { UNKNOWN_ERROR } = GeneralError;
 
 class MovieService {
@@ -351,6 +359,138 @@ class MovieService {
       return prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
     }
     
+  }
+
+  async getMovieCasts(id: number): Promise<MyMovieDbResponse> {
+    console.info(`getMovieCasts: movieId: ${id}`);
+    try {
+      const movieResponse = await this.getMovieById(id);
+
+      if (!movieResponse.success) {
+        return movieResponse;
+      }
+
+      const movie = <Movie>movieResponse.data.movie;
+
+      const casts = await movie.getCasts();
+
+      return prepareResponse({ casts }, true);
+
+    } catch (error) {
+      const message = 'There was an error getting casts';
+      logger.error(message, error);
+      return prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
+    }
+
+  }
+
+  async addMovieCast(id: number, payload: MovieCastAttributes): Promise<MyMovieDbResponse> {
+    console.info(`addMovieCast: movieId: ${id}, payload: `, payload);
+    try {
+      const movieResponse = await this.getMovieById(id);
+
+      if (!movieResponse.success) {
+        return movieResponse;
+      }
+
+      const { actorId, role } = payload;
+
+      const actorResponse = await actorService.getActorById(actorId);
+
+      if (!actorResponse.success) {
+        return actorResponse;
+      }
+
+      const movie = <Movie>movieResponse.data.movie;
+
+      const movieAlreadyHasCast = await movie.hasCast(actorId);
+
+      if (movieAlreadyHasCast) {
+        return prepareResponse(null, false, MOVIE_CAST_EXISTS, 'Cast already exists for this movie');
+      } 
+
+      const cast = await MovieCast.create({
+        movieId: id,
+        actorId,
+        role
+      });
+
+      cast.save();
+
+      return prepareResponse({ cast }, true);
+      
+    } catch (error) {
+      const message = 'There was an error adding actor to movie';
+      logger.error(message, error);
+      return prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
+    }
+
+  }
+
+  async getMovieDirectors(id: number): Promise<MyMovieDbResponse> {
+    console.info(`getMovieDirectors: movieId: ${id}`);
+    try {
+      const movieResponse = await this.getMovieById(id);
+
+      if (!movieResponse.success) {
+        return movieResponse;
+      }
+
+      const movie = <Movie>movieResponse.data.movie;
+
+      const directors = await movie.getDirectors();
+
+      return prepareResponse({ directors }, true);
+
+    } catch (error) {
+      const message = 'There was an error getting directors';
+      logger.error(message, error);
+      return prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
+    }
+
+  }
+
+  async addMovieDirector(id: number, payload: MovieDirectionCreationAttributes): Promise<MyMovieDbResponse> {
+    console.info(`addMovieDirector: movieId: ${id}, payload: `, payload);
+    try {
+      const movieResponse = await this.getMovieById(id);
+
+      if (!movieResponse.success) {
+        return movieResponse;
+      }
+
+      const { directorId } = payload;
+
+      const directorResponse = await directorService.getDirectorById(directorId);
+
+      if (!directorResponse.success) {
+        return directorResponse;
+      }
+
+      const movie = <Movie>movieResponse.data.movie;
+
+      const movieAlreadyHasDirectorWithId = await movie.hasDirector(directorId);
+
+      if (movieAlreadyHasDirectorWithId) {
+        logger.error(`${MOVIE_DIRECTOR_EXISTS}`);
+        return prepareResponse(null, false, MOVIE_DIRECTOR_EXISTS, 'Director already exists for this movie');
+      }
+
+      const direction = await MovieDirection.create({
+        movieId: id,
+        directorId
+      });
+
+      direction.save();
+
+      return prepareResponse({ direction }, true);
+
+    } catch (error) {
+      const message = 'There was an error adding director to movie';
+      logger.error(message, error);
+      return prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
+    }
+
   }
 
 }

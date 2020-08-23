@@ -89,4 +89,28 @@ Router.get("/reviews/reviewer/:reviewerId", async (req, res) => {
 });
 
 
+Router.get("/:id/casts", async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.getMovieCasts(id);
+    handleCommonResponse(response, res);
+});
+
+Router.post("/:id/casts", authorize, async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.addMovieCast(id, req.body);
+    handleCommonResponse(response, res);
+});
+
+Router.post("/:id/directors", authorize, async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.addMovieDirector(id, req.body);
+    handleCommonResponse(response, res);
+});
+
+Router.get("/:id/directors", async (req, res) => {
+    const id = Number(req.params.id);
+    const response = await moviesService.getMovieDirectors(id);
+    handleCommonResponse(response, res);
+});
+
 export default Router;

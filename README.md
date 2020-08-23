@@ -26,7 +26,7 @@ Fill the database with data:
 
 When the app is running, visit the endpoint /swagger to see the app api docs.
 
-![alt text](mymoviedb-swagger-doc.jpg "Logo Title Text 1")
+![alt text](mymoviedb-swagger-doc.jpg "MyMovieDB Swagger preview")
 
 ## Testing
 

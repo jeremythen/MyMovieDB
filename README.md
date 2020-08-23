@@ -22,3 +22,18 @@ Fill the database with data:
 > npx sequelize-cli db:seed:all
 
 
+## Testing
+
+Make sure the NODE_ENV is set to test
+
+Sequelize will call the build/ js files for the configuration, so make sure the run:
+
+> npx tsc
+
+Run:
+
+> npm run test
+
+Based on the package.json file, this will create the test database in case it doesn't exist, remove any migrations, then add the migrations and fill it with seeds (about 20 records for each model.). The number of seeds can be changed in the .env file.
+
+

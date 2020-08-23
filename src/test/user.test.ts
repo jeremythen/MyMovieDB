@@ -5,13 +5,9 @@ import { UserError } from '../util/enums';
 
 const { USER_INVALID_ID, USER_NOT_FOUND } = UserError;
 
-beforeEach(function () {
-    sequelize.models.User.destroy({ where: {}, truncate: true });
-});
-
 describe('Users tests', () => {
 
-    it('create user', async () => {
+    it('should create user', async () => {
         const response = await userService.registerUser({
             firstName: 'Jeremy',
             lastName: 'Then',
@@ -30,7 +26,7 @@ describe('Users tests', () => {
 
     });
 
-    it('Get user by inexistent username', async () => {
+    it('should get user by inexistent username', async () => {
         const response = await userService.getUserByUsername('oasdfkajsdglkasdg');
 
         expect(response === null).to.be.false;
@@ -43,7 +39,7 @@ describe('Users tests', () => {
 
     });
 
-    it('Get user by invalid id', async () => {
+    it('should get user by invalid id', async () => {
         const response = await userService.getUserById(-7235);
 
         expect(response === null).to.be.false;

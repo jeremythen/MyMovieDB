@@ -34,4 +34,5 @@ export enum MovieError {
 
 export enum GeneralError {
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+  ERROR = 'ERROR', 
 }

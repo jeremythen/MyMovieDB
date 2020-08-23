@@ -11,16 +11,34 @@ const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INV
 
 class UserService {
 
+    /**
+     * 
+     * Get the list of registered users
+     * @returns returns the list of registered users
+     * 
+     */
     async getUsers(): Promise<MyMovieDbResponse>  {
         const users = await userRepository.getUsers();
         return prepareResponse({ users }, true);
     }
 
+    /**
+     * 
+     * @param email 
+     * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
+     * 
+     */
     async getUserByEmail(email: string): Promise<MyMovieDbResponse>  {
         const user = await userRepository.getUserByEmail(email);
         return prepareResponse({ user }, true);
     }
 
+    /**
+     * 
+     * @param username 
+     * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
+     * 
+     */
     async getUserByUsername(username: string): Promise<MyMovieDbResponse> {
         const user = await userRepository.getUserByUsername(username);
         if (user === null) {
@@ -29,6 +47,12 @@ class UserService {
         return prepareResponse({ user }, true);
     }
 
+    /**
+     *
+     * @param id
+     * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
+     *
+     */
     async getUserById(id: number): Promise<MyMovieDbResponse> {
 
         if (!isValidId(id)) {
@@ -42,10 +66,23 @@ class UserService {
         return prepareResponse({ user }, true);
     }
 
+    /**
+     * 
+     * @param user 
+     * Checks if the user has ADMIN role
+     * @returns a boolean specifying if the user is ADMIN
+     * 
+     */
     isAdmin(user: UserCreationAttributes): boolean {
         return user !== null && user.role === Role.ADMIN;
     }
 
+    /**
+     * 
+     * @param userPayload payload with user information to register. username, email and password are required
+     * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
+     * 
+     */
     async registerUser(userPayload: UserCreationAttributes): Promise<MyMovieDbResponse> {
 
         const validationResult = validateRegisterUserPayload(userPayload);
@@ -83,7 +120,13 @@ class UserService {
 
     }
 
-    async login(payload: UserLoginPayload) {
+    /**
+     * 
+     * @param payload to authenticate the user. username and password are required
+     * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
+     * 
+     */
+    async login(payload: UserLoginPayload): Promise<MyMovieDbResponse>  {
 
         const validationResult = validateLoginUserPayload(payload);
 
@@ -114,7 +157,13 @@ class UserService {
         }
     }
 
-    async deleteUserByUsername(username: string) {
+    /**
+     * 
+     * @param username of the user to be deleted
+     * @returns a Promise with a MyMovieDbResponse object containing the 'deleted' attribute in it's 'data' attribute
+     * 
+     */
+    async deleteUserByUsername(username: string): Promise<MyMovieDbResponse>  {
         const user = await userRepository.getUserByUsername(username);
 
         if (user === null) {
@@ -126,7 +175,14 @@ class UserService {
         return prepareResponse({ deleted: true }, true);
     }
 
-    async updateUserRole(username: string, role: string) {
+    /**
+     * 
+     * @param username of the user to update the role to
+     * @param role of the user to be assigned. Is required and should be either USER or ADMIN
+     * @returns a Promise with a MyMovieDbResponse object containing the 'deleted' attribute in it's 'data' attribute
+     * 
+     */
+    async updateUserRole(username: string, role: string): Promise<MyMovieDbResponse>  {
 
         if (!isValidRole(role)) {
             return prepareResponse(null, false, USER_INVALID_ROLE, [`Role ${role} is not a valid role`]);

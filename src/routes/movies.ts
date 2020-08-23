@@ -1,7 +1,10 @@
 import express from 'express';
 import moviesService from "../services/moviesService";
-import { authorize, loggedInUser } from '../middleware/authMiddleware';
+import { authorize, loggedInUser, getLoggedInUser } from '../middleware/authMiddleware';
 import { handleCommonResponse } from '../util/util';
+import log4js from 'log4js';
+
+const logger = log4js.getLogger();
 
 const Router = express.Router();
 
@@ -54,7 +57,9 @@ Router.get("/pagination/offset/:offset/limit/:limit", async (req, res) => {
 
 Router.post("/:id/reviews", loggedInUser, async (req, res) => {
     const id = Number(req.params.id);
-    const response = await moviesService.addMovieReview(id, req.body);
+    const user = await getLoggedInUser(req);
+    const payload = { ...req.body, reviewerId: user.id };
+    const response = await moviesService.addMovieReview(id, payload);
     handleCommonResponse(response, res);
 });
 

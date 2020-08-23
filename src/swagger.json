@@ -198,8 +198,8 @@
       },
       "post": {
         "tags": ["movies"],
-        "summary": "Add a review to a movie",
-        "description": "Add a review to a movie specified by it's id. Any logged in user can access this endpoint. A user can only add a review to one specific movie. If the user tries to add a review to the same movie, the previous review will be overriden by the new review.",
+        "summary": "Add a review to a movie for the logged in user",
+        "description": "Add a review to a movie specified by it's id. Any logged in user can access this endpoint. A user can only add a review to one specific movie. If the user tries to add a review to the same movie, the previous review will be overriden by the new review. The logged in user will be the owner of this review.",
         "operationId": "addMovieReview",
         "parameters": [
           {
@@ -407,7 +407,7 @@
         "tags": ["movies"],
         "summary": "Get movies after th especified offset and up to limit count",
         "operationId": "getPaginatedMoviesOffsetAndLimit",
-        "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned, aafter the movie with the offset position",
+        "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned, after the movie with the offset position",
         "security": [],
         "parameters": [
           {
@@ -1385,7 +1385,7 @@
       },
       "Review": {
         "type": "object",
-        "required": ["movieId", "reviewerId", "reviewerStars"],
+        "required": ["movieId", "reviewerStars"],
         "properties": {
           "id": {
             "description": "The registered user's id",
@@ -1395,10 +1395,6 @@
           "movieId": {
             "type": "integer",
             "example": 5
-          },
-          "reviewerId": {
-            "type": "integer",
-            "example": 2
           },
           "reviewerStars": {
             "description": "The stars that the reviewer user is giving to this movie",
@@ -1415,15 +1411,11 @@
       },
       "AddReviewPayload": {
         "type": "object",
-        "required": ["movieId", "reviewerId", "reviewerStars"],
+        "required": ["movieId", "reviewerStars"],
         "properties": {
           "movieId": {
             "type": "integer",
             "example": 5
-          },
-          "reviewerId": {
-            "type": "integer",
-            "example": 2
           },
           "reviewerStars": {
             "description": "The stars that the reviewer user is giving to this movie",

@@ -1,11 +1,13 @@
 process.env.NODE_ENV = 'test';
 
 import { expect } from 'chai';
-import moviesService from '../services/moviesService';
+import MovieService from '../services/MovieService';
 import sequelize from '../db/connection';
 //import { runMigrations } from '../util/test/test-util';
 
 const Movie = sequelize.models.Movie;
+
+const movieService = new MovieService();
 
 before(function () {
 
@@ -36,7 +38,7 @@ describe('Movies', () => {
     describe('Getting movies', () => {
 
         it('should return a list of movies', async () => {
-            const response = await moviesService.getMovies();
+            const response = await movieService.getMovies();
 
             expect(response === null).to.be.false;
 
@@ -47,7 +49,7 @@ describe('Movies', () => {
 
         it('should return a movie when searched by movie id', async () => {
 
-            const response = await moviesService.getMovieById(1);
+            const response = await movieService.getMovieById(1);
 
             expect(response === null).to.be.false;
 
@@ -72,7 +74,7 @@ describe('Movies', () => {
                 distributor: "Universal Pictures"
             };
 
-            const response = await moviesService.createMovie(moviePayload);
+            const response = await movieService.createMovie(moviePayload);
 
             expect(response === null, 'Expecting response to not be null').to.be.false;
 
@@ -93,7 +95,7 @@ describe('Movies', () => {
                 distributor: "Universal Pictures"
             };
 
-            const response = await moviesService.createMovie(moviePayload);
+            const response = await movieService.createMovie(moviePayload);
 
             expect(response === null, 'Expecting response to not be null').to.be.false;
 
@@ -105,7 +107,7 @@ describe('Movies', () => {
 
             const newMovieId = movie.id;
 
-            const response2 = await moviesService.getMovieById(movie.id);
+            const response2 = await movieService.getMovieById(movie.id);
 
             expect(response === null, 'Expecting response to not be null').to.be.false;
 

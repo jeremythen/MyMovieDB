@@ -46,6 +46,4 @@ class UserRepository {
 
 }
 
-const moviesRepository = Object.freeze(new UserRepository());
-
-export default moviesRepository;
+export default UserRepository;

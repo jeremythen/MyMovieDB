@@ -1,10 +1,12 @@
 import { Response, Request, NextFunction } from "express";
 import { verifyToken } from '../util/jwtTokenUtil';
 import HttpStatus from 'http-status-codes';
-import userService from '../services/userService';
+import UserService from '../services/UserService';
 import log4js from 'log4js';
 
 const logger = log4js.getLogger();
+
+const userService = new UserService();
 
 export const authorize = async (req: Request, res: Response, next: NextFunction) => {
     logger.info('Checking if requester has authorization to access this endpoint:', req.originalUrl);

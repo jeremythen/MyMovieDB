@@ -1,9 +1,11 @@
 import { expect } from 'chai';
-import userService from '../services/userService';
+import UserService from '../services/UserService';
 import sequelize from '../db/connection';
 import { UserError } from '../util/enums';
 
 const { USER_INVALID_ID, USER_NOT_FOUND } = UserError;
+
+const userService = new UserService();
 
 describe('Users tests', () => {
 

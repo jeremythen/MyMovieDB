@@ -1,4 +1,4 @@
-import actorsRepository from '../repositories/actorsRepository';
+import ActorsRepository from '../repositories/ActorRepository';
 import { ActorCreationAttributes } from '../db/models/movie/Actor';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';
@@ -12,10 +12,16 @@ const { ERROR } = GeneralError;
 
 class ActorService {
 
+    private actorRepository: ActorsRepository;
+
+    constructor() {
+        this.actorRepository = new ActorsRepository();
+    }
+
     async getActors(): Promise<MyMovieDbResponse> {
         try {
             logger.info("getActors");
-            const actors = await actorsRepository.getActors();
+            const actors = await this.actorRepository.getActors();
             return prepareResponse({ actors }, true);
         } catch (error) {
             return prepareResponse(null, false, ERROR, ['Error getting authors', error.message]);
@@ -32,7 +38,7 @@ class ActorService {
             return prepareResponse(null, false, ACTOR_INVALID_PAYLOAD, validation.validationErrors);
         }
 
-        const actor = await actorsRepository.createActor(actorCreationPayload);
+        const actor = await this.actorRepository.createActor(actorCreationPayload);
         logger.info("new actor id: ", actor.id);
 
         return prepareResponse({ actor }, true);
@@ -45,7 +51,7 @@ class ActorService {
             return prepareResponse(null, false, ACTOR_INVALID_ID, [`Invalid actor id`]);
         }
 
-        const actor = await actorsRepository.getActorById(id);
+        const actor = await this.actorRepository.getActorById(id);
 
         if (actor === null) {
             logger.error(`Actor with id ${id} was not found`);
@@ -62,7 +68,7 @@ class ActorService {
             return prepareResponse(null, false, ACTOR_INVALID_ID, [`Invalid actor id`]);
         }
 
-        const actor = await actorsRepository.getActorById(id);
+        const actor = await this.actorRepository.getActorById(id);
 
         if (actor === null) {
             logger.error(`Actor with id ${id} was not found`);
@@ -77,10 +83,7 @@ class ActorService {
 
 }
 
-
-const actorService = Object.freeze(new ActorService());
-
-export default actorService;
+export default ActorService;
 
 const validateActorCreationPayload = (payload: ActorCreationAttributes): ValidationResult => {
     const validationResult: ValidationResult = {

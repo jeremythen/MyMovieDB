@@ -1,9 +1,11 @@
 import express from 'express';
-import userService from '../services/userService';
 import { authorize } from '../middleware/authMiddleware';
 import { handleCommonResponse } from '../util/util';
+import UserService from '../services/UserService';
 
 const Router = express.Router();
+
+const userService = new UserService();
 
 Router.post('/register', async (req, res) => {
     const response = await userService.registerUser(req.body);

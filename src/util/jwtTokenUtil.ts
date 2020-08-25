@@ -1,22 +1,32 @@
 import jwt from 'jsonwebtoken';
 import User from '../db/models/User';
+import log4js from 'log4js';
 
-// Using || '' to bypass typescript undefined check for jwt.sign.
-const secret: string = process.env.JWT_SECRET || '';
+const logger = log4js.getLogger();
 
 export const generateJwtToken = (user: User): string => {
+    const secret = process.env.JWT_SECRET || '';
+    try {
+        logger.info(`Generation token for user: ${user.username}`);
 
-    const { username, email } = user;
+        const { username, email } = user;
 
-    const data = { username, email };
+        const data = { username, email };
 
-    return jwt.sign(data, secret, {
-        expiresIn: '7d',
-    });
+        return jwt.sign(data, secret, {
+            expiresIn: '7d',
+        });
+    } catch (error) {
+        logger.error('Error generating Jwt token', error);
+        return '';
+        
+    }
 
 }
 
 export const verifyToken = (jwtToken: string): UserTokenData | null => {
+    logger.info(`Verifying token`);
+    const secret = process.env.JWT_SECRET || '';
     try {
         const userTokenData = <UserTokenData> jwt.verify(jwtToken, secret);
         return userTokenData;

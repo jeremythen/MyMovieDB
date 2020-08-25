@@ -1,17 +1,18 @@
-import moviesRepository from '../repositories/moviesRepository';
+import MovieRepository from '../repositories/MovieRepository';
 import Movie, { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError, GeneralError } from '../util/enums';
 import { ReviewCreationAttributes } from '../db/models/movie/Review';
-import reviewRepository from '../repositories/reviewRepository';
-import userRepository from '../repositories/userRepository';
+import ReviewRepository from '../repositories/ReviewRepository';
+import UserRepository from '../repositories/UserRepository';
 import log4js from 'log4js';
 import MovieCast, { MovieCastAttributes } from '../db/models/movie/MovieCast';
-import actorService from './actorService';
+import ActorService from './ActorService';
 import MovieDirection, { MovieDirectionCreationAttributes } from '../db/models/movie/MovieDirection';
-import directorService from './directorService';
-import redisService from './redisService';
+import DirectorService from './DirectorService';
+import RedisService from './RedisService';
+import { Service } from 'typedi';
 
 const logger = log4js.getLogger('', );
 
@@ -21,7 +22,28 @@ const { MOVIE_INVALID_PAYLOAD,
   REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID, MOVIE_CAST_EXISTS, MOVIE_DIRECTOR_EXISTS } = MovieError;
 const { UNKNOWN_ERROR } = GeneralError;
 
+//@Service()
 class MovieService {
+
+  private movieRepository: MovieRepository;
+  private reviewRepository: ReviewRepository;
+  private userRepository: UserRepository;
+
+  private actorService: ActorService;
+  private directorService: DirectorService;
+
+  private redisService: RedisService;
+
+  constructor() {
+    this.movieRepository = new MovieRepository();
+    this.reviewRepository = new ReviewRepository();
+    this.userRepository = new UserRepository();
+
+    this.actorService = new ActorService();
+    this.directorService = new DirectorService();
+
+    this.redisService = new RedisService();
+  }
 
   /**
    * 
@@ -32,10 +54,10 @@ class MovieService {
   async getMovies(): Promise<MyMovieDbResponse> {
     logger.info('getMovies()');
     try {
-      const redisHasMovies = await redisService.hasKey('movies');
+      const redisHasMovies = await this.redisService.hasKey('movies');
       logger.info('getting data form redis; redisHasMovies: ', redisHasMovies);
       if (redisHasMovies) {
-        const movies = await redisService.get('movies');
+        const movies = await this.redisService.get('movies');
         return prepareResponse({ movies }, true);
       }
     } catch (error) {
@@ -43,8 +65,8 @@ class MovieService {
     }
     logger.info('Redis does not have movies data');
     try { 
-      const movies = await moviesRepository.getMoviesWhere({ disabled: false });
-      redisService.set('movies', movies);
+      const movies = await this.movieRepository.getMoviesWhere({ disabled: false });
+      this.redisService.set('movies', movies);
       return prepareResponse({ movies }, true);
     } catch (error) {
       const message = 'There was an error getting movies';
@@ -70,7 +92,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_PAYLOAD, validation.validationErrors);
       }
 
-      const movie = await moviesRepository.createMovie(movieCreationPayload);
+      const movie = await this.movieRepository.createMovie(movieCreationPayload);
       this.updateRedisMovies()
       return prepareResponse({ movie }, true);
     } catch (error) {
@@ -84,8 +106,8 @@ class MovieService {
   private async updateRedisMovies() {
     logger.info('updateRedisMovies()');
     try {
-      const movies = await moviesRepository.getMovies();
-      redisService.set('movies', movies);
+      const movies = await this.movieRepository.getMovies();
+      this.redisService.set('movies', movies);
     } catch (error) {
       logger.error('Error updating movies in redis');
     }
@@ -109,23 +131,23 @@ class MovieService {
 
       const { reviewerId, reviewerStars, comment = '' } = movieReviewPayload;
 
-      const movie = await moviesRepository.getMovieById(movieId);
+      const movie = await this.movieRepository.getMovieById(movieId);
 
       if (movie === null) {
         return prepareResponse(null, false, MOVIE_NOT_FOUND, [`Movie with id ${movieId} was not found`]);
       }
 
-      const reviewer = await userRepository.getUserById(reviewerId);
+      const reviewer = await this.userRepository.getUserById(reviewerId);
 
       if (reviewer === null) {
         return prepareResponse(null, false, REVIEWER_NOT_FOUND, [`Reviewer with id ${reviewerId} was not found`]);
       }
 
-      const review = await reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+      const review = await this.reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
 
       // If a review under that reviewer and movie ids exists, update it.
       if (review === null) {
-        const newReview = await reviewRepository.createReview(movieReviewPayload);
+        const newReview = await this.reviewRepository.createReview(movieReviewPayload);
         return prepareResponse({ review: newReview }, true);
       } else {
         review.reviewerStars = reviewerStars;
@@ -155,7 +177,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
       }
 
-      const movie = await moviesRepository.getMovieById(movieId);
+      const movie = await this.movieRepository.getMovieById(movieId);
 
       if (movie === null) {
         const message = `Movie with id ${movieId} was not found`
@@ -190,7 +212,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
       }
 
-      const movie = await moviesRepository.getMovieByIdAndWhere(id, { disabled: false });
+      const movie = await this.movieRepository.getMovieByIdAndWhere(id, { disabled: false });
 
       if (movie === null) {
         logger.warn(`Movie with id ${id} was not found or is not available. ${MOVIE_NOT_FOUND}`);
@@ -223,7 +245,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
       }
 
-      const movies = await reviewRepository.getMovieReviews(movieId);
+      const movies = await this.reviewRepository.getMovieReviews(movieId);
       return prepareResponse({ movies }, true);
     } catch (error) {
       const message = 'There was an error getting movie reviews';
@@ -250,7 +272,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, []);
       }
 
-      const movies = await moviesRepository.getMoviesWithOffsetAndLimit(offset, limit);
+      const movies = await this.movieRepository.getMoviesWithOffsetAndLimit(offset, limit);
       return prepareResponse({ movies }, true);
     } catch (error) {
       const message = 'There was an error getting movies with pagination offset and limit';
@@ -273,7 +295,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['offset is required and must be a valid number']);
       }
 
-      const movies = await moviesRepository.getMoviesWithOffset(offset);
+      const movies = await this.movieRepository.getMoviesWithOffset(offset);
       return prepareResponse({ movies }, true);
     } catch (error) {
       const message = 'There was an error getting movies with pagination offset';
@@ -296,7 +318,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_OFFSET_LIMIT, ['limit is required and must be a valid number']);
       }
 
-      const movies = await moviesRepository.getMoviesWithLimit(limit);
+      const movies = await this.movieRepository.getMoviesWithLimit(limit);
       return prepareResponse({ movies }, true);
     } catch (error) {
       const message = 'There was an error getting movies with pagination limit';
@@ -321,7 +343,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId and movieId are required']);
       }
 
-      const review = await reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
+      const review = await this.reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
 
       return prepareResponse({ review }, true);
     } catch (error) {
@@ -346,7 +368,7 @@ class MovieService {
         return prepareResponse(null, false, REVIEW_INVALID_ID, ['reviewId are required. Please Provide a valid review id']);
       }
 
-      const review = await reviewRepository.getReviewById(reviewId);
+      const review = await this.reviewRepository.getReviewById(reviewId);
       logger.info('review:', review);
       return prepareResponse({ review }, true);
     } catch (error) {
@@ -371,7 +393,7 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_GET_REVIEW_PAYLOAD, ['reviewerId are required']);
       }
 
-      const reviews = await reviewRepository.getReviewerReviews(reviewerId);
+      const reviews = await this.reviewRepository.getReviewerReviews(reviewerId);
 
       return prepareResponse({ reviews }, true);
     } catch (error) {
@@ -416,7 +438,7 @@ class MovieService {
 
       const { actorId, role } = payload;
 
-      const actorResponse = await actorService.getActorById(actorId);
+      const actorResponse = await this.actorService.getActorById(actorId);
 
       if (!actorResponse.success) {
         return actorResponse;
@@ -482,7 +504,7 @@ class MovieService {
 
       const { directorId } = payload;
 
-      const directorResponse = await directorService.getDirectorById(directorId);
+      const directorResponse = await this.directorService.getDirectorById(directorId);
 
       if (!directorResponse.success) {
         return directorResponse;
@@ -516,10 +538,7 @@ class MovieService {
 
 }
 
-
-const movieService = Object.freeze(new MovieService());
-
-export default movieService;
+export default MovieService;
 
 
 /**

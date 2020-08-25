@@ -9,14 +9,16 @@ import * as swaggerDoc from './swagger.json'
 import dotenv from 'dotenv';
 import log4js from 'log4js';
 
+dotenv.config();
+
+console.log('secret', process.env.JWT_SECRET);
+
 log4js.configure({
   appenders: { fileAppender: { type: 'file', filename: './logs/logs.log' } },
   categories: { default: { appenders: ['fileAppender'], level: 'info' } }
 });
 
 const logger = log4js.getLogger();
-
-dotenv.config();
 
 const app: express.Application = express();
 

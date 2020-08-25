@@ -23,6 +23,4 @@ class DirectorRepository {
 
 }
 
-const directorRepository = Object.freeze(new DirectorRepository());
-
-export default directorRepository;
+export default DirectorRepository;

@@ -48,4 +48,4 @@ class RedisService {
 
 }
 
-export default new RedisService();
+export default RedisService;

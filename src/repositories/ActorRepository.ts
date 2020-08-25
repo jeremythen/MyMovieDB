@@ -23,6 +23,4 @@ class ActorRepository {
 
 }
 
-const actorRepository = Object.freeze(new ActorRepository());
-
-export default actorRepository;
+export default ActorRepository;

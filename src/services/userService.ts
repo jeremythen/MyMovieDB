@@ -1,7 +1,7 @@
 import { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
 import { prepareResponse, MyMovieDbResponse, isValidRole, isValidId } from '../util/util';
-import userRepository from '../repositories/userRepository';
+import UserRepository from '../repositories/UserRepository';
 import validator from 'validator';
 import { generateJwtToken } from '../util/jwtTokenUtil';
 import { UserError, Role } from '../util/enums';
@@ -11,6 +11,12 @@ const { USER_CREATE_ERROR, USER_EMAIL_EXISTS, USER_INVALID_CREDENTIALS, USER_INV
 
 class UserService {
 
+    private userRepository: UserRepository
+
+    constructor() {
+        this.userRepository = new UserRepository();
+    }
+
     /**
      * 
      * Get the list of registered users
@@ -18,7 +24,7 @@ class UserService {
      * 
      */
     async getUsers(): Promise<MyMovieDbResponse>  {
-        const users = await userRepository.getUsers();
+        const users = await this.userRepository.getUsers();
         return prepareResponse({ users }, true);
     }
 
@@ -29,7 +35,7 @@ class UserService {
      * 
      */
     async getUserByEmail(email: string): Promise<MyMovieDbResponse>  {
-        const user = await userRepository.getUserByEmail(email);
+        const user = await this.userRepository.getUserByEmail(email);
         return prepareResponse({ user }, true);
     }
 
@@ -40,7 +46,7 @@ class UserService {
      * 
      */
     async getUserByUsername(username: string): Promise<MyMovieDbResponse> {
-        const user = await userRepository.getUserByUsername(username);
+        const user = await this.userRepository.getUserByUsername(username);
         if (user === null) {
             return prepareResponse(null, false, USER_NOT_FOUND, `User with username '${username} was not found`);
         }
@@ -59,7 +65,7 @@ class UserService {
             return prepareResponse(null, false, USER_INVALID_ID, `User id is invalid`);
         }
 
-        const user = await userRepository.getUserById(id);
+        const user = await this.userRepository.getUserById(id);
         if (user === null) {
             return prepareResponse(null, false, USER_NOT_FOUND, `User with username '${id} was not found`);
         }
@@ -93,19 +99,19 @@ class UserService {
 
         try {
 
-            const userWithEmail = await userRepository.getUserByEmail(userPayload.email);
+            const userWithEmail = await this.userRepository.getUserByEmail(userPayload.email);
 
             if (userWithEmail !== null) {
                 return prepareResponse(null, false, USER_EMAIL_EXISTS, ['An account with this email already exists']);
             }
 
-            const userWithUsername = await userRepository.getUserByUsername(userPayload.username);
+            const userWithUsername = await this.userRepository.getUserByUsername(userPayload.username);
 
             if (userWithUsername !== null) {
                 return prepareResponse(null, false, USER_USERNAME_EXISTS, ['An account with this username already exists']);
             }
 
-            const user = await userRepository.createUser(userPayload);
+            const user = await this.userRepository.createUser(userPayload);
 
             if (user === null) {
                 return prepareResponse(null, false, USER_CREATE_ERROR, ['User registration was unsuccessful']);
@@ -136,7 +142,7 @@ class UserService {
             return prepareResponse(null, false, USER_INVALID_CREDENTIALS, validationResult.validationErrors);
         }
 
-        const user = await userRepository.getUserByUsername(username);
+        const user = await this.userRepository.getUserByUsername(username);
 
         if (user === null) {
             return prepareResponse(null, false, "USER_NOT_FOUND", [`The specified user with username ${username} was not found`]);
@@ -164,13 +170,13 @@ class UserService {
      * 
      */
     async deleteUserByUsername(username: string): Promise<MyMovieDbResponse>  {
-        const user = await userRepository.getUserByUsername(username);
+        const user = await this.userRepository.getUserByUsername(username);
 
         if (user === null) {
             return prepareResponse(null, false, USER_NOT_FOUND, [`User with username ${username} was not found`]);
         }
 
-        await userRepository.deleteUser(user);
+        await this.userRepository.deleteUser(user);
 
         return prepareResponse({ deleted: true }, true);
     }
@@ -188,7 +194,7 @@ class UserService {
             return prepareResponse(null, false, USER_INVALID_ROLE, [`Role ${role} is not a valid role`]);
         }
 
-        const user = await userRepository.getUserByUsername(username);
+        const user = await this.userRepository.getUserByUsername(username);
 
         if (user === null) {
             return prepareResponse(null, false, USER_NOT_FOUND, [`User with username ${username} was not found`]);
@@ -203,15 +209,12 @@ class UserService {
 
 }
 
-const userService = Object.freeze(new UserService());
-
-export default userService;
+export default UserService;
 
 interface UserLoginPayload {
     username: string;
     password: string;
 }
-
 
 
 /**

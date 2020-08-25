@@ -1,9 +1,10 @@
 import express from 'express';
 import { authorize } from '../middleware/authMiddleware';
-import actorService from '../services/actorService';
 import { handleCommonResponse } from '../util/util';
+import ActorService from '../services/ActorService';
 
 const Router = express.Router();
+const actorService = new ActorService();
 
 Router.get("/", async (req, res) => {
     const response = await actorService.getActors();

@@ -29,6 +29,4 @@ class ReviewRepository {
 
 }
 
-const reviewRepository = Object.freeze(new ReviewRepository());
-
-export default reviewRepository;
+export default ReviewRepository;

@@ -1,9 +1,10 @@
 import express from 'express';
 import { authorize } from '../middleware/authMiddleware';
 import { handleCommonResponse } from '../util/util';
-import directorService from '../services/directorService';
+import DirectorService from '../services/DirectorService';
 
 const Router = express.Router();
+const directorService = new DirectorService();
 
 Router.get("/", async (req, res) => {
     const response = await directorService.getDirectors();

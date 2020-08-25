@@ -20,7 +20,7 @@ dotenv.config();
 
 const app: express.Application = express();
 
-const port = process.env.port || 3000;
+const PORT = process.env.port || 3000;
 
 app.use(bodyParser.json());
 
@@ -38,8 +38,8 @@ app.get("/", async (req, res) => {
   res.send("Welcome to MyMovieDB!");
 });
 
-app.listen(port, () => {
-  logger.info(`Running on port ${port}`);
+app.listen(PORT, () => {
+  logger.info(`Running on port ${PORT}`);
 });
 
 export default app;

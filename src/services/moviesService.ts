@@ -8,11 +8,10 @@ import reviewRepository from '../repositories/reviewRepository';
 import userRepository from '../repositories/userRepository';
 import log4js from 'log4js';
 import MovieCast, { MovieCastAttributes } from '../db/models/movie/MovieCast';
-import actorRepository from '../repositories/actorsRepository';
 import actorService from './actorService';
-import Actor from '../db/models/movie/Actor';
 import MovieDirection, { MovieDirectionCreationAttributes } from '../db/models/movie/MovieDirection';
 import directorService from './directorService';
+import redisService from './redisService';
 
 const logger = log4js.getLogger('', );
 
@@ -33,7 +32,19 @@ class MovieService {
   async getMovies(): Promise<MyMovieDbResponse> {
     logger.info('getMovies()');
     try {
+      const redisHasMovies = await redisService.hasKey('movies');
+      logger.info('getting data form redis; redisHasMovies: ', redisHasMovies);
+      if (redisHasMovies) {
+        const movies = await redisService.get('movies');
+        return prepareResponse({ movies }, true);
+      }
+    } catch (error) {
+      logger.error('Error calling redisService');
+    }
+    logger.info('Redis does not have movies data');
+    try { 
       const movies = await moviesRepository.getMoviesWhere({ disabled: false });
+      redisService.set('movies', movies);
       return prepareResponse({ movies }, true);
     } catch (error) {
       const message = 'There was an error getting movies';
@@ -60,7 +71,7 @@ class MovieService {
       }
 
       const movie = await moviesRepository.createMovie(movieCreationPayload);
-
+      this.updateRedisMovies()
       return prepareResponse({ movie }, true);
     } catch (error) {
       const message = 'There was an error creating the movie';
@@ -68,6 +79,16 @@ class MovieService {
       return prepareResponse(null, false, UNKNOWN_ERROR, [message, error.message]);
     }
     
+  }
+
+  private async updateRedisMovies() {
+    logger.info('updateRedisMovies()');
+    try {
+      const movies = await moviesRepository.getMovies();
+      redisService.set('movies', movies);
+    } catch (error) {
+      logger.error('Error updating movies in redis');
+    }
   }
 
   /**

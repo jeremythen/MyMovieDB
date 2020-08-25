@@ -2,14 +2,26 @@ import express from 'express';
 import moviesService from "../services/moviesService";
 import { authorize, loggedInUser, getLoggedInUser } from '../middleware/authMiddleware';
 import { handleCommonResponse } from '../util/util';
-import log4js from 'log4js';
-
-const logger = log4js.getLogger();
 
 const Router = express.Router();
 
 Router.get("/", async (req, res) => {
-    const response = await moviesService.getMovies();
+
+    const offset = Number(req.query.offset);
+    const limit = Number(req.query.limit);
+
+    let response;
+
+    if (!Number.isNaN(offset) && !Number.isNaN(limit)) {
+        response = await moviesService.getMoviesWithOffsetAndLimit(offset, limit);
+    } else if (!Number.isNaN(offset)) {
+        response = await moviesService.getMoviesWithOffset(offset);
+    } else if (!Number.isNaN(limit)) {
+        response = await moviesService.getMoviesWithLimit(limit);
+    } else {
+        response = await moviesService.getMovies();
+    }
+
     handleCommonResponse(response, res);
 });
 
@@ -33,25 +45,6 @@ Router.get("/reviews/movie/:id", async (req, res) => {
 Router.put("/:id/disable", authorize, async (req, res) => {
     const id = Number(req.params.id);
     const response = await moviesService.disableMovie(id);
-    handleCommonResponse(response, res);
-});
-
-Router.get("/pagination/offset/:offset", async (req, res) => {
-    const offset = Number(req.params.offset);
-    const response = await moviesService.getMoviesWithOffset(offset);
-    handleCommonResponse(response, res);
-});
-
-Router.get("/pagination/limit/:limit", async (req, res) => {
-    const limit = Number(req.params.limit);
-    const response = await moviesService.getMoviesWithLimit(limit);
-    handleCommonResponse(response, res);
-});
-
-Router.get("/pagination/offset/:offset/limit/:limit", async (req, res) => {
-    const offset = Number(req.params.offset);
-    const limit = Number(req.params.limit);
-    const response = await moviesService.getMoviesWithOffsetAndLimit(offset, limit);
     handleCommonResponse(response, res);
 });
 

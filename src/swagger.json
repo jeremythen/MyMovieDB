@@ -36,6 +36,24 @@
         "operationId": "getMovies",
         "description": "Get all the movies. Anybody, logged in or not can call this endpoint.",
         "security": [],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The number of movies to skip before starting to collect the result set"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The numbers of movies to return"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved movies",
@@ -513,154 +531,6 @@
           },
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      }
-    },
-    "/movies/pagination/offset/{offset}": {
-      "get": {
-        "tags": ["movies"],
-        "summary": "Get all movies after offset count movie record",
-        "operationId": "getPaginatedMoviesOffset",
-        "description": "Get all the movies that are after the movie with the offset position",
-        "security": [],
-        "parameters": [
-          {
-            "name": "offset",
-            "in": "path",
-            "required": true,
-            "description": "The offset from where to get movies",
-            "example": 5,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved movies",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GetMoviesResponse"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad input parameter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnkownError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/movies/pagination/limit/{limit}": {
-      "get": {
-        "tags": ["movies"],
-        "summary": "Get movies up to limit count",
-        "operationId": "getPaginatedMoviesLimit",
-        "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned",
-        "security": [],
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "path",
-            "required": true,
-            "description": "The count limit to return",
-            "example": 2,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved movies",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GetMoviesResponse"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad input parameter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnkownError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/movies/pagination/offset/{offset}/limit/{limit}": {
-      "get": {
-        "tags": ["movies"],
-        "summary": "Get movies after th especified offset and up to limit count",
-        "operationId": "getPaginatedMoviesOffsetAndLimit",
-        "description": "Get movies up to limit count. If limit is 5, then up to 5 movies will be returned, after the movie with the offset position",
-        "security": [],
-        "parameters": [
-          {
-            "name": "offset",
-            "in": "path",
-            "required": true,
-            "description": "The offset from where to get movies",
-            "example": 5,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "path",
-            "required": true,
-            "description": "The count limit to return",
-            "example": 3,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved movies",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GetMoviesResponse"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad input parameter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnkownError"
-                }
-              }
-            }
           }
         }
       }

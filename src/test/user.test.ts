@@ -41,7 +41,7 @@ describe('Users tests', () => {
 
     });
 
-    it('should get user by invalid id', async () => {
+    it('should not get user by invalid id', async () => {
         const response = await userService.getUserById(-7235);
 
         expect(response === null).to.be.false;

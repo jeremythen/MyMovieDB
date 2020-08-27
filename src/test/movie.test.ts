@@ -120,6 +120,47 @@ describe('Movies', () => {
 
         });
 
+        it('Getting review by user id (review id) and movie id', async () => {
+
+            const response = await movieService.getReviewByReviewerIdAndMovieId(1, 1);
+
+            expect(response.success, 'Expecting response to be successful').to.be.true;
+
+            const review = response.data;
+
+            expect(review, 'Expecting the review to be present.').to.not.be.null;
+
+        });
+
+        it("Getting reviewer's review by user's id", async () => {
+
+            const response = await movieService.getReviewerReviews(1);
+
+            expect(response.success, 'Expecting response to be successful').to.be.true;
+
+            const review = response.data;
+
+            expect(review, 'Expecting the reviews data to not be null.').to.not.be.null;
+
+            expect(Array.isArray(review), 'Expecting the reviews data to be an array').to.be.true;
+
+            expect(Array.isArray(review) && review.length > 0, 'Expecting the reviews array to have more than 0 reviews').to.be.true;
+
+        });
+
+        it("Getting one review by id", async () => {
+
+            const response = await movieService.getReviewById(1);
+            
+            expect(response.success, 'Expecting response to be successful').to.be.true;
+
+            const review = response.data;
+
+            expect(review, 'Expecting the reviews data to not be null.').to.not.be.null;
+
+        });
+
+
     });
 
 });

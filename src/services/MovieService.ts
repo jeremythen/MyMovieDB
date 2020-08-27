@@ -47,7 +47,7 @@ class MovieService {
   /**
    * 
    * Returns the list of movies that are not disabled
-   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the list of movies in it's 'data' attribute
    * 
    */
   async getMovies(): Promise<MyMovieDbResponse<Movie[] | null>> {
@@ -78,7 +78,7 @@ class MovieService {
    * 
    * @param movieCreationPayload Creates a movie and returns the newly created movie in a MyMovieDbResponse object
    * In the movieCreationPayload payload, the attributes title and year are required
-   * @returns a Promise with a MyMovieDbResponse object containing the newly created 'movie' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the newly created movie in it's 'data' attribute
    * 
    */
   async createMovie(movieCreationPayload: MovieCreationAttributes): Promise<MyMovieDbResponse<Movie | null>> {
@@ -116,7 +116,7 @@ class MovieService {
    * 
    * @param movieId the id of the movie which you would like to add a review to. This parameter is required.
    * @param movieReviewPayload the payload of the Review. movieId, reviewId and reviewerStars are expected and required parameters in this payload.
-   * @returns a Promise with a MyMovieDbResponse object containing the newly created 'review' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the newly created review in it's 'data' attribute
    * 
    */
   async addMovieReview(movieId: number, movieReviewPayload: ReviewCreationAttributes): Promise<MyMovieDbResponse<Review | null>> {
@@ -166,7 +166,7 @@ class MovieService {
   /**
    * 
    * @param movieId id of the movie to be disabled.
-   * @returns a Promise with a MyMovieDbResponse object containing 'disabled' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing disabled in it's 'data' attribute
    * 
    */
   async disableMovie(movieId: number): Promise<MyMovieDbResponse<boolean | null>> {
@@ -200,7 +200,7 @@ class MovieService {
   /**
    * 
    * @param id is required.
-   * @returns a movie by it's id in a Promise with a MyMovieDbResponse object containing 'movie' attribute in it's 'data' attribute
+   * @returns a movie by it's id in a Promise with a MyMovieDbResponse object containing movie in it's 'data' attribute
    * 
    */
   async getMovieById(id: number): Promise<MyMovieDbResponse<Movie | null>> {
@@ -233,7 +233,7 @@ class MovieService {
    * 
    * @param movieId 
    * @returns a all the reviews that belong to the movie specify that the movieId
-   * with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
+   * with a MyMovieDbResponse object containing the list of reviews in it's 'data' attribute
    * 
    */
   async getMovieReviews(movieId: number): Promise<MyMovieDbResponse<Review[] | null>> {
@@ -259,7 +259,7 @@ class MovieService {
    * @param offset, to retrieve movies after the movie on the position number of this offset
    * @param limit, return movies up to this limit
    * 
-   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the list of movies in it's 'data' attribute
    * 
    */
   async getMoviesWithOffsetAndLimit(offset: number, limit: number): Promise<MyMovieDbResponse<Movie[] | null>> {
@@ -284,7 +284,7 @@ class MovieService {
   /**
    * 
    * @param offset , to retrieve movies after the movie on the position number of this offset
-   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the list of movies in it's 'data' attribute
    * 
    */
   async getMoviesWithOffset(offset: number): Promise<MyMovieDbResponse<Movie[] | null>> {
@@ -307,7 +307,7 @@ class MovieService {
   /**
    * 
    * @param limit, return movies up to this limit
-   * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the list of movies in it's 'data' attribute
    * 
    */
   async getMoviesWithLimit(limit: number): Promise<MyMovieDbResponse<Movie[] | null>> {
@@ -331,7 +331,7 @@ class MovieService {
    * 
    * @param reviewerId to who the reviews belong to
    * @param movieId of the movie that the user sent the review to
-   * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the review in it's 'data' attribute
    * 
    */
   async getReviewByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<MyMovieDbResponse<Review | null>>  {
@@ -356,7 +356,7 @@ class MovieService {
   /**
    * 
    * @param reviewId the reviewId of the review record
-   * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the review in it's 'data' attribute
    * 
    */
   async getReviewById(reviewId: number): Promise<MyMovieDbResponse<Review | null>>  {
@@ -381,7 +381,7 @@ class MovieService {
   /**
    * 
    * @param reviewerId the id of the User that made the review
-   * @returns a Promise with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
+   * @returns a Promise with a MyMovieDbResponse object containing the list of reviews in it's 'data' attribute
    * 
    */
   async getReviewerReviews(reviewerId: number): Promise<MyMovieDbResponse<Review[] | null>> {
@@ -403,6 +403,12 @@ class MovieService {
     
   }
 
+  /**
+   * 
+   * @param id the movie id
+   * @returns a Promise with a MyMovieDbResponse object containing the list of casts in it's 'data' attribute
+   * 
+   */
   async getMovieCasts(id: number): Promise<MyMovieDbResponse<MovieCast[] | null>> {
     console.info(`getMovieCasts: movieId: ${id}`);
     try {
@@ -426,6 +432,13 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param id movie represented by this id
+   * @param payload the payload to create the cast
+   * @returns a Promise with a MyMovieDbResponse object containing the new cast in it's 'data' attribute
+   * 
+   */
   async addMovieCast(id: number, payload: MovieCastAttributes): Promise<MyMovieDbResponse<MovieCast | null>> {
     console.info(`addMovieCast: movieId: ${id}, payload: `, payload);
     try {
@@ -469,6 +482,12 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param id the movie id to get the directors from
+   * @returns a Promise with a MyMovieDbResponse object containing the list of directors for that movie in it's 'data' attribute
+   * 
+   */
   async getMovieDirectors(id: number): Promise<MyMovieDbResponse<MovieDirection[] | null>> {
     console.info(`getMovieDirectors: movieId: ${id}`);
     try {
@@ -492,6 +511,12 @@ class MovieService {
 
   }
 
+  /**
+   * 
+   * @param id the movie id
+   * @param payload the payload to create the MovieDirection association
+   * @returns a Promise with a MyMovieDbResponse object containing the direction association for that movie in it's 'data' attribute
+   */
   async addMovieDirector(id: number, payload: MovieDirectionCreationAttributes): Promise<MyMovieDbResponse<MovieDirection | null>> {
     console.info(`addMovieDirector: movieId: ${id}, payload: `, payload);
     try {

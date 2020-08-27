@@ -31,7 +31,9 @@
   "paths": {
     "/movies": {
       "get": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Get all movies",
         "operationId": "getMovies",
         "description": "Get all the movies. Anybody, logged in or not can call this endpoint.",
@@ -78,7 +80,9 @@
         }
       },
       "post": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Creates a movie",
         "description": "Create a movie. Only the admin can access this endpoint.",
         "operationId": "createMovie",
@@ -130,7 +134,9 @@
     },
     "/movies/{id}": {
       "get": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Get a movie by id",
         "description": "Get a movie by the specified id.",
         "operationId": "getMovieById",
@@ -171,7 +177,9 @@
     },
     "/movies/{id}/reviews": {
       "get": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Get the reviews for this movie",
         "operationId": "getReviewsByMovieId",
         "description": "Get a review by the specified reviewId",
@@ -214,7 +222,9 @@
         }
       },
       "post": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Add a review to a movie for the logged in user",
         "description": "Add a review to a movie specified by it's id. Any logged in user can access this endpoint. A user can only add a review to one specific movie. If the user tries to add a review to the same movie, the previous review will be overriden by the new review. The logged in user will be the owner of this review.",
         "operationId": "addMovieReview",
@@ -275,7 +285,9 @@
     },
     "/movies/{id}/casts": {
       "get": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Get a list of the casts in this movie",
         "operationId": "getMovieCasts",
         "description": "Get a list of the casts in this movie",
@@ -318,7 +330,9 @@
         }
       },
       "post": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Add a cast to a movie by the movie id",
         "description": "Add an cast to a movie by the movie id",
         "operationId": "addMovieCast",
@@ -379,7 +393,9 @@
     },
     "/movies/{id}/directors": {
       "get": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Get a list of the directors in this movie",
         "operationId": "getMovieDirectors",
         "description": "Get a list of the directors in this movie",
@@ -422,7 +438,9 @@
         }
       },
       "post": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Add a director to a movie by the movie id",
         "description": "Add an director to a movie by the movie id",
         "operationId": "addMovieDictor",
@@ -483,7 +501,9 @@
     },
     "/movies/{id}/disable": {
       "put": {
-        "tags": ["movies"],
+        "tags": [
+          "movies"
+        ],
         "summary": "Diactivates the movie",
         "operationId": "diactivateMovie",
         "description": "Diactivates the movie specified by the id. After this, the movie will not be visible. Only an admin can access this endpoint",
@@ -537,7 +557,9 @@
     },
     "/users/register": {
       "post": {
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "security": [],
         "summary": "Register a user",
         "description": "Register a user. Any not logged in user can call this endpoint.",
@@ -577,7 +599,9 @@
     },
     "/users/login": {
       "post": {
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "security": [],
         "summary": "User login",
         "description": "A logged out user calling this endpoint to login will receive a different JWT token each time. This endpoint will return a jwt token that the frontend will send for each other request as a logged in user.",
@@ -617,7 +641,9 @@
     },
     "/users": {
       "get": {
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "summary": "Get users",
         "description": "Get all users. Only ADMIN can all this endpoint.",
         "operationId": "getUsers",
@@ -655,7 +681,9 @@
     },
     "/users/{userName}": {
       "get": {
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "summary": "Get a user",
         "description": "Get a user specified by userName. Only ADMIN can all this endpoint.",
         "operationId": "getUserById",
@@ -697,7 +725,9 @@
         }
       },
       "delete": {
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "summary": "Deletes a user",
         "description": "Deletes a user with the specified userName. Only ADMIN can all this endpoint.",
         "operationId": "deleteUserById",
@@ -737,7 +767,9 @@
     },
     "/users/{userName}/role/": {
       "put": {
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "summary": "Add a role",
         "description": "Add a role to the specified userName. Only ADMIN can all this endpoint.",
         "operationId": "addUserRole",
@@ -774,7 +806,10 @@
                   },
                   "role": {
                     "type": "string",
-                    "enum": ["USER", "ADMIN"],
+                    "enum": [
+                      "USER",
+                      "ADMIN"
+                    ],
                     "example": "ADMIN"
                   }
                 }
@@ -797,7 +832,9 @@
     },
     "/actors": {
       "get": {
-        "tags": ["actors"],
+        "tags": [
+          "actors"
+        ],
         "summary": "Get all actors",
         "operationId": "getActors",
         "description": "Get the list of actors.",
@@ -829,7 +866,9 @@
         }
       },
       "post": {
-        "tags": ["actors"],
+        "tags": [
+          "actors"
+        ],
         "summary": "Add an actor",
         "description": "Add an actor. Only the admin can access this endpoint.",
         "operationId": "addActor",
@@ -879,7 +918,9 @@
         }
       },
       "delete": {
-        "tags": ["actors"],
+        "tags": [
+          "actors"
+        ],
         "summary": "Deletes an actor",
         "description": "Deletes a director with the specified id. Only ADMIN can all this endpoint.",
         "operationId": "deleteActor",
@@ -926,7 +967,9 @@
     },
     "/actors/{id}": {
       "get": {
-        "tags": ["actors"],
+        "tags": [
+          "actors"
+        ],
         "summary": "Get an actor by id",
         "description": "Get an actor by the specified id.",
         "operationId": "getActorById",
@@ -967,7 +1010,9 @@
     },
     "/directors": {
       "get": {
-        "tags": ["directors"],
+        "tags": [
+          "directors"
+        ],
         "summary": "Get all directors",
         "operationId": "getDirectors",
         "description": "Get the list of directors.",
@@ -999,7 +1044,9 @@
         }
       },
       "post": {
-        "tags": ["directors"],
+        "tags": [
+          "directors"
+        ],
         "summary": "Add an director",
         "description": "Add a director. Only the admin can access this endpoint.",
         "operationId": "addDirector",
@@ -1049,7 +1096,9 @@
         }
       },
       "delete": {
-        "tags": ["directors"],
+        "tags": [
+          "directors"
+        ],
         "summary": "Deletes an director",
         "description": "Deletes a director with the specified id. Only ADMIN can all this endpoint.",
         "operationId": "deleteDirector",
@@ -1096,7 +1145,9 @@
     },
     "/directors/{id}": {
       "get": {
-        "tags": ["directors"],
+        "tags": [
+          "directors"
+        ],
         "summary": "Get an director by id",
         "description": "Get an director by the specified id.",
         "operationId": "getDirectorById",
@@ -1188,7 +1239,10 @@
             "type": "array",
             "items": {
               "type": "object",
-              "enum": ["USER", "ADMIN"],
+              "enum": [
+                "USER",
+                "ADMIN"
+              ],
               "example": "ADMIN"
             }
           }
@@ -1196,7 +1250,12 @@
       },
       "Register": {
         "type": "object",
-        "required": ["name", "username", "email", "password"],
+        "required": [
+          "name",
+          "username",
+          "email",
+          "password"
+        ],
         "properties": {
           "firstName": {
             "type": "string",
@@ -1252,7 +1311,10 @@
       },
       "Login": {
         "type": "object",
-        "required": ["username", "password"],
+        "required": [
+          "username",
+          "password"
+        ],
         "properties": {
           "username": {
             "type": "string",
@@ -1266,7 +1328,14 @@
       },
       "Movie": {
         "type": "object",
-        "required": ["id", "title", "year", "time", "language", "distributor"],
+        "required": [
+          "id",
+          "title",
+          "year",
+          "time",
+          "language",
+          "distributor"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -1327,12 +1396,7 @@
           "data": {
             "description": "The data that was requested. null if any issue requesting it",
             "type": "string",
-            "example": {
-              "$ref": "#/components/schemas/Movie"
-            },
-            "default": {
-              "$ref": "#/components/schemas/Movie"
-            }
+            "$ref": "#/components/schemas/Movie"
           },
           "success": {
             "description": "The requested operation was successful",
@@ -1382,7 +1446,11 @@
       },
       "Cast": {
         "type": "object",
-        "required": ["actorId", "movieId", "role"],
+        "required": [
+          "actorId",
+          "movieId",
+          "role"
+        ],
         "properties": {
           "id": {
             "description": "The cast's id",
@@ -1406,7 +1474,10 @@
       },
       "Actor": {
         "type": "object",
-        "required": ["firstName", "lastName"],
+        "required": [
+          "firstName",
+          "lastName"
+        ],
         "properties": {
           "id": {
             "description": "The actor's id",
@@ -1425,7 +1496,10 @@
       },
       "Director": {
         "type": "object",
-        "required": ["firstName", "lastName"],
+        "required": [
+          "firstName",
+          "lastName"
+        ],
         "properties": {
           "id": {
             "description": "The director's id",
@@ -1444,7 +1518,9 @@
       },
       "Genre": {
         "type": "object",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -1453,19 +1529,28 @@
           "title": {
             "description": "The unique title of the genre.",
             "type": "string",
-            "enum": ["ACTION", "ADVENTURE", "COMEDY", "CRIME"],
+            "enum": [
+              "ACTION",
+              "ADVENTURE",
+              "COMEDY",
+              "CRIME"
+            ],
             "example": "ACTION"
           }
         }
       },
       "Review": {
         "type": "object",
-        "required": ["movieId", "reviewerStars"],
+        "required": [
+          "movieId",
+          "reviewerStars"
+        ],
         "properties": {
           "id": {
             "description": "The registered user's id",
             "type": "integer",
-            "example": 1
+            "example": 1,
+            "readOnly": true
           },
           "movieId": {
             "type": "integer",
@@ -1486,7 +1571,10 @@
       },
       "AddReviewPayload": {
         "type": "object",
-        "required": ["movieId", "reviewerStars"],
+        "required": [
+          "movieId",
+          "reviewerStars"
+        ],
         "properties": {
           "movieId": {
             "type": "integer",
@@ -1507,7 +1595,9 @@
       },
       "Reviewer": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "id": {
             "description": "The actor's id",
@@ -1522,7 +1612,11 @@
       },
       "MovieCreationPayload": {
         "type": "object",
-        "required": ["title", "year", "time"],
+        "required": [
+          "title",
+          "year",
+          "time"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -1554,7 +1648,11 @@
       },
       "NewMovieCreated": {
         "type": "object",
-        "required": ["title", "year", "time"],
+        "required": [
+          "title",
+          "year",
+          "time"
+        ],
         "properties": {
           "id": {
             "description": "The id of the newly created movie",
@@ -1622,9 +1720,7 @@
           "data": {
             "description": "The data that was requested. null if any issue requesting it",
             "type": "string",
-            "example": {
-              "disabled": true
-            }
+            "example": true
           },
           "success": {
             "description": "The requested operation was successful",
@@ -1674,7 +1770,10 @@
       },
       "ActionDirectorCreationPayload": {
         "type": "object",
-        "required": ["firstName", "lastName"],
+        "required": [
+          "firstName",
+          "lastName"
+        ],
         "properties": {
           "firstName": {
             "type": "string",
@@ -1790,11 +1889,7 @@
           "data": {
             "description": "The data that was requested. null if any issue requesting it",
             "type": "object",
-            "properties": {
-              "review": {
-                "$ref": "#/components/schemas/Review"
-              }
-            }
+            "$ref": "#/components/schemas/Review"
           },
           "success": {
             "description": "The requested operation was successful",
@@ -1820,14 +1915,9 @@
         "properties": {
           "data": {
             "description": "The data that was requested. null if any issue requesting it",
-            "type": "object",
-            "properties": {
-              "movies": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Movie"
-                }
-              }
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Movie"
             }
           },
           "success": {
@@ -1855,12 +1945,7 @@
           "data": {
             "description": "The data that was requested. null if any issue requesting it",
             "type": "object",
-            "properties": {
-              "movie": {
-                "type": "object",
-                "$ref": "#/components/schemas/NewMovieCreated"
-              }
-            }
+            "$ref": "#/components/schemas/NewMovieCreated"
           },
           "success": {
             "description": "The requested operation was successful",
@@ -1887,11 +1972,7 @@
           "data": {
             "description": "The data that was requested. null if any issue requesting it",
             "type": "object",
-            "properties": {
-              "movie": {
-                "$ref": "#/components/schemas/Movie"
-              }
-            }
+            "$ref": "#/components/schemas/Movie"
           },
           "success": {
             "description": "The requested operation was successful",
@@ -1916,15 +1997,9 @@
         "type": "object",
         "properties": {
           "data": {
-            "description": "The data that was requested",
-            "type": "object",
-            "properties": {
-              "review": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Review"
-                }
-              }
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Review"
             }
           },
           "success": {
@@ -1954,10 +2029,8 @@
             "type": "object",
             "properties": {
               "user": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/RegisterUserResponsePayload"
-                }
+                "type": "object",
+                "$ref": "#/components/schemas/RegisterUserResponsePayload"
               },
               "token": {
                 "description": "The JWT token that can be used by the user to make calls to the api or to be 'logged in'",
@@ -1990,14 +2063,9 @@
         "properties": {
           "data": {
             "description": "The data that was requested",
-            "type": "object",
-            "properties": {
-              "users": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/RegisterUserResponsePayload"
-                }
-              }
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegisterUserResponsePayload"
             }
           },
           "success": {
@@ -2078,12 +2146,7 @@
         "properties": {
           "data": {
             "description": "The data that was requested",
-            "type": "object",
-            "properties": {
-              "cast": {
-                "$ref": "#/components/schemas/AddCastResponsePayload"
-              }
-            }
+            "$ref": "#/components/schemas/AddCastResponsePayload"
           },
           "success": {
             "description": "The requested operation was successful",
@@ -2110,14 +2173,7 @@
           "data": {
             "description": "The data that was requested",
             "type": "object",
-            "properties": {
-              "directors": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/AddDirectorResponsePayload"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/AddDirectorResponsePayload"
           },
           "success": {
             "description": "The requested operation was successful",

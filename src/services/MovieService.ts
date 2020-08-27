@@ -11,7 +11,7 @@ import MovieCast, { MovieCastAttributes } from '../db/models/movie/MovieCast';
 import ActorService from './ActorsService';
 import MovieDirection, { MovieDirectionCreationAttributes } from '../db/models/movie/MovieDirection';
 import DirectorService from './DirectorsService';
-import RedisService from './RedisService';
+import RedisService from './RedisServices';
 
 const logger = log4js.getLogger('', );
 

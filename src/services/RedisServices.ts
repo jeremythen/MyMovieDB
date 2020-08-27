@@ -20,7 +20,7 @@ class RedisService {
 
     async hasKey(key: string): Promise<boolean> {
         const redisHasKey = await new Promise<boolean>((resolve, reject) => {
-            this.redisClient.exists(key, (error, ok) => {
+            this.redisClient.exists(key, (error: Error | null, ok: number) => {
                 if (error) return reject(error);
                 resolve(ok === 1);
             });
@@ -32,7 +32,7 @@ class RedisService {
     async get(key: string): Promise<any | null> {
         return await new Promise((resolve, reject) => {
             try {
-                this.redisClient.get(key, (error, data) => {
+                this.redisClient.get(key, (error: Error | null, data: string | null) => {
                     if (error) {
                         logger.error(`Error getting data with key '${key}'`);
                         reject(error);

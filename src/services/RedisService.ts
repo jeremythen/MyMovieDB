@@ -5,13 +5,15 @@ const logger = log4js.getLogger();
 
 const REDIS_PORT = <number>(process.env.REDIS_PORT || 6379);
 
+const redisHost = process.env.NODE_ENV === 'docker' ? 'redis' : 'localhost';
+
 class RedisService {
 
     private redisClient: RedisClient;
 
     constructor() {
         try {
-            this.redisClient = redis.createClient(REDIS_PORT);
+            this.redisClient = redis.createClient(REDIS_PORT, redisHost);
         } catch(error) {
             logger.error('Error connection to redis client', error);
             throw error;

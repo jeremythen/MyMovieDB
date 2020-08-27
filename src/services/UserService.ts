@@ -1,5 +1,5 @@
 import User, { UserCreationAttributes } from '../db/models/User';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { prepareResponse, MyMovieDbResponse, isValidRole, isValidId } from '../util/util';
 import UserRepository from '../repositories/UserRepository';
 import validator from 'validator';

@@ -1,5 +1,5 @@
 import User from '../db/models/User';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { UserCreationAttributes } from '../db/models/User';
 class UserRepository {
 

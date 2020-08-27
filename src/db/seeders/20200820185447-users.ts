@@ -2,7 +2,7 @@
 
 import { QueryInterface } from 'sequelize';
 import faker from 'faker';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import envConfig from '../../config/envConfig';
 import User from '../models/User';
 

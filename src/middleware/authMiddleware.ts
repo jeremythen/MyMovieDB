@@ -82,7 +82,7 @@ const checkRequesterTokenAndGetUser = async (req: Request, res: Response) => {
         return null;
     }
 
-    const user = response.data.user;
+    const user = response.data;
 
     return user;
 
@@ -103,7 +103,7 @@ export const getLoggedInUser = async (req: Request) => {
     logger.info(`Requester email: ${email}`);
     const response = await userService.getUserByEmail(email);
 
-    const user = response.data.user;
+    const user = response.data;
 
     return user;
 }

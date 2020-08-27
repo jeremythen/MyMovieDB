@@ -22,7 +22,7 @@ describe('Users tests', () => {
 
         expect(response.success).to.be.true;
 
-        const username = response.data.user.getDataValue('username');
+        const username = response.data?.user.username;
 
         expect(username).to.equal('jthen');
 

@@ -2,20 +2,20 @@ import { Response } from 'express';
 import HttpStatus from 'http-status-codes';
 import { Role } from './enums';
 
-export const prepareResponse = (
-  data: any,
+export const prepareResponse = <T>(
+  data: T,
   success: boolean,
-  errorCode = "",
+  errorCode: string | null = "",
   errorMessages: string[] | string = []
-): MyMovieDbResponse => {
+): MyMovieDbResponse<T> => {
   return { data, success, errorCode, errorMessages };
 };
 
-export interface MyMovieDbResponse {
+export interface MyMovieDbResponse<T> {
   errorCode: string | null;
   errorMessages: string[] | string;
   success: boolean;
-  data: any;
+  data: T;
 }
 
 export interface ValidationResult {
@@ -23,7 +23,7 @@ export interface ValidationResult {
   validationErrors: string[];
 }
 
-export const handleCommonResponse = (MyMovieDbResponse: MyMovieDbResponse, res: Response) => {
+export const handleCommonResponse = (MyMovieDbResponse: MyMovieDbResponse<any>, res: Response) => {
   if (!MyMovieDbResponse.success) {
     return res.status(HttpStatus.BAD_REQUEST).send(MyMovieDbResponse);
   }

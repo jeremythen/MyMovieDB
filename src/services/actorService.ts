@@ -1,5 +1,5 @@
 import ActorsRepository from '../repositories/ActorRepository';
-import { ActorCreationAttributes } from '../db/models/movie/Actor';
+import Actor, { ActorCreationAttributes } from '../db/models/movie/Actor';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';
 import { MovieError, GeneralError } from '../util/enums';
@@ -18,18 +18,18 @@ class ActorService {
         this.actorRepository = new ActorsRepository();
     }
 
-    async getActors(): Promise<MyMovieDbResponse> {
+    async getActors(): Promise<MyMovieDbResponse<Actor[] | null>> {
         try {
             logger.info("getActors");
             const actors = await this.actorRepository.getActors();
-            return prepareResponse({ actors }, true);
+            return prepareResponse(actors, true);
         } catch (error) {
             return prepareResponse(null, false, ERROR, ['Error getting authors', error.message]);
         }
         
     }
 
-    async createActor(actorCreationPayload: ActorCreationAttributes): Promise<MyMovieDbResponse> {
+    async createActor(actorCreationPayload: ActorCreationAttributes): Promise<MyMovieDbResponse<Actor | null>> {
         logger.info("createActor actorCreationPayload: ", actorCreationPayload);
         const validation = validateActorCreationPayload(actorCreationPayload);
 
@@ -41,11 +41,11 @@ class ActorService {
         const actor = await this.actorRepository.createActor(actorCreationPayload);
         logger.info("new actor id: ", actor.id);
 
-        return prepareResponse({ actor }, true);
+        return prepareResponse(actor, true);
 
     }
 
-    async getActorById(id: number): Promise<MyMovieDbResponse> {
+    async getActorById(id: number): Promise<MyMovieDbResponse<Actor | null>> {
         logger.info(`getActorById: ${id}`);
         if (!id || id < 1) {
             return prepareResponse(null, false, ACTOR_INVALID_ID, [`Invalid actor id`]);
@@ -58,7 +58,7 @@ class ActorService {
             return prepareResponse(null, false, ACTOR_NOT_FOUND, [`Actor with id ${id} was not found`]);
         }
 
-        return prepareResponse({ actor }, true);
+        return prepareResponse(actor, true);
     }
 
     async deleteActorById(id: number) {

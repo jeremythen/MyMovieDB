@@ -5,13 +5,22 @@ const logger = log4js.getLogger();
 
 const REDIS_PORT = <number>(process.env.REDIS_PORT || 6379);
 
-const client = redis.createClient(REDIS_PORT);
-
 class RedisService {
+
+    private redisClient: RedisClient;
+
+    constructor() {
+        try {
+            this.redisClient = redis.createClient(REDIS_PORT);
+        } catch(error) {
+            logger.error('Error connection to redis client', error);
+            throw error;
+        }
+    }
 
     async hasKey(key: string): Promise<boolean> {
         const redisHasKey = await new Promise<boolean>((resolve, reject) => {
-            client.exists(key, (error, ok) => {
+            this.redisClient.exists(key, (error, ok) => {
                 if (error) return reject(error);
                 resolve(ok === 1);
             });
@@ -20,10 +29,10 @@ class RedisService {
         return redisHasKey;
     }
    
-    async get(key: string): Promise<string | null> {
+    async get(key: string): Promise<any | null> {
         return await new Promise((resolve, reject) => {
             try {
-                client.get(key, (error, data) => {
+                this.redisClient.get(key, (error, data) => {
                     if (error) {
                         logger.error(`Error getting data with key '${key}'`);
                         reject(error);
@@ -40,9 +49,9 @@ class RedisService {
         logger.info(`Setting key: ${key}`);
         expireTimeInSeconds = Number(expireTimeInSeconds);
         if (!Number.isNaN(expireTimeInSeconds)) {
-            client.setex(key, expireTimeInSeconds, data);
+            this.redisClient.setex(key, expireTimeInSeconds, data);
         } else {
-            client.set(key, JSON.stringify(data));
+            this.redisClient.set(key, JSON.stringify(data));
         }
     }
 

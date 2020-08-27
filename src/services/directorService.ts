@@ -1,8 +1,8 @@
-import { DirectorCreationAttributes } from '../db/models/movie/Director';
+import Director, { DirectorCreationAttributes } from '../db/models/movie/Director';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';
 import { MovieError } from '../util/enums';
-import DirectorRepository from '../repositories/directorRepository';
+import DirectorRepository from '../repositories/DirectorRepository';
 
 const { DIRECTOR_INVALID_PAYLOAD, DIRECTOR_INVALID_ID, DIRECTOR_NOT_FOUND } = MovieError;
 
@@ -14,12 +14,12 @@ class DirectorService {
         this.directorsRepository = new DirectorRepository();
     }
 
-    async getDirectors(): Promise<MyMovieDbResponse> {
+    async getDirectors(): Promise<MyMovieDbResponse<Director[]>> {
         const directors = await this.directorsRepository.getDirectors();
-        return prepareResponse({ directors }, true);
+        return prepareResponse(directors, true);
     }
 
-    async createDirector(directorCreationPayload: DirectorCreationAttributes): Promise<MyMovieDbResponse> {
+    async createDirector(directorCreationPayload: DirectorCreationAttributes): Promise<MyMovieDbResponse<Director | null>> {
 
         const validation = validateDirectorCreationPayload(directorCreationPayload);
 
@@ -29,11 +29,11 @@ class DirectorService {
 
         const director = await this.directorsRepository.createDirector(directorCreationPayload);
 
-        return prepareResponse({ director }, true);
+        return prepareResponse(director, true);
 
     }
 
-    async getDirectorById(id: number): Promise<MyMovieDbResponse> {
+    async getDirectorById(id: number): Promise<MyMovieDbResponse<Director | null>> {
 
         if (!id || id < 1) {
             return prepareResponse(null, false, DIRECTOR_INVALID_ID, [`Invalid director id`]);
@@ -45,7 +45,7 @@ class DirectorService {
             return prepareResponse(null, false, DIRECTOR_NOT_FOUND, [`Director with id ${id} was not found`]);
         }
 
-        return prepareResponse({ director }, true);
+        return prepareResponse(director, true);
     }
 
     async deleteDirectorById(id: number) {

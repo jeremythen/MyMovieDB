@@ -3,7 +3,7 @@ import Movie, { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError, GeneralError } from '../util/enums';
-import { ReviewCreationAttributes } from '../db/models/movie/Review';
+import Review, { ReviewCreationAttributes } from '../db/models/movie/Review';
 import ReviewRepository from '../repositories/ReviewRepository';
 import UserRepository from '../repositories/UserRepository';
 import log4js from 'log4js';
@@ -12,7 +12,6 @@ import ActorService from './ActorService';
 import MovieDirection, { MovieDirectionCreationAttributes } from '../db/models/movie/MovieDirection';
 import DirectorService from './DirectorService';
 import RedisService from './RedisService';
-import { Service } from 'typedi';
 
 const logger = log4js.getLogger('', );
 
@@ -22,7 +21,6 @@ const { MOVIE_INVALID_PAYLOAD,
   REVIEWER_NOT_FOUND, MOVIE_INVALID_ID, MOVIE_INVALID_OFFSET_LIMIT, MOVIE_INVALID_GET_REVIEW_PAYLOAD, REVIEW_INVALID_ID, MOVIE_CAST_EXISTS, MOVIE_DIRECTOR_EXISTS } = MovieError;
 const { UNKNOWN_ERROR } = GeneralError;
 
-//@Service()
 class MovieService {
 
   private movieRepository: MovieRepository;
@@ -35,6 +33,7 @@ class MovieService {
   private redisService: RedisService;
 
   constructor() {
+    //@inject(TYPES.IMovieRepository) private movieRepository: MovieRepository
     this.movieRepository = new MovieRepository();
     this.reviewRepository = new ReviewRepository();
     this.userRepository = new UserRepository();
@@ -51,14 +50,14 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
    * 
    */
-  async getMovies(): Promise<MyMovieDbResponse> {
+  async getMovies(): Promise<MyMovieDbResponse<Movie[] | null>> {
     logger.info('getMovies()');
     try {
       const redisHasMovies = await this.redisService.hasKey('movies');
       logger.info('getting data form redis; redisHasMovies: ', redisHasMovies);
       if (redisHasMovies) {
         const movies = await this.redisService.get('movies');
-        return prepareResponse({ movies }, true);
+        return prepareResponse(movies, true);
       }
     } catch (error) {
       logger.error('Error calling redisService');
@@ -67,7 +66,7 @@ class MovieService {
     try { 
       const movies = await this.movieRepository.getMoviesWhere({ disabled: false });
       this.redisService.set('movies', movies);
-      return prepareResponse({ movies }, true);
+      return prepareResponse(movies, true);
     } catch (error) {
       const message = 'There was an error getting movies';
       logger.error(message, error);
@@ -82,7 +81,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the newly created 'movie' attribute in it's 'data' attribute
    * 
    */
-  async createMovie(movieCreationPayload: MovieCreationAttributes): Promise<MyMovieDbResponse> {
+  async createMovie(movieCreationPayload: MovieCreationAttributes): Promise<MyMovieDbResponse<Movie | null>> {
     logger.info('Creating movie');
     logger.info('New movie movieCreationPayload', movieCreationPayload);
     try {
@@ -94,7 +93,7 @@ class MovieService {
 
       const movie = await this.movieRepository.createMovie(movieCreationPayload);
       this.updateRedisMovies()
-      return prepareResponse({ movie }, true);
+      return prepareResponse(movie, true);
     } catch (error) {
       const message = 'There was an error creating the movie';
       logger.error(message, error);
@@ -120,7 +119,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the newly created 'review' attribute in it's 'data' attribute
    * 
    */
-  async addMovieReview(movieId: number, movieReviewPayload: ReviewCreationAttributes): Promise<MyMovieDbResponse> {
+  async addMovieReview(movieId: number, movieReviewPayload: ReviewCreationAttributes): Promise<MyMovieDbResponse<Review | null>> {
 
     try {
       const validation = validateCreateReviewPayload(movieReviewPayload);
@@ -148,12 +147,12 @@ class MovieService {
       // If a review under that reviewer and movie ids exists, update it.
       if (review === null) {
         const newReview = await this.reviewRepository.createReview(movieReviewPayload);
-        return prepareResponse({ review: newReview }, true);
+        return prepareResponse(newReview, true);
       } else {
         review.reviewerStars = reviewerStars;
         review.comment = comment;
         review.save();
-        return prepareResponse({ review }, true);
+        return prepareResponse(review, true);
       }
 
     } catch (error) {
@@ -170,7 +169,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing 'disabled' attribute in it's 'data' attribute
    * 
    */
-  async disableMovie(movieId: number): Promise<MyMovieDbResponse> {
+  async disableMovie(movieId: number): Promise<MyMovieDbResponse<boolean | null>> {
     logger.info('Disabling movie with id: ', movieId);
     try {
       if (!movieId || movieId < 1) {
@@ -189,7 +188,7 @@ class MovieService {
 
       movie.save();
 
-      return prepareResponse({ disabled: true }, true);
+      return prepareResponse(true, true);
     } catch (error) {
       const message = 'There was an error disabling movie';
       logger.error(message, error);
@@ -204,7 +203,7 @@ class MovieService {
    * @returns a movie by it's id in a Promise with a MyMovieDbResponse object containing 'movie' attribute in it's 'data' attribute
    * 
    */
-  async getMovieById(id: number): Promise<MyMovieDbResponse> {
+  async getMovieById(id: number): Promise<MyMovieDbResponse<Movie | null>> {
     logger.info(`getMovieById: ${id}`);
     try {
       if (!id || id < 1) {
@@ -220,7 +219,7 @@ class MovieService {
       }
 
       logger.info(`getMovieById ${id}. Retrieved? ${movie !== null}`);
-      return prepareResponse({ movie }, true);
+      return prepareResponse(movie, true);
 
     } catch (error) {
       const message = `There was an error getting movie by id ${id}:`;
@@ -237,7 +236,7 @@ class MovieService {
    * with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
    * 
    */
-  async getMovieReviews(movieId: number): Promise<MyMovieDbResponse> {
+  async getMovieReviews(movieId: number): Promise<MyMovieDbResponse<Review[] | null>> {
     logger.info(`getMovieReviews movieId: ${movieId}`);
     try {
       if (!movieId || movieId < 1) {
@@ -245,8 +244,8 @@ class MovieService {
         return prepareResponse(null, false, MOVIE_INVALID_ID, [`Invalid movie id`]);
       }
 
-      const movies = await this.reviewRepository.getMovieReviews(movieId);
-      return prepareResponse({ movies }, true);
+      const reviews = await this.reviewRepository.getMovieReviews(movieId);
+      return prepareResponse(reviews, true);
     } catch (error) {
       const message = 'There was an error getting movie reviews';
       logger.error(message, error);
@@ -263,7 +262,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
    * 
    */
-  async getMoviesWithOffsetAndLimit(offset: number, limit: number): Promise<MyMovieDbResponse> {
+  async getMoviesWithOffsetAndLimit(offset: number, limit: number): Promise<MyMovieDbResponse<Movie[] | null>> {
     logger.info(`getMoviesWithOffsetAndLimit: offset: ${offset}, limit: ${limit}`);
     try {
       if (!isValidPaginationNumber(offset) || !isValidPaginationNumber(limit)) {
@@ -273,7 +272,7 @@ class MovieService {
       }
 
       const movies = await this.movieRepository.getMoviesWithOffsetAndLimit(offset, limit);
-      return prepareResponse({ movies }, true);
+      return prepareResponse(movies, true);
     } catch (error) {
       const message = 'There was an error getting movies with pagination offset and limit';
       logger.error(message, error);
@@ -288,7 +287,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
    * 
    */
-  async getMoviesWithOffset(offset: number) {
+  async getMoviesWithOffset(offset: number): Promise<MyMovieDbResponse<Movie[] | null>> {
     logger.info(`getMoviesWithOffset: ${offset}`);
     try {
       if (!isValidPaginationNumber(offset)) {
@@ -296,7 +295,7 @@ class MovieService {
       }
 
       const movies = await this.movieRepository.getMoviesWithOffset(offset);
-      return prepareResponse({ movies }, true);
+      return prepareResponse(movies, true);
     } catch (error) {
       const message = 'There was an error getting movies with pagination offset';
       logger.error(message, error);
@@ -311,7 +310,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the list of 'movies' attribute in it's 'data' attribute
    * 
    */
-  async getMoviesWithLimit(limit: number) {
+  async getMoviesWithLimit(limit: number): Promise<MyMovieDbResponse<Movie[] | null>> {
     logger.info(`getMoviesWithLimit: ${limit}`);
     try {
       if (!isValidPaginationNumber(limit)) {
@@ -319,7 +318,7 @@ class MovieService {
       }
 
       const movies = await this.movieRepository.getMoviesWithLimit(limit);
-      return prepareResponse({ movies }, true);
+      return prepareResponse(movies, true);
     } catch (error) {
       const message = 'There was an error getting movies with pagination limit';
       logger.error(message, error);
@@ -335,7 +334,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
    * 
    */
-  async getReviewByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<MyMovieDbResponse>  {
+  async getReviewByReviewerIdAndMovieId(reviewerId: number, movieId: number): Promise<MyMovieDbResponse<Review | null>>  {
     logger.info(`getReviewByReviewerIdAndMovieId: reviewerId: ${reviewerId}, movieId: ${movieId}`);
     try {
       if (!isValidIdNumber(reviewerId) || !isValidIdNumber(movieId)) {
@@ -345,7 +344,7 @@ class MovieService {
 
       const review = await this.reviewRepository.getReviewByReviewerIdAndMovieId(reviewerId, movieId);
 
-      return prepareResponse({ review }, true);
+      return prepareResponse(review, true);
     } catch (error) {
       const message = 'There was an error getting movies by reviewer id and movie id';
       logger.error(message, error);
@@ -360,7 +359,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the 'review' attribute in it's 'data' attribute
    * 
    */
-  async getReviewById(reviewId: number): Promise<MyMovieDbResponse>  {
+  async getReviewById(reviewId: number): Promise<MyMovieDbResponse<Review | null>>  {
     logger.info(`getReviewById: ${reviewId}`);
     try {
       if (!isValidIdNumber(reviewId)) {
@@ -370,7 +369,7 @@ class MovieService {
 
       const review = await this.reviewRepository.getReviewById(reviewId);
       logger.info('review:', review);
-      return prepareResponse({ review }, true);
+      return prepareResponse(review, true);
     } catch (error) {
       const message = 'There was an error getting review by id';
       logger.error(message, error);
@@ -385,7 +384,7 @@ class MovieService {
    * @returns a Promise with a MyMovieDbResponse object containing the list of 'reviews' attribute in it's 'data' attribute
    * 
    */
-  async getReviewerReviews(reviewerId: number): Promise<MyMovieDbResponse> {
+  async getReviewerReviews(reviewerId: number): Promise<MyMovieDbResponse<Review[] | null>> {
     logger.info(`getReviewerReviews: ${reviewerId}`);
     try {
       if (!isValidIdNumber(reviewerId)) {
@@ -395,7 +394,7 @@ class MovieService {
 
       const reviews = await this.reviewRepository.getReviewerReviews(reviewerId);
 
-      return prepareResponse({ reviews }, true);
+      return prepareResponse(reviews, true);
     } catch (error) {
       const message = 'There was an error getting review by id';
       logger.error(message, error);
@@ -404,20 +403,20 @@ class MovieService {
     
   }
 
-  async getMovieCasts(id: number): Promise<MyMovieDbResponse> {
+  async getMovieCasts(id: number): Promise<MyMovieDbResponse<MovieCast[] | null>> {
     console.info(`getMovieCasts: movieId: ${id}`);
     try {
       const movieResponse = await this.getMovieById(id);
 
       if (!movieResponse.success) {
-        return movieResponse;
+        return prepareResponse(null, false, movieResponse.errorCode, movieResponse.errorMessages);
       }
 
-      const movie = <Movie>movieResponse.data.movie;
+      const movie = <Movie>movieResponse.data;
 
       const casts = await movie.getCasts();
 
-      return prepareResponse({ casts }, true);
+      return prepareResponse(casts, true);
 
     } catch (error) {
       const message = 'There was an error getting casts';
@@ -427,13 +426,13 @@ class MovieService {
 
   }
 
-  async addMovieCast(id: number, payload: MovieCastAttributes): Promise<MyMovieDbResponse> {
+  async addMovieCast(id: number, payload: MovieCastAttributes): Promise<MyMovieDbResponse<MovieCast | null>> {
     console.info(`addMovieCast: movieId: ${id}, payload: `, payload);
     try {
       const movieResponse = await this.getMovieById(id);
 
       if (!movieResponse.success) {
-        return movieResponse;
+        return prepareResponse(null, false, movieResponse.errorCode, movieResponse.errorMessages);
       }
 
       const { actorId, role } = payload;
@@ -441,10 +440,10 @@ class MovieService {
       const actorResponse = await this.actorService.getActorById(actorId);
 
       if (!actorResponse.success) {
-        return actorResponse;
+        return prepareResponse(null, false, actorResponse.errorCode, actorResponse.errorMessages);
       }
 
-      const movie = <Movie>movieResponse.data.movie;
+      const movie = <Movie>movieResponse.data;
 
       const movieAlreadyHasCast = await movie.hasCast(actorId);
 
@@ -460,7 +459,7 @@ class MovieService {
 
       cast.save();
 
-      return prepareResponse({ cast }, true);
+      return prepareResponse(cast, true);
       
     } catch (error) {
       const message = 'There was an error adding actor to movie';
@@ -470,20 +469,20 @@ class MovieService {
 
   }
 
-  async getMovieDirectors(id: number): Promise<MyMovieDbResponse> {
+  async getMovieDirectors(id: number): Promise<MyMovieDbResponse<MovieDirection[] | null>> {
     console.info(`getMovieDirectors: movieId: ${id}`);
     try {
       const movieResponse = await this.getMovieById(id);
 
       if (!movieResponse.success) {
-        return movieResponse;
+        return prepareResponse(null, false, movieResponse.errorCode, movieResponse.errorMessages);
       }
 
-      const movie = <Movie>movieResponse.data.movie;
+      const movie = <Movie>movieResponse.data;
 
       const directors = await movie.getDirectors();
 
-      return prepareResponse({ directors }, true);
+      return prepareResponse(directors, true);
 
     } catch (error) {
       const message = 'There was an error getting directors';
@@ -493,13 +492,13 @@ class MovieService {
 
   }
 
-  async addMovieDirector(id: number, payload: MovieDirectionCreationAttributes): Promise<MyMovieDbResponse> {
+  async addMovieDirector(id: number, payload: MovieDirectionCreationAttributes): Promise<MyMovieDbResponse<MovieDirection | null>> {
     console.info(`addMovieDirector: movieId: ${id}, payload: `, payload);
     try {
       const movieResponse = await this.getMovieById(id);
 
       if (!movieResponse.success) {
-        return movieResponse;
+        return prepareResponse(null, false, movieResponse.errorCode, movieResponse.errorMessages);
       }
 
       const { directorId } = payload;
@@ -507,10 +506,10 @@ class MovieService {
       const directorResponse = await this.directorService.getDirectorById(directorId);
 
       if (!directorResponse.success) {
-        return directorResponse;
+        return prepareResponse(null, false, directorResponse.errorCode, directorResponse.errorMessages);
       }
 
-      const movie = <Movie>movieResponse.data.movie;
+      const movie = <Movie>movieResponse.data;
 
       const movieAlreadyHasDirectorWithId = await movie.hasDirector(directorId);
 
@@ -526,7 +525,7 @@ class MovieService {
 
       direction.save();
 
-      return prepareResponse({ direction }, true);
+      return prepareResponse(direction, true);
 
     } catch (error) {
       const message = 'There was an error adding director to movie';

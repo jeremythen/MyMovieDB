@@ -4,6 +4,8 @@ Install dependencies:
 
 > npm install
 
+Before running the project, make sure Redis server is running.
+
 Run this project with typescript:
 
 > npm start

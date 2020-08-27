@@ -1,4 +1,4 @@
-import { UserCreationAttributes } from '../db/models/User';
+import User, { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
 import { prepareResponse, MyMovieDbResponse, isValidRole, isValidId } from '../util/util';
 import UserRepository from '../repositories/UserRepository';
@@ -23,9 +23,9 @@ class UserService {
      * @returns returns the list of registered users
      * 
      */
-    async getUsers(): Promise<MyMovieDbResponse>  {
+    async getUsers(): Promise<MyMovieDbResponse<User[] | null>>  {
         const users = await this.userRepository.getUsers();
-        return prepareResponse({ users }, true);
+        return prepareResponse(users, true);
     }
 
     /**
@@ -34,9 +34,9 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
      * 
      */
-    async getUserByEmail(email: string): Promise<MyMovieDbResponse>  {
+    async getUserByEmail(email: string): Promise<MyMovieDbResponse<User | null>>  {
         const user = await this.userRepository.getUserByEmail(email);
-        return prepareResponse({ user }, true);
+        return prepareResponse(user, true);
     }
 
     /**
@@ -45,12 +45,12 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
      * 
      */
-    async getUserByUsername(username: string): Promise<MyMovieDbResponse> {
+    async getUserByUsername(username: string): Promise<MyMovieDbResponse<User | null>> {
         const user = await this.userRepository.getUserByUsername(username);
         if (user === null) {
             return prepareResponse(null, false, USER_NOT_FOUND, `User with username '${username} was not found`);
         }
-        return prepareResponse({ user }, true);
+        return prepareResponse(user, true);
     }
 
     /**
@@ -59,7 +59,7 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
      *
      */
-    async getUserById(id: number): Promise<MyMovieDbResponse> {
+    async getUserById(id: number): Promise<MyMovieDbResponse<User | null>> {
 
         if (!isValidId(id)) {
             return prepareResponse(null, false, USER_INVALID_ID, `User id is invalid`);
@@ -69,7 +69,7 @@ class UserService {
         if (user === null) {
             return prepareResponse(null, false, USER_NOT_FOUND, `User with username '${id} was not found`);
         }
-        return prepareResponse({ user }, true);
+        return prepareResponse(user, true);
     }
 
     /**
@@ -89,7 +89,7 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
      * 
      */
-    async registerUser(userPayload: UserCreationAttributes): Promise<MyMovieDbResponse> {
+    async registerUser(userPayload: UserCreationAttributes): Promise<MyMovieDbResponse<RegisterLoginUserResponse | null>> {
 
         const validationResult = validateRegisterUserPayload(userPayload);
 
@@ -132,7 +132,7 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'user' attribute in it's 'data' attribute
      * 
      */
-    async login(payload: UserLoginPayload): Promise<MyMovieDbResponse>  {
+    async login(payload: UserLoginPayload): Promise<MyMovieDbResponse<RegisterLoginUserResponse | null>>  {
 
         const validationResult = validateLoginUserPayload(payload);
 
@@ -169,7 +169,7 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'deleted' attribute in it's 'data' attribute
      * 
      */
-    async deleteUserByUsername(username: string): Promise<MyMovieDbResponse>  {
+    async deleteUserByUsername(username: string): Promise<MyMovieDbResponse<boolean | null>>  {
         const user = await this.userRepository.getUserByUsername(username);
 
         if (user === null) {
@@ -178,7 +178,7 @@ class UserService {
 
         await this.userRepository.deleteUser(user);
 
-        return prepareResponse({ deleted: true }, true);
+        return prepareResponse(true, true);
     }
 
     /**
@@ -188,7 +188,7 @@ class UserService {
      * @returns a Promise with a MyMovieDbResponse object containing the 'deleted' attribute in it's 'data' attribute
      * 
      */
-    async updateUserRole(username: string, role: string): Promise<MyMovieDbResponse>  {
+    async updateUserRole(username: string, role: string): Promise<MyMovieDbResponse<User | null>>  {
 
         if (!isValidRole(role)) {
             return prepareResponse(null, false, USER_INVALID_ROLE, [`Role ${role} is not a valid role`]);
@@ -203,7 +203,7 @@ class UserService {
         user.role = role;
         user.save();
 
-        return prepareResponse({ user }, true);
+        return prepareResponse(user, true);
 
     }
 
@@ -214,6 +214,11 @@ export default UserService;
 interface UserLoginPayload {
     username: string;
     password: string;
+}
+
+interface RegisterLoginUserResponse {
+    user: User;
+    token: string;
 }
 
 

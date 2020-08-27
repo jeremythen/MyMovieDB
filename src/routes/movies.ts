@@ -53,7 +53,7 @@ Router.put("/:id/disable", authorize, async (req, res) => {
 Router.post("/:id/reviews", loggedInUser, async (req, res) => {
     const id = Number(req.params.id);
     const user = await getLoggedInUser(req);
-    const payload = { ...req.body, reviewerId: user.id };
+    const payload = { ...req.body, reviewerId: user?.id };
     const response = await movieService.addMovieReview(id, payload);
     handleCommonResponse(response, res);
 });

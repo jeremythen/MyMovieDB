@@ -2,7 +2,7 @@ import Director, { DirectorCreationAttributes } from '../db/models/movie/Directo
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';
 import { MovieError } from '../util/enums';
-import DirectorRepository from '../repositories/DirectorsRepository';
+import DirectorRepository from '../repositories/DirectorRepository';
 
 const { DIRECTOR_INVALID_PAYLOAD, DIRECTOR_INVALID_ID, DIRECTOR_NOT_FOUND } = MovieError;
 

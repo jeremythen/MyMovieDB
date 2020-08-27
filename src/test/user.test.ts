@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import UserService from '../services/UsersService';
+import UserService from '../services/UserService';
 import { UserError } from '../util/enums';
 import User from '../db/models/User';
 

@@ -1,17 +1,17 @@
-import MovieRepository from '../repositories/MoviesRepository';
+import MovieRepository from '../repositories/MovieRepository';
 import Movie, { MovieCreationAttributes } from '../db/models/movie/Movie';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse } from '../util/util';
 import { MovieError, GeneralError } from '../util/enums';
 import Review, { ReviewCreationAttributes } from '../db/models/movie/Review';
-import ReviewRepository from '../repositories/ReviewsRepository';
-import UserRepository from '../repositories/UsersRepository';
+import ReviewRepository from '../repositories/ReviewRepository';
+import UserRepository from '../repositories/UserRepository';
 import log4js from 'log4js';
 import MovieCast, { MovieCastAttributes } from '../db/models/movie/MovieCast';
-import ActorService from './ActorsService';
+import ActorService from './ActorService';
 import MovieDirection, { MovieDirectionCreationAttributes } from '../db/models/movie/MovieDirection';
-import DirectorService from './DirectorsService';
-import RedisService from './RedisServices';
+import DirectorService from './DirectorService';
+import RedisService from './RedisService';
 
 const logger = log4js.getLogger('', );
 

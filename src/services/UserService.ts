@@ -1,7 +1,7 @@
 import User, { UserCreationAttributes } from '../db/models/User';
 import bcrypt from 'bcrypt';
 import { prepareResponse, MyMovieDbResponse, isValidRole, isValidId } from '../util/util';
-import UserRepository from '../repositories/UsersRepository';
+import UserRepository from '../repositories/UserRepository';
 import validator from 'validator';
 import { generateJwtToken } from '../util/jwtTokenUtil';
 import { UserError, Role } from '../util/enums';

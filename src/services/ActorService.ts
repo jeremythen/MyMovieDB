@@ -1,4 +1,4 @@
-import ActorsRepository from '../repositories/ActorsRepository';
+import ActorRepository from '../repositories/ActorRepository';
 import Actor, { ActorCreationAttributes } from '../db/models/movie/Actor';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';
@@ -12,10 +12,10 @@ const { ERROR } = GeneralError;
 
 class ActorService {
 
-    private actorRepository: ActorsRepository;
+    private actorRepository: ActorRepository;
 
     constructor() {
-        this.actorRepository = new ActorsRepository();
+        this.actorRepository = new ActorRepository();
     }
 
     async getActors(): Promise<MyMovieDbResponse<Actor[] | null>> {

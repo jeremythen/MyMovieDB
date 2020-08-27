@@ -3,16 +3,21 @@ import MovieService from '../services/MovieService';
 import { ReviewCreationAttributes } from '../db/models/movie/Review';
 import Movie from '../db/models/movie/Movie';
 
-const movieService = new MovieService();
+import log4js from 'log4js';
 
-before(function () {
-    // 
+log4js.configure({
+    appenders: { fileAppender: { type: 'file', filename: './logs/test_logs.log' } },
+    categories: { default: { appenders: ['fileAppender'], level: 'info' } }
 });
 
+const logger = log4js.getLogger();
+
+const movieService = new MovieService();
+
 describe('Movies', () => {
-
+    logger.info('Movies tests');
     describe('Getting movies', () => {
-
+        logger.info('Getting movies tests');
         it('should return a list of movies', async () => {
             const response = await movieService.getMovies();
 
@@ -38,7 +43,7 @@ describe('Movies', () => {
 
 
     describe('Adding movies', () => {
-
+        logger.info('Adding movies tests');
         it('Adding a movie', async () => {
 
             const moviePayload = {
@@ -103,7 +108,7 @@ describe('Movies', () => {
 
 
     describe('Reviews', () => {
-
+        logger.info('Reviews tests');
         it('Adding a movie review', async () => {
 
             const movieId = 1;
@@ -156,10 +161,9 @@ describe('Movies', () => {
 
             const review = response.data;
 
-            expect(review, 'Expecting the reviews data to not be null.').to.not.be.null;
+            expect(review, 'Expecting the review data to not be null.').to.not.be.null;
 
         });
-
 
     });
 

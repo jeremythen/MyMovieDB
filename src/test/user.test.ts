@@ -1,13 +1,23 @@
 import { expect } from 'chai';
 import UserService from '../services/UserService';
 import { UserError } from '../util/enums';
+import User from '../db/models/User';
+
+import log4js from 'log4js';
+
+log4js.configure({
+    appenders: { fileAppender: { type: 'file', filename: './logs/test_logs.log' } },
+    categories: { default: { appenders: ['fileAppender'], level: 'info' } }
+});
+
+const logger = log4js.getLogger();
 
 const { USER_INVALID_ID, USER_NOT_FOUND } = UserError;
 
 const userService = new UserService();
 
 describe('Users tests', () => {
-
+    logger.info('Users tests');
     it('should create user', async () => {
         const response = await userService.registerUser({
             firstName: 'Jeremy',
@@ -51,6 +61,23 @@ describe('Users tests', () => {
 
         expect(response.errorCode, `Expected to see '${USER_INVALID_ID} but got '${response.errorCode}`).to.equal(USER_INVALID_ID);
 
+    });
+
+    it('should return false when user is not admin', async () => {
+        logger.info('should return false when user is not admin');
+
+        const user = await User.create({
+            email: 'my_own_email@gmail.com',
+            password: 'my_pass123',
+            username: 'my_username',
+        });
+
+        const isAdmin = userService.isAdmin(user);
+
+        logger.info(`User role: ${user.role}. Is admin: ${isAdmin}`);
+
+        expect(isAdmin, 'Expecting new user to have a User role, not Admin').to.be.false;
+        
     });
 
 });

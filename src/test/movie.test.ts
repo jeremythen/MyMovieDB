@@ -1,8 +1,5 @@
-process.env.NODE_ENV = 'test';
-
 import { expect } from 'chai';
 import MovieService from '../services/MovieService';
-import sequelize from '../db/connection';
 import { ReviewCreationAttributes } from '../db/models/movie/Review';
 import Movie from '../db/models/movie/Movie';
 

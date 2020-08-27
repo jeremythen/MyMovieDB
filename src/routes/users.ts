@@ -1,7 +1,7 @@
 import express from 'express';
 import { authorize } from '../middleware/authMiddleware';
 import { handleCommonResponse } from '../util/util';
-import UserService from '../services/UserService';
+import UserService from '../services/UsersService';
 
 const Router = express.Router();
 

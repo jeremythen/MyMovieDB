@@ -1,4 +1,4 @@
-import ActorsRepository from '../repositories/ActorRepository';
+import ActorsRepository from '../repositories/ActorsRepository';
 import Actor, { ActorCreationAttributes } from '../db/models/movie/Actor';
 import { ValidationResult } from '../util/util';
 import { prepareResponse, MyMovieDbResponse, isValidId } from '../util/util';

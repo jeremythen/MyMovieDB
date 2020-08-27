@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { verifyToken } from '../util/jwtTokenUtil';
 import HttpStatus from 'http-status-codes';
-import UserService from '../services/UserService';
+import UserService from '../services/UsersService';
 import log4js from 'log4js';
 
 const logger = log4js.getLogger();
